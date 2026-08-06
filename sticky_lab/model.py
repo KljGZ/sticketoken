@@ -29,6 +29,10 @@ class SentenceTransformerEncoder:
             cache_folder=self.cache_folder,
             trust_remote_code=self.trust_remote_code,
         )
+        # Scientific validation is deliberately FP32.  The upstream checkpoint
+        # advertises BF16 in some transformer versions, so make the precision
+        # choice explicit instead of inheriting version-dependent auto casting.
+        self.model.float()
         self.model.eval()
         self.tokenizer = self.model.tokenizer
         self.embedding_dim = int(self.model.get_sentence_embedding_dimension())

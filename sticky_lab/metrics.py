@@ -14,8 +14,12 @@ def exact_pairwise_mean(normalized_embeddings: np.ndarray) -> float:
     if values.ndim != 2 or len(values) < 2:
         raise ValueError("At least two embeddings are required")
     norms = np.linalg.norm(values, axis=1)
-    if not np.allclose(norms, 1.0, atol=1e-5):
-        raise ValueError("Embeddings must be L2-normalized")
+    if np.any(norms <= 1e-12) or not np.isfinite(norms).all():
+        raise ValueError("Embeddings must have finite non-zero norms")
+    # Some GPU kernels return normalized BF16/FP16 values whose FP64 norms
+    # differ from one by a few 1e-4.  Renormalize in FP64 before applying the
+    # exact identity so that the reported mean is not precision-dependent.
+    values = values / norms[:, None]
     total = values.sum(axis=0, dtype=np.float64)
     count = len(values)
     return float((np.dot(total, total) - count) / (count * (count - 1)))
@@ -240,4 +244,3 @@ def feasibility_sort_key(record: dict[str, Any], trigger_length: int) -> tuple[f
         -float(record.get("objective", -float("inf"))),
         float(trigger_length),
     )
-
