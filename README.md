@@ -155,6 +155,33 @@ python scripts/detect.py --model "sentence-transformers/sentence-t5-base" \
                          --verification_sent_pair_num 250
 ```
 
+### Running the Sticky-High Detector
+
+The sticky-high experiment searches for a reachable literal token string that
+raises the lower similarity tail while constraining loss in the upper tail. It
+uses disjoint vocabulary-screen, validation, and figure holdout splits; a token
+is marked `certified` only after validation on every insertion count from 1 to
+30.
+
+```bash
+python scripts/detect_sticky_high.py \
+    --model-id sentence-transformers/sentence-t5-base \
+    --device cuda:0 \
+    --screen-insertions 30 \
+    --max-insertions 30
+```
+
+The default output directory is
+`results/sticky_high/sentence_t5_base/`. It contains the full-vocabulary screen,
+coarse and full-curve validation rankings, the disjoint split manifest, plotted
+curve values, a metadata record, and the Figure 2(b)-style
+`inserted_number_of_sticky_high_token.png` figure.
+
+For a fast pipeline smoke test, add `--max-candidates 64 --search-per-group 2
+--validation-per-group 4 --plot-pair-count 10 --shortlist-size 16
+--finalist-size 4`. A capped run is a software check, not a complete
+vocabulary experiment.
+
 ### Interactive Demo
 
 You can explore the effects of sticky tokens using the gradio demo notebook:
@@ -185,4 +212,3 @@ More technical details can be found in our paper. If you find STD useful or rele
 ## License
 
 This project is licensed under the MIT license.
-
