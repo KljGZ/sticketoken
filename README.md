@@ -168,7 +168,20 @@ python scripts/detect_sticky_high.py \
     --model-id sentence-transformers/sentence-t5-base \
     --device cuda:0 \
     --screen-insertions 30 \
-    --max-insertions 30
+    --max-insertions 30 \
+    --max-components 1
+```
+
+If no single token passes the registered thresholds, extend only the top
+single-token components selected on the search split into ordered two-token
+literal strings. Pair formation never uses validation or plotting rows:
+
+```bash
+python scripts/detect_sticky_high.py \
+    --model-id sentence-transformers/sentence-t5-base \
+    --device cuda:0 \
+    --max-components 2 \
+    --component-pool-size 128
 ```
 
 The default output directory is

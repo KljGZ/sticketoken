@@ -36,6 +36,7 @@ if str(REPO_ROOT) not in sys.path:
 from stickytoken.sticky_high import (
     StickyHighThresholds,
     baseline_embeddings,
+    compose_ordered_candidate_pairs,
     evaluate_candidate_batch,
     load_token_candidates,
     make_disjoint_splits,
@@ -75,6 +76,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-insertions", type=int, default=30)
     parser.add_argument("--shortlist-size", type=int, default=128)
     parser.add_argument("--finalist-size", type=int, default=16)
+    parser.add_argument(
+        "--max-components",
+        type=int,
+        choices=(1, 2),
+        default=1,
+        help="Search single tokens only (1), or extend search-selected tokens to ordered pairs (2).",
+    )
+    parser.add_argument(
+        "--component-pool-size",
+        type=int,
+        default=128,
+        help="Number of top single-token screen results used to form ordered pairs.",
+    )
     parser.add_argument("--min-sentence2-tokens", type=int, default=5)
     parser.add_argument("--max-sentence2-tokens", type=int, default=160)
     parser.add_argument("--min-low-gain", type=float, default=0.02)
@@ -374,7 +388,65 @@ def main() -> None:
     screen_path = output_dir / "screen_scores.csv"
     screen.to_csv(screen_path, index=False)
 
-    shortlist = screen.head(min(args.shortlist_size, len(screen))).drop(
+    combined_screen_parts = [screen.drop(columns=["rank"], errors="ignore")]
+    pair_screen_path: Path | None = None
+    pair_candidates = pd.DataFrame()
+    if args.max_components == 2:
+        component_count = min(args.component_pool_size, len(screen))
+        if component_count < 2:
+            raise ValueError("At least two screened components are required for pair search")
+        component_columns = [
+            "token_id",
+            "raw_vocab",
+            "candidate",
+            "category",
+            "character_length",
+            "candidate_kind",
+            "component_count",
+            "component_token_ids",
+        ]
+        components = screen.head(component_count)[component_columns]
+        pair_candidates = compose_ordered_candidate_pairs(
+            components,
+            max_chars=args.max_candidate_chars * 2,
+        )
+        print(
+            f"Formed {len(pair_candidates)} unique ordered literal pairs from "
+            f"{component_count} search-selected components.",
+            flush=True,
+        )
+        pair_screen = evaluate_stage(
+            model=model,
+            candidates=pair_candidates,
+            pairs=search_pairs,
+            reference_embeddings=search_embeddings,
+            baseline=search_baseline,
+            low_threshold=args.low_threshold,
+            high_threshold=args.high_threshold,
+            insertion_counts=[args.screen_insertions],
+            separator=args.separator,
+            encode_batch_size=args.batch_size,
+            candidate_chunk_size=args.candidate_chunk_size,
+            thresholds=thresholds,
+            stage_name="ordered-pair screen",
+        )
+        pair_screen.insert(0, "rank", np.arange(1, len(pair_screen) + 1))
+        pair_screen_path = output_dir / "pair_screen_scores.csv"
+        pair_screen.to_csv(pair_screen_path, index=False)
+        combined_screen_parts.append(
+            pair_screen.drop(columns=["rank"], errors="ignore")
+        )
+
+    combined_screen = rank_candidates(
+        pd.concat(combined_screen_parts, ignore_index=True)
+    )
+    combined_screen.insert(0, "rank", np.arange(1, len(combined_screen) + 1))
+    combined_screen_path = output_dir / "combined_screen_scores.csv"
+    combined_screen.to_csv(combined_screen_path, index=False)
+
+    shortlist = combined_screen.head(
+        min(args.shortlist_size, len(combined_screen))
+    ).drop(
         columns=["rank"], errors="ignore"
     )
     candidate_columns = [
@@ -383,6 +455,9 @@ def main() -> None:
         "candidate",
         "category",
         "character_length",
+        "candidate_kind",
+        "component_count",
+        "component_token_ids",
     ]
     shortlist = shortlist[candidate_columns]
 
@@ -486,7 +561,11 @@ def main() -> None:
 
     plot_delta = curves[:, -1] - curves[:, 0]
     metadata: dict[str, Any] = {
-        "experiment": "sticky-high-v1-single-token",
+        "experiment": (
+            "sticky-high-v1-ordered-pair"
+            if args.max_components == 2
+            else "sticky-high-v1-single-token"
+        ),
         "definition": (
             "Raise the lower similarity tail while constraining loss in the "
             "upper tail; certify only after full insertion-curve validation."
@@ -504,8 +583,21 @@ def main() -> None:
             for key, value in best.to_dict().items()
         },
         "candidate_space": {
-            "kind": "reachable literal single-token strings",
-            "count": len(candidates),
+            "kind": (
+                "reachable literal single-token strings plus ordered pairs "
+                "formed from search-selected components"
+                if args.max_components == 2
+                else "reachable literal single-token strings"
+            ),
+            "single_token_count": len(candidates),
+            "ordered_pair_count": len(pair_candidates),
+            "combined_count": len(combined_screen),
+            "max_components": args.max_components,
+            "component_pool_size": (
+                min(args.component_pool_size, len(screen))
+                if args.max_components == 2
+                else 0
+            ),
             "include_special": args.include_special,
             "source": str(token_analysis_path),
             "source_sha256": sha256_file(token_analysis_path),
@@ -555,6 +647,10 @@ def main() -> None:
         },
         "artifacts": {
             "screen_scores": str(screen_path),
+            "pair_screen_scores": (
+                str(pair_screen_path) if pair_screen_path is not None else None
+            ),
+            "combined_screen_scores": str(combined_screen_path),
             "coarse_validation": str(coarse_path),
             "full_validation": str(full_path),
             "split_manifest": str(split_manifest_path),
@@ -568,7 +664,10 @@ def main() -> None:
         json.dump(metadata, stream, ensure_ascii=False, indent=2, allow_nan=False)
 
     print("Sticky-high experiment complete.")
-    print(f"Best literal candidate: {best_candidate!r} (token_id={int(best['token_id'])})")
+    print(
+        f"Best literal candidate: {best_candidate!r} "
+        f"(component_token_ids={best['component_token_ids']})"
+    )
     print(f"Certified: {bool(best['certified'])}")
     print(
         f"Validation low q10 gain={float(best['low_gain_q10']):.6f}; "

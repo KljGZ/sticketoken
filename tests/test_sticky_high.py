@@ -8,6 +8,7 @@ import numpy as np
 from stickytoken.sticky_high import (
     StickyHighThresholds,
     append_candidate,
+    compose_ordered_candidate_pairs,
     load_token_candidates,
     make_disjoint_splits,
     parse_insertion_counts,
@@ -109,6 +110,21 @@ class StickyHighTests(unittest.TestCase):
         self.assertEqual(append_candidate("x", "q", 3), "xqqq")
         self.assertEqual(append_candidate("x", "q", 2, " "), "x q q")
         self.assertEqual(parse_insertion_counts("8,1,8,4"), [1, 4, 8])
+
+    def test_ordered_pair_composition_is_literal_and_deduplicated(self):
+        import pandas as pd
+
+        components = pd.DataFrame(
+            [
+                {"token_id": 1, "raw_vocab": "a", "candidate": " A"},
+                {"token_id": 2, "raw_vocab": "b", "candidate": "B"},
+            ]
+        )
+        pairs = compose_ordered_candidate_pairs(components)
+        self.assertEqual(len(pairs), 4)
+        self.assertIn(" AB", pairs["candidate"].tolist())
+        self.assertIn("B A", pairs["candidate"].tolist())
+        self.assertTrue((pairs["component_count"] == 2).all())
 
 
 if __name__ == "__main__":

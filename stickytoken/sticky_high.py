@@ -116,6 +116,9 @@ def load_token_candidates(
                     "candidate": decoded,
                     "category": str(item["category"]),
                     "character_length": len(decoded),
+                    "candidate_kind": "single_token",
+                    "component_count": 1,
+                    "component_token_ids": str(int(item["i"])),
                 }
             )
 
@@ -127,6 +130,53 @@ def load_token_candidates(
             raise ValueError("max_candidates must be positive")
         frame = frame.head(max_candidates)
     return frame.reset_index(drop=True)
+
+
+def compose_ordered_candidate_pairs(
+    components: pd.DataFrame,
+    *,
+    max_chars: int = 128,
+) -> pd.DataFrame:
+    """Form deterministic ordered two-component literal strings.
+
+    Components must have been selected using the search split only.  Literal
+    strings are deduplicated because different token-ID pairs can collapse to
+    the same deployed text after decoding.
+    """
+
+    required = {"token_id", "raw_vocab", "candidate"}
+    missing = required - set(components.columns)
+    if missing:
+        raise ValueError(f"Missing component columns: {sorted(missing)}")
+    if max_chars < 1:
+        raise ValueError("max_chars must be positive")
+
+    records: list[dict[str, object]] = []
+    seen_literals: set[str] = set()
+    rows = list(components.reset_index(drop=True).to_dict("records"))
+    for left in rows:
+        for right in rows:
+            literal = str(left["candidate"]) + str(right["candidate"])
+            if not literal.strip() or len(literal) > max_chars:
+                continue
+            if literal in seen_literals:
+                continue
+            seen_literals.add(literal)
+            left_id = str(left["token_id"])
+            right_id = str(right["token_id"])
+            records.append(
+                {
+                    "token_id": f"{left_id}+{right_id}",
+                    "raw_vocab": f"{left['raw_vocab']}|{right['raw_vocab']}",
+                    "candidate": literal,
+                    "category": "COMPOSED",
+                    "character_length": len(literal),
+                    "candidate_kind": "ordered_token_pair",
+                    "component_count": 2,
+                    "component_token_ids": f"{left_id},{right_id}",
+                }
+            )
+    return pd.DataFrame.from_records(records)
 
 
 def _sample_across_range(
