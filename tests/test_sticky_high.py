@@ -12,6 +12,7 @@ from stickytoken.sticky_high import (
     load_token_candidates,
     make_disjoint_splits,
     parse_insertion_counts,
+    select_diverse_candidates,
     summarize_candidate,
 )
 
@@ -125,6 +126,32 @@ class StickyHighTests(unittest.TestCase):
         self.assertIn(" AB", pairs["candidate"].tolist())
         self.assertIn("B A", pairs["candidate"].tolist())
         self.assertTrue((pairs["component_count"] == 2).all())
+
+    def test_diverse_shortlist_preserves_candidate_families(self):
+        import pandas as pd
+
+        rows = []
+        for kind, offset in [("single_token", 0.0), ("ordered_token_pair", 1.0)]:
+            for index in range(10):
+                rows.append(
+                    {
+                        "candidate": f"{kind}-{index}",
+                        "candidate_kind": kind,
+                        "objective": offset + index / 100,
+                        "low_gain_q10": 0.01 + index / 1000,
+                        "high_gain_q05": -0.01 - index / 1000,
+                        "high_failure_rate": 0.0,
+                        "final_constraints_pass": False,
+                        "certified": False,
+                    }
+                )
+        selected = select_diverse_candidates(
+            pd.DataFrame(rows), 8, StickyHighThresholds()
+        )
+        self.assertEqual(
+            selected["candidate_kind"].value_counts().to_dict(),
+            {"ordered_token_pair": 4, "single_token": 4},
+        )
 
 
 if __name__ == "__main__":

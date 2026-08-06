@@ -466,6 +466,107 @@ def rank_candidates(frame: pd.DataFrame) -> pd.DataFrame:
     ).reset_index(drop=True)
 
 
+def select_diverse_candidates(
+    frame: pd.DataFrame,
+    size: int,
+    thresholds: StickyHighThresholds,
+) -> pd.DataFrame:
+    """Select a multi-objective, candidate-kind-balanced shortlist.
+
+    A pure top-objective cutoff can be saturated by one candidate family and by
+    search-split overfitting.  Each family receives an equal quota containing:
+    objective leaders, high-tail-preserving candidates with non-trivial low-tail
+    gain, and strong low-tail candidates that remain near the high-tail bound.
+    Remaining slots are filled by the global objective ranking.
+    """
+
+    if size < 1:
+        raise ValueError("Shortlist size must be positive")
+    if frame.empty:
+        raise ValueError("Cannot shortlist an empty candidate frame")
+    thresholds.validate()
+    source = frame.copy().reset_index(drop=True)
+    if "candidate_kind" not in source:
+        source["candidate_kind"] = "unspecified"
+    kinds = sorted(source["candidate_kind"].astype(str).unique())
+
+    selected_indices: list[int] = []
+    selected_set: set[int] = set()
+
+    def add(rows: pd.DataFrame, count: int) -> None:
+        if count <= 0:
+            return
+        added = 0
+        for index in rows.index:
+            numeric_index = int(index)
+            if numeric_index in selected_set:
+                continue
+            selected_set.add(numeric_index)
+            selected_indices.append(numeric_index)
+            added += 1
+            if added >= count or len(selected_indices) >= size:
+                break
+
+    base_quota, remainder = divmod(size, len(kinds))
+    for kind_offset, kind in enumerate(kinds):
+        quota = base_quota + (1 if kind_offset < remainder else 0)
+        group = source[source["candidate_kind"].astype(str) == kind]
+        objective_count = max(1, quota // 2)
+        preservation_count = max(1, quota // 4) if quota >= 4 else 0
+        uplift_count = quota - objective_count - preservation_count
+
+        add(
+            group.sort_values(
+                ["final_constraints_pass", "objective", "low_gain_q10"],
+                ascending=[False, False, False],
+                kind="mergesort",
+            ),
+            objective_count,
+        )
+        preservation_pool = group[
+            group["low_gain_q10"] >= thresholds.min_low_gain / 2
+        ].sort_values(
+            ["high_gain_q05", "high_failure_rate", "low_gain_q10"],
+            ascending=[False, True, False],
+            kind="mergesort",
+        )
+        add(preservation_pool, preservation_count)
+        uplift_pool = group[
+            group["high_gain_q05"] >= -2 * thresholds.high_drop_tolerance
+        ].sort_values(
+            ["low_gain_q10", "high_gain_q05", "objective"],
+            ascending=[False, False, False],
+            kind="mergesort",
+        )
+        add(uplift_pool, uplift_count)
+
+        group_index_set = set(int(index) for index in group.index)
+        current_group_count = sum(
+            index in group_index_set for index in selected_indices
+        )
+        if current_group_count < quota:
+            add(
+                group.sort_values(
+                    ["final_constraints_pass", "objective", "low_gain_q10"],
+                    ascending=[False, False, False],
+                    kind="mergesort",
+                ),
+                quota - current_group_count,
+            )
+
+    if len(selected_indices) < min(size, len(source)):
+        add(
+            source.sort_values(
+                ["final_constraints_pass", "objective", "low_gain_q10"],
+                ascending=[False, False, False],
+                kind="mergesort",
+            ),
+            size - len(selected_indices),
+        )
+    selected = source.loc[selected_indices[:size]].copy()
+    return rank_candidates(selected)
+
+
 def plot_sticky_high_curves(
     curves: np.ndarray,
     output_path: Path,

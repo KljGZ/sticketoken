@@ -44,6 +44,7 @@ from stickytoken.sticky_high import (
     plot_sticky_high_curves,
     rank_candidates,
     score_candidate_frame,
+    select_diverse_candidates,
     sha256_file,
     thresholds_as_dict,
 )
@@ -60,6 +61,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data", type=Path, default=None)
     parser.add_argument("--token-analysis", type=Path, default=None)
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument(
+        "--reuse-screen-dir",
+        type=Path,
+        default=None,
+        help="Reuse audited screen artifacts from a configuration-identical prior run.",
+    )
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--cache-folder", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=42)
@@ -285,6 +292,9 @@ def main() -> None:
         or repo_root / f"results/sticky_high/{model_name}"
     ).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    reuse_screen_dir = (
+        args.reuse_screen_dir.resolve() if args.reuse_screen_dir else None
+    )
     cache_folder = args.cache_folder.resolve() if args.cache_folder else None
 
     if args.device.startswith("cuda") and not torch.cuda.is_available():
@@ -365,28 +375,89 @@ def main() -> None:
     )
     print(f"Loaded {len(candidates)} reachable literal token candidates.", flush=True)
 
+    if reuse_screen_dir is not None:
+        reuse_metadata_path = reuse_screen_dir / "metadata.json"
+        reuse_manifest_path = reuse_screen_dir / "split_manifest.csv"
+        if not reuse_metadata_path.exists() or not reuse_manifest_path.exists():
+            raise FileNotFoundError(
+                "--reuse-screen-dir must contain metadata.json and split_manifest.csv"
+            )
+        reuse_metadata = json.loads(reuse_metadata_path.read_text(encoding="utf-8"))
+        expected_checks = {
+            "model_id": (reuse_metadata.get("model_id"), args.model_id),
+            "data_sha256": (
+                reuse_metadata.get("data", {}).get("source_sha256"),
+                sha256_file(data_path),
+            ),
+            "candidate_sha256": (
+                reuse_metadata.get("candidate_space", {}).get("source_sha256"),
+                sha256_file(token_analysis_path),
+            ),
+            "seed": (reuse_metadata.get("seed"), args.seed),
+            "thresholds": (
+                reuse_metadata.get("thresholds"),
+                thresholds_as_dict(thresholds),
+            ),
+            "low_threshold": (
+                reuse_metadata.get("data", {}).get("low_threshold"),
+                args.low_threshold,
+            ),
+            "high_threshold": (
+                reuse_metadata.get("data", {}).get("high_threshold"),
+                args.high_threshold,
+            ),
+            "screen_insertions": (
+                reuse_metadata.get("insertion", {}).get("screen_insertions"),
+                args.screen_insertions,
+            ),
+            "max_components": (
+                reuse_metadata.get("candidate_space", {}).get("max_components"),
+                args.max_components,
+            ),
+            "component_pool_size": (
+                reuse_metadata.get("candidate_space", {}).get("component_pool_size"),
+                min(args.component_pool_size, len(candidates))
+                if args.max_components == 2
+                else 0,
+            ),
+        }
+        mismatches = {
+            name: values for name, values in expected_checks.items() if values[0] != values[1]
+        }
+        current_manifest = pd.read_csv(split_manifest_path)[["split", "data_row"]]
+        reused_manifest = pd.read_csv(reuse_manifest_path)[["split", "data_row"]]
+        if not current_manifest.equals(reused_manifest):
+            mismatches["split_manifest"] = ("reused", "current")
+        if mismatches:
+            raise ValueError(f"Refusing incompatible screen reuse: {mismatches}")
+        print(f"Reusing configuration-identical screens from {reuse_screen_dir}")
+
     search_indices = splits["search_low"] + splits["search_high"]
     search_pairs, search_embeddings, search_baseline = split_view(
         frame, sentence1_embeddings, baseline, search_indices
     )
-    screen = evaluate_stage(
-        model=model,
-        candidates=candidates,
-        pairs=search_pairs,
-        reference_embeddings=search_embeddings,
-        baseline=search_baseline,
-        low_threshold=args.low_threshold,
-        high_threshold=args.high_threshold,
-        insertion_counts=[args.screen_insertions],
-        separator=args.separator,
-        encode_batch_size=args.batch_size,
-        candidate_chunk_size=args.candidate_chunk_size,
-        thresholds=thresholds,
-        stage_name="vocabulary screen",
-    )
-    screen.insert(0, "rank", np.arange(1, len(screen) + 1))
-    screen_path = output_dir / "screen_scores.csv"
-    screen.to_csv(screen_path, index=False)
+    if reuse_screen_dir is None:
+        screen = evaluate_stage(
+            model=model,
+            candidates=candidates,
+            pairs=search_pairs,
+            reference_embeddings=search_embeddings,
+            baseline=search_baseline,
+            low_threshold=args.low_threshold,
+            high_threshold=args.high_threshold,
+            insertion_counts=[args.screen_insertions],
+            separator=args.separator,
+            encode_batch_size=args.batch_size,
+            candidate_chunk_size=args.candidate_chunk_size,
+            thresholds=thresholds,
+            stage_name="vocabulary screen",
+        )
+        screen.insert(0, "rank", np.arange(1, len(screen) + 1))
+        screen_path = output_dir / "screen_scores.csv"
+        screen.to_csv(screen_path, index=False)
+    else:
+        screen_path = reuse_screen_dir / "screen_scores.csv"
+        screen = pd.read_csv(screen_path, keep_default_na=False)
 
     combined_screen_parts = [screen.drop(columns=["rank"], errors="ignore")]
     pair_screen_path: Path | None = None
@@ -405,34 +476,39 @@ def main() -> None:
             "component_count",
             "component_token_ids",
         ]
-        components = screen.head(component_count)[component_columns]
-        pair_candidates = compose_ordered_candidate_pairs(
-            components,
-            max_chars=args.max_candidate_chars * 2,
-        )
-        print(
-            f"Formed {len(pair_candidates)} unique ordered literal pairs from "
-            f"{component_count} search-selected components.",
-            flush=True,
-        )
-        pair_screen = evaluate_stage(
-            model=model,
-            candidates=pair_candidates,
-            pairs=search_pairs,
-            reference_embeddings=search_embeddings,
-            baseline=search_baseline,
-            low_threshold=args.low_threshold,
-            high_threshold=args.high_threshold,
-            insertion_counts=[args.screen_insertions],
-            separator=args.separator,
-            encode_batch_size=args.batch_size,
-            candidate_chunk_size=args.candidate_chunk_size,
-            thresholds=thresholds,
-            stage_name="ordered-pair screen",
-        )
-        pair_screen.insert(0, "rank", np.arange(1, len(pair_screen) + 1))
-        pair_screen_path = output_dir / "pair_screen_scores.csv"
-        pair_screen.to_csv(pair_screen_path, index=False)
+        if reuse_screen_dir is None:
+            components = screen.head(component_count)[component_columns]
+            pair_candidates = compose_ordered_candidate_pairs(
+                components,
+                max_chars=args.max_candidate_chars * 2,
+            )
+            print(
+                f"Formed {len(pair_candidates)} unique ordered literal pairs from "
+                f"{component_count} search-selected components.",
+                flush=True,
+            )
+            pair_screen = evaluate_stage(
+                model=model,
+                candidates=pair_candidates,
+                pairs=search_pairs,
+                reference_embeddings=search_embeddings,
+                baseline=search_baseline,
+                low_threshold=args.low_threshold,
+                high_threshold=args.high_threshold,
+                insertion_counts=[args.screen_insertions],
+                separator=args.separator,
+                encode_batch_size=args.batch_size,
+                candidate_chunk_size=args.candidate_chunk_size,
+                thresholds=thresholds,
+                stage_name="ordered-pair screen",
+            )
+            pair_screen.insert(0, "rank", np.arange(1, len(pair_screen) + 1))
+            pair_screen_path = output_dir / "pair_screen_scores.csv"
+            pair_screen.to_csv(pair_screen_path, index=False)
+        else:
+            pair_screen_path = reuse_screen_dir / "pair_screen_scores.csv"
+            pair_screen = pd.read_csv(pair_screen_path, keep_default_na=False)
+            pair_candidates = pair_screen[component_columns].copy()
         combined_screen_parts.append(
             pair_screen.drop(columns=["rank"], errors="ignore")
         )
@@ -444,10 +520,10 @@ def main() -> None:
     combined_screen_path = output_dir / "combined_screen_scores.csv"
     combined_screen.to_csv(combined_screen_path, index=False)
 
-    shortlist = combined_screen.head(
-        min(args.shortlist_size, len(combined_screen))
-    ).drop(
-        columns=["rank"], errors="ignore"
+    shortlist = select_diverse_candidates(
+        combined_screen.drop(columns=["rank"], errors="ignore"),
+        min(args.shortlist_size, len(combined_screen)),
+        thresholds,
     )
     candidate_columns = [
         "token_id",
@@ -484,8 +560,10 @@ def main() -> None:
     coarse_path = output_dir / "coarse_validation.csv"
     coarse.to_csv(coarse_path, index=False)
 
-    finalists = coarse.head(min(args.finalist_size, len(coarse))).drop(
-        columns=["rank"], errors="ignore"
+    finalists = select_diverse_candidates(
+        coarse.drop(columns=["rank"], errors="ignore"),
+        min(args.finalist_size, len(coarse)),
+        thresholds,
     )
     finalists = finalists[candidate_columns]
     full_counts = list(range(1, args.max_insertions + 1))
@@ -578,6 +656,16 @@ def main() -> None:
             torch.cuda.get_device_name(cuda_index) if cuda_index is not None else None
         ),
         "seed": args.seed,
+        "screen_reuse": (
+            {
+                "enabled": True,
+                "source_directory": str(reuse_screen_dir),
+                "source_repo_commit": reuse_metadata.get("repo_commit"),
+                "compatibility_checks_passed": True,
+            }
+            if reuse_screen_dir is not None
+            else {"enabled": False}
+        ),
         "best_candidate": {
             key: (value.item() if hasattr(value, "item") else value)
             for key, value in best.to_dict().items()
