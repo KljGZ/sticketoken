@@ -1,0 +1,1578 @@
+split,group,filtered_row,data_row,baseline_similarity,sentence2_token_length,sentence1,sentence2
+search_low,low,3,3,0.494140625,11,This answer is based on my experience teaching undergraduate math in the US.,There is no rope being climbed by a man
+search_low,low,72,72,0.521484375,11,several different ways have been developed of calculating these values ( also known as term weights ) .,There is no rope being climbed by a man
+search_low,low,108,108,0.53564453125,21,There is no man dressed in black wearing an elaborate black mask,the basic idea is to represent each document as a vector of certain weighted word frequencies .
+search_low,low,140,140,0.55224609375,13,the man is feeding a mouse to the snake .,"A girl in water, with goggles and swimming cap."
+search_low,low,181,181,0.5732421875,6,regulate or set the time of ( a clock ),There is no kitten drinking milk
+search_low,low,240,241,0.6044921875,16,synthax _ terror 2 : : more than 800 nyc rape cases to be reviewed for forensic mistakes,The football is between the feet of a boy who is lying on the grass
+search_low,low,249,250,0.60986328125,15,A baby elephant is not eating a small tree,djokovic : 3 aussie wins in a row
+search_low,low,314,315,0.6435546875,16,obama calls for international front against is,A hiker is on top of the mountain and is doing a joyful dance
+search_high,high,653,664,0.82470703125,8,car bombing kills 53 in damascus,2 traffic accidents leave 47 dead in china
+search_high,high,690,701,0.84375,15,the black dog is running on the grass with a toy in it 's mouth .,A dog with long hair and a red vest is running in the grass
+search_high,high,751,766,0.8720703125,9,bulb c and switch z are in the same closed path,because the switch was connected to the closed circuit
+search_high,high,809,830,0.88427734375,13,A black dog is playing with a brown dog on the sand,two black dogs are playing in a grassy plain .
+search_high,high,842,863,0.88916015625,9,a damaged bulb creates a gap in the path .,there is a gap in a circuit
+search_high,high,882,904,0.90380859375,10,a woman is slicing up some meat .,A woman is slicing a tomato
+search_high,high,922,945,0.92041015625,13,bulb b and c are on a closed path to the battery,bulb c and switch z are in the same closed path
+search_high,high,967,991,0.9833984375,15,the amendment 7 proposes some modifications in the references to the paragraphs .,amendment no 7 proposes certain changes in the references to paragraphs .
+validation_low,low,4,4,0.494873046875,6,"several different ways of computing these values , also known as ( term ) weights , have been developed .",There is no kitten drinking milk
+validation_low,low,9,9,0.499267578125,25,There is no person riding a jetski in the waves,"dynamic programming is a very powerful mathematical technique , often utilised in programming , for solving optimization problems ."
+validation_low,low,20,20,0.50537109375,9,There is no person riding a jetski in the waves,"commodity expanded value-form , ."
+validation_low,low,25,25,0.50830078125,8,make fine adjustments or divide into marked intervals for optimal measuring .,There are no people driving ATVs
+validation_low,low,32,32,0.51171875,13,No girl with a bikini is playing in the dunes,they also inherit the attributes and methods of its superclass .
+validation_low,low,38,38,0.51416015625,6,This answer is based on my experience teaching undergraduate math in the US.,There is no kitten drinking milk
+validation_low,low,44,44,0.51708984375,10,"after all , they have recommended policies that politicians or taking into consideration .",The boy isn't playing the piano happily
+validation_low,low,58,58,0.5185546875,9,"Besides these 28 OCT4-regulated genes, the Oct4-OETN included 8 more genes of a recently published list of OCT4-correlated transcripts expressed in ESCs.",There is no brown dog standing in the water
+validation_low,low,62,62,0.52001953125,14,one of the most well studied facets of temperament is how people respond to novelty .,No girl with a bikini is playing in the dunes
+validation_low,low,68,68,0.5205078125,11,one of the most well studied facets of temperament is how people respond to novelty .,There is no rope being climbed by a man
+validation_low,low,74,74,0.52197265625,9,"after all , they have recommended policies that politicians or taking into consideration .",There is no woman using a sewing machine
+validation_low,low,80,80,0.5234375,22,A baby elephant is not eating a small tree,several different ways have been developed of calculating these values ( also known as term weights ) .
+validation_low,low,89,89,0.525390625,13,No motorcycle racer is riding a red and black bike,it was first used in the smart information retrieval system .
+validation_low,low,96,96,0.529296875,25,There is no rope being climbed by a man,"dynamic programming is a very powerful mathematical technique , often utilised in programming , for solving optimization problems ."
+validation_low,low,103,103,0.533203125,12,This answer is based on my experience teaching undergraduate math in the US.,There is no man dressed in black wearing an elaborate black mask
+validation_low,low,109,109,0.53564453125,16,it was first used in the smart information retrieval system .,ukraine will not give ' an inch ' over crimea
+validation_low,low,115,115,0.5390625,8,"you just have to base your answer on what you do know , which is what you want .",There are no people driving ATVs
+validation_low,low,125,125,0.54443359375,16,female film directors slowly gain ground,The football is between the feet of a boy who is lying on the grass
+validation_low,low,135,135,0.54931640625,6,No motorcycle racer is riding a red and black bike,( cause to ) survive
+validation_low,low,136,136,0.5498046875,13,There is no person riding a jetski in the waves,what more can i do to improve my credit score ?
+validation_low,low,150,150,0.5576171875,11,it has the effect of augmenting the potency of the big countries to the detriment of babies .,a person is diving into clear blue water .
+validation_low,low,156,156,0.560546875,16,Two white cats are playing with a brown dog and a ball,ukraine will not give ' an inch ' over crimea
+validation_low,low,159,159,0.56201171875,11,A man is dancing on the ceiling,government initiatives to disarm have been ineffective .
+validation_low,low,169,169,0.5673828125,16,The man is pouring some oil on the tomatoes,ukraine will not give ' an inch ' over crimea
+validation_low,low,173,173,0.5693359375,7,"iran , atomic agency in first talks since rowhani election",A boy is eating a cupcake
+validation_low,low,185,185,0.57568359375,41,There is no girl in pink twirling a ribbon,"the offer is also subject to goldman signing an agreement with drax 's senior banks , senior bond holders and hedging banks by sept . 30 , it said ."
+validation_low,low,191,191,0.57861328125,7,A man in a car is not pulling up beside a woman who is walking along a road,ive watched kids play .
+validation_low,low,196,196,0.58154296875,15,There is no dog jumping at a shiny blue soccer ball in a field of dry leaves,"but just as the european union itself , and this will happen ."
+validation_low,low,201,201,0.583984375,14,ukraine will not give ' an inch ' over crimea,"ok , that 's a good point ."
+validation_low,low,214,214,0.5908203125,11,A potato is being peeled by a woman,government initiatives to disarm have been ineffective .
+validation_low,low,218,218,0.5927734375,23,A black dog is playing with a brown dog on the sand,about 31 percent of americans are now obese — roughly 30 or more pounds over a healthy weight .
+validation_low,low,227,228,0.59814453125,16,make a certain size or sort according to size,A young child is running down a gravel road that is covered with dead leaves
+validation_low,low,232,233,0.6005859375,19,the simple answer is yes !,"the international atomic energy agency has no access to people , documents , sites ."
+validation_low,low,238,239,0.603515625,36,A snowboarder is grinding down a long rail,"it 's true that , under one understanding of "" accessibility "" and "" determining "" , your accessibility relation is determined by your axioms ."
+validation_low,low,245,246,0.607421875,13,"Emory Lane, 16650-Patsy C. Herold to Julia Hernandez, $459,900.
+
+Hornbeam Dr., 4712-Clinton D. and Shenita Y. White to Stephen J. Tapparo and Luz M. Redondo, $685,000.
+
+Morgal St., 4410-Jeremy A. Schiffer and Rachel Werner to Daniel F. Rogers and Jennifer L. Gordon, $470,000.
+
+AD
+
+Veirs Mill Rd., 12732, No. 1-101-Steven W. Watts and estate of Bradley Nolan Watts to Janys A. Cabrera Diaz, $190,000.
+
+BETHESDA AREA
+
+Alta Vista Rd., 5511-Ihor G. and Catherine Murashchyk to Marco and Carolyn Macchiavelli, $707,500.
+
+AD
+
+Arrowood Rd., 7205-MSM Design Build Corp. to David Arash and Beth Javdan, $5.97 million.
+
+Bells Mill Rd., 6400-Ivan S. Dimitrov and James Norris Platt to Molly A. Herrera and Juan C. Herrera Trejo, $656,000.
+
+Brixton Lane, 9903-Jeffrey M. and Sheryl E. Prieto to Gabriel I. Parra and Natalia Gudino, $745,000.
+
+Burdette Rd., 8300, No. 502-Donna G. Smith and estate of Charles H. Goldberg to Kenneth H., Francine and Richard Shure, $680,000.
+
+AD
+
+Buttermere Lane, 6707-Irma Lee Westrell to Peter Glaser, $630,000.
+
+Exeter Rd., 7515-Barry L. and Sigrun F. Haase to Carlton Ervin, $3.5 million.
+
+Harling Lane, 4517-Anthony B. and Frank Crisafulli to Carlyle P. Thorsen, $889,000.
+
+Inglemere Dr., 9819-Masha Kruskal to Earle and Cynthia Ingalls, $830,000.
+
+Maple Ave., 4600-Richard Allen Lingle to Nathan K. Redmann and Bianca Elizabeth Bersani, $1.2 million.
+
+AD
+
+McLean Dr., 5605-Mid-Atlantic Custom Builders Corp. to Edward and Lerna Chaglassian, $2.33 million.
+
+Millwood Rd., 7208-Richard Coghlan and Sang Me Lee to Roman and Katja Elisabeth Heini, $2.65 million.
+
+Pelham Rd., 8507-George L. Richardson and Beatriz M. Romero Junquera to Huanhuan Deng and Bing Qi, $1.48 million.
+
+AD
+
+Rannoch Rd., 6800-John L. Stodola to Katherine E. Pappas and Craig D. Goldstein, $1.3 million.
+
+Sentinel Dr., 4970, No. 11-204-Kerry Lynn Edwards to Rae B. Wine, $564,000.
+
+Still Spring Ct., 8300-Eric Paul Hanson and Celia Noemi Cruz to Daniel P. Simon and Lisa Marie Yanni, $925,000.
+
+Vendome Dr., 9232-John D. Gordon and H. Allison Smith to Brian S. Gold, $1.44 million.
+
+Walton Rd., 5816-Natalie A. Albina to Stephen T. Power and Claudia A. Laguzzi, $1.58 million.
+
+Whitley Park Terr., 5450, No. 305-Cheryl L. Maltz and estate of Adrienne K. Maltz to Mohanlal, Panna and Dipti Mistry, $389,250.
+
+AD
+
+Winterberry Ct., 5-Guillermo Jose Aviles Mendoza and Juliana Kruse De Andrade Maia to Maria L. Bruno Ruiz and Daniel F.B. Ruiz, $852,500.
+
+AD
+
+BOYDS AREA
+
+Conrad Spring Rd., 15432-Rosemarie Borisow to James P. and Natacha C. Walsh, $765,000.
+
+Shiloh Church Rd., 23210-Joe D. and Mary V. Pace to Sam and Rima Abuobaid, $925,000.
+
+BROOKEVILLE AREA
+
+Briars Rd., 3422-Mark B. and Gail A. Gunod Green to Maura Burns and James Landers Sullivan, $519,500.
+
+Honeystone Way, 2302-Peter and Christina Donath to Vincent and Nicole T. Walker, $725,000.
+
+Saint George Way, 2515-Laura Kane and estate of Richard V. Fazio to Michael and Yelena C. Roshal, $727,000.
+
+BURTONSVILLE AREA
+
+Aldora Cir., 14119-Gary W. and Wendy Ann Whichard to Emmerson Nelson, $285,000.
+
+Bentley Park Dr., 14517-Daniel and Laura Davis to Tariq Shahzad and Humera Tariq, $660,000.
+
+AD
+
+AD
+
+Regalwood Terr., 4313-Gordon H. Fry to Nina M. Keach and Lou Deutschman, $300,000.
+
+Sorrento Ct., 14502-Tokozile and Rodwell Dlodlo to Akossiwa E. Atohoun, $290,000.
+
+CALVERTON-COLESVILLE AREA
+
+English Turn Dr., 13015-Itea Investments Corp. to Meseret Ibsa, $750,000.
+
+Lillian Lane, 111-Carol Delaney and Patrick J. Doyle to Mamoon Osman Hassan Saeed, $470,000.
+
+Peaceful Lane, 1415-Reginald L. Penny to Antoine D. Poole II and Marielys Montero, $435,000.
+
+Staley Manor Dr., 1743-Sarah M. Pevey to Harris Iqbal and Victoria Audrey Prevette, $310,000.
+
+Woodlake Dr., 3552, No. 19-Tara M. Royster to Titilayo O. Adigun, $365,000.
+
+CHEVY CHASE AREA
+
+Clifford Ave., 8804-Nancy B. and Condit N. Eddy to Patricia M. Diaz and Marcelino N. Andrade, $730,000.
+
+AD
+
+Falstone Ave., 4723-Brandon H. and Anna J. Lee to Helene Safire, $1.25 million.
+
+AD
+
+Inverness Dr., 3601-David J. Chorzempa to Brian P. and Cathleen D. Ciampa, $1.2 million.
+
+Levelle Dr., 9211-Steven D. and Kimberley C. Pearson to Rebecca S. and Daniel L. Weaver, $1.31 million.
+
+Wisconsin Ave., 5600, No. 1407-Terry Holtzman and estate of Mary Holtzman to Joseph E. Schwartz and Anne Weiss, $1.32 million.
+
+Wyndale Lane, 7404-Joy M. Leong to Robert A. Vricella, $975,000.
+
+CLARKSBURG AREA
+
+Basswood Hill Dr., 23114-Sun Kyung Yu to Mouhamed and Fatou Dioum, $430,400.
+
+Ebenezer Chapel Dr., 13070-Third Try Corp. to Manoj Maheshwari and Nitu Pasari, $515,000.
+
+Pond Pine Dr., 12109-Rui P. and Jessica Torres to Yong Guo and Shangwei Liu, $435,000.
+
+AD
+
+Winding Woods Way, 22002-Clarksburg Village Corp. to Jeffrey Glenn and Venita Yvette Scott, $601,395.
+
+CLOVERLY-EDNOR AREA
+
+Cantrell Rd., 14400-Musawwir A. and Tasnuva Khan to Luis M. and Edgar C. Loayas Aguilar, $550,000.
+
+AD
+
+Redgate Ct., 2-Roger M. Brown and Karen Jayne Doswell to Deborah Y. Clark, $706,000.
+
+DAMASCUS AREA
+
+Biscayne Lane, 9904-Lawrence and Lindsay Haley to Jason and Amanda Oakes, $395,000.
+
+Canvasback Way, 9958-Jessica M. McLaughlin and Mark R. Nettling to Yamila Medina, $249,000.
+
+Middleboro Dr., 10812-Susan M. Hensley to Junmin and Xiaoxiang Zhang, $550,000.
+
+Valley Park Terr., 25732, No. H-2-Jesus Arturo Parrau and Nicole Jennifer Hartwick to Caitlin Ann Caffrey, $259,000.
+
+AD
+
+DERWOOD AREA
+
+Cliffbourne Lane, 17817-Estate of Joan B. Carpenter to Kyle M. and Lynn E. Erickson, $515,000.
+
+Granby Rd., 6108-Florence M. Hallman and Patricia L. Boyer to Sonia Mundle Smith, $685,000.
+
+Nutwood Ct., 7609-Alan J. Diamond and Carol Janus to Laddawan Thirachawalit, $375,000.
+
+Wheat Fall Dr., 17521-John C. Vergelli and estate of Kathleen Ann Vergelli to Luis F. Retana and Betsy N. Lopez, $450,000.
+
+AD
+
+FOUR CORNERS-BURNT MILLS AREA
+
+Brewster Ct., 314-Andrew J. and Kristin A. Schrader to Cheryl Ann Hurwitz, $653,000.
+
+Dryden St., 1107-Laurie A. Yengo to Jodi Ilene Charles, $500,000.
+
+Glenwild Rd., 10615-Arceli Bacsinila to Ashley Nicole Macon and Shauna Natasha Davis, $482,500.
+
+Lowander Lane, 813-U.S. Bank and Legacy Mortgage Asset Trust to Yonas Nigatu Gurach, $440,000.
+
+Saybrook Ave., 9308-Laverne H. Havelka to Deanna L. Wright, $504,000.
+
+Sutherland Rd., 10003-Jared E. and Jennifer L. Gigliotti to Robert H. and Ashley S. Burch, $615,000.
+
+GAITHERSBURG AREA
+
+Barn Swallow Terr., 18728-Matthew and Shanna Bahen to James Michael Whalen, $276,000.
+
+Fertile Meadow Ct., 18023-Rajeev and Gunjan Jain to Maryonne A.C. Snow Smith, $350,000.
+
+Grosbeak Terr., 18632-Brian Williams to Dalicia Ashley Eschoe, $295,000.
+
+Hummingbird Terr., 9235-JLG Investments Corp. to Marc D. and Brandon Riley Goldstein, $325,000.
+
+AD
+
+Lindstrom Ct., 17615-Alan R. and Jan Briddell Stevens to Jaime Romeo Valiente Gallegos and Ruth Fransoli Valiente, $325,000.
+
+Pearlbush Dr., 7900, No. 302-Edward J. Maynes to Christine R. Kim and Ricky M. Zatz, $129,999.
+
+Tulip Dr., 110-Ashley J. White and Christopher A. Sibrizzi to Aaron K. and Anna K. Serrano, $400,000.
+
+GAITHERSBURG-NORTH POTOMAC AREA
+
+Apple Blossom Way, 112-Wen I. Wear and Jack Pai Young Liu to Kannan Chinnasamy and Harita Kannan, $610,000.
+
+Boat House Ct., 14-Qisheng Li and Jinwen Chen to Dun Liang and Sutan Wu, $771,000.
+
+Chestertown St., 122-Scott V. and Sharon L. Nystrom to Andrew and Jaclyn Nicoletta, $882,500.
+
+Clover Knoll Rd., 11925-Inge J. Caldwell to Eric Endicott and Heather Leeper, $515,000.
+
+Curry Ford Lane, 208-Suntrust Bank to Francis Aning Boddom, $320,000.
+
+Diamondback Dr., 506, No. 241-C.F. Sept Owner Corp. to Lok Wong Samson, $489,900.
+
+Fenceline Dr., 12-Maureen Q. Ponce to Umesh J. Rajani and Purvi R. Desai, $380,000.
+
+Helene St., 535-Blake E. and Ilene H. Godsey to Gary M. and Judith Lynn Katz, $809,900.
+
+Kimberly Ct. W., 785-Perfect Homes Corp. to Summer G. Martinez and Daniel Francis Cumberland Jr., $535,000.
+
+Linslade St., 724-Verna W. and Jerry C. Van Wert Jr. to Christopher Michael and Courtney B.K. Knaus, $800,000.
+
+Orchard Hills Dr., 111-Mark A. and Joanna Green to Ebrahim Rajabtabar Darvish and Hanieh Ataei, $550,000.
+
+Phelps St., 477-Rajesh Kumar and Anju Goel to Yang Liu and Yu Zhang, $624,000.
+
+Quince Orchard Blvd., 882, No. 202-Xiaoyou Chen to Anisur Rahman Palash and Afia A. Jahan, $115,000.
+
+Sylvan Glade Dr., 14440-Drew Evan and Ryann Leslie Morris to Shafiul and Mahabuba Alam Elahee, $1 million.
+
+Water Oak Dr., 15105-Jai Raj Narain and Tara B. Rajan to Chawan Elliot Barnes and Sadaf Afkhami, $620,000.
+
+GERMANTOWN AREA
+
+Ambassador Dr., 13600-Hao Ping Chai to Hwei Chun Chou, $259,900.
+
+Chalet Dr., 18140, No. 7-101-Hsiu Ling Hsu to Annette Richards, $178,000.
+
+Dairymaid Dr., 13139, No. 103-Fang Xu to Bowen Yang, $155,000.
+
+Esmond Ct., 27-Joseph Beall and Paul Yanoshik to Eric Robert and Keke Schuler, $308,900.
+
+Lake Park Dr., 19918, No. 922-Sandra and Maria Pazmino to Augustina Boamah and Kwame Konadu, $310,000.
+
+Lowfield Terr., 13413-Jasbir and Piari Singh to Mario and Janeth Andino, $345,000.
+
+Martins Landing Dr., 18700-Stephen P. Macloud to Michael L. Tash, $284,500.
+
+Moonwalk Ct., 18910-Chad and Amanda Berkhammer to Vitaly Avilov and Qi Zeng, $564,900.
+
+Rayfield Dr., 19425-Juan A. and Isabel Galvez Salgado to Scott and Mignonette Petersen, $401,000.
+
+Shipley Terr., 20209, No. 1-B-201-Hector A. and Jose Omar Andino Rivera to Hector Hermando Neira Herrera and Graciela Q. Neira, $180,000.
+
+Summer Oak Dr., 11527-Mark M. and Megan A. Jackowski to Timothy R. and Alena Lynn Carter, $305,000.
+
+Warrior Brook Dr., 19141-Zhengliang Bu and Lanlan Zhang to Robert Eugene and Danielle Ross Franklin, $409,900.
+
+Winding Creek Way, 12041-Francoise A. Andre and Apostol T. Vassilev to Jibran Misbah and Farah Reyaz, $322,000.
+
+KENSINGTON AREA
+
+Brunswick Ave., 10700-Roy E. and Herlyth B. Clark to Thomas G. and Madison Dickinson Hendren, $550,000.
+
+Flanders Ave., 5307-Silviu C. and Leana Cretu to Steven H. Ngo, $650,000.
+
+Midvale Rd., 11120-Jerome Rossignuolo and Chu Chu Lan to Timothy Jerome White Jr. and Ghazal Parsa, $769,000.
+
+Saul Rd., 4501-Jonathan George Mathis to Rosita Alyssa Baua Hermann, $699,000.
+
+LAYTONSVILLE AREA
+
+Flamingo Terr., 24340-James P. and Natacha C. Walsh to William Marshall Lee and Casey Christine Robertson, $380,000.
+
+Lochaven Ct., 20924-Donna M. Marino to Michael Anthony and Leslie Susan Gladu, $625,000.
+
+Watkins Rd., 9631-Suzanne and Donald L. Diddle to Scott D. Parello, $480,000.
+
+Woodfield School Rd., 25130-Joseph Allen and Cheryl Peters Wyatt to Patricia and Terry Nichols, $635,000.
+
+MONTGOMERY VILLAGE AREA
+
+Brassie Way, 9620-Shannon Frye Robb to Richard Pineda and Alicia D. Valle Toledo, $199,900.
+
+Copps Hill Pl., 18124-Fabiana I. and Ismelda Gaona to Marco Antonio Uceda Juica, $225,000.
+
+Hellingly Pl., 9728, No. 203-Anthony Malek to Nicolaas Johannes Van Staden, $114,000.
+
+Mills Choice Rd., 19023, No. 4-James I. and Tuanhwa H. Cheng to Leo Stanley and Konika A. Rodriguese, $130,000.
+
+Ravenglass Way, 8732-Patricia M. Benjamin to Nicolas E. Quinones, $195,000.
+
+Sterncroft Ct., 20504-Jesus Huaman and Frida Mojonero to Ketty E. Peraza and Cristofer Adalverto Gonzalez, $238,500.
+
+Transhire Rd., 19551-John Charles Marshall to Laurel Foster, $240,000.
+
+NEW HAMPSHIRE ESTATES-HILLANDALE AREA
+
+Hedin Dr., 9809-Clifford H. and Sandra Ivery to Saleela and Shailesh Kumar Sharma, $416,500.
+
+NORBECK-LAYHILL AREA
+
+Bel Pre Rd., 3750, No. 11-Andrew and Paulette M. Ladas to Marcos R. Tamayo Olivier and Carla A. Luis, $92,500.
+
+Camellia Dr., 12813-Gary and Elizabeth M. Gilliam to Erica S. St. Louis and Herbert Russell Frisby III, $475,000.
+
+Edelmar Terr., 3612, No. 127-A-Woodrow W. Hancock Jr. to Alice C. McGurty, $241,500.
+
+Greenery Lane, 2308, No. 302-13-Federal National Mortgage Association and BWW Law Group Corp. to Rasheda Akter and Nazifa Tazrian Munia, $189,900.
+
+Innsbruck Ct., 14420, No. 3-AB-Steve J. Chaney to Francisco N. Hernandez Savinon, $185,000.
+
+Interlachen Dr., 15101, No. 1-414-Estate of Barry Friedberg to Ann M. McDowell, $280,000.
+
+Island Creek Ct., 3423, No. 132-A-Robert S. and Emilene Werner to Katherine L. and Thomas G. Bugenhagen, $468,000.
+
+Leisure World Blvd. N., 3200, No. 619-Cindy Ann Gilman and estate of Freeda S. Wolf to Gail Roe, $404,000.
+
+Leisure World Blvd. N., 3330, No. 5-915-Roger D. Feldman and estate of Gertrude Coburn Feldman to Val S. and Judith Sasmore, $152,500.
+
+Ludham Dr., 3209, No. 193-A-Edward A. Perron to Sherry Lynne Stargel, $315,000.
+
+Nordic Hill Cir., 1651-Kenneth Cutler and Wioleta Laska to Eugenio J. Aleman and Maria C. Vassallo, $494,000.
+
+Redspire Dr., 13302-Dale and Lilyan Kang to Hoang M. Nguyen and Mai X. Huynh, $825,000.
+
+Weller Rd., 2604-Luciano and Lidia DiFranco to Tena Gebretsadik and Hana Wondimu, $450,000.
+
+OLNEY AREA
+
+Buehler Rd., 17816, No. 1-B-2-Luis Anthony Jaramillo to Peter J. and Joseph Toller Leicht, $125,000.
+
+Gelding Lane, 3811-Michelle R. Cascio to Paulina M. Kozorosky, $373,000.
+
+Overwood Dr., 17804-Maurice L. Vekeman Jr. to Nicholas Domenico Richards and Jennifer Steiger, $472,500.
+
+Shadowridge Terr., 18606-Cynthia L. Dunn to Seble Abebe and Mulugeta T. Fisseha, $421,000.
+
+POOLESVILLE AREA
+
+Hughes Rd., 17300-Jeffrey Dayton and estate of Leona J. Nelson to Jesse Ryan and Jennifer Loznak, $443,500.
+
+Spurrier Ave., 19812-Randolph C. and Nancy L. Halphen to Stephen and Angela Amanda Trice, $430,000.
+
+POTOMAC AREA
+
+Bartonshire Way, 1294-Donna R. Foley to Laurence Wade and Sarah Maria Tivnan, $710,000.
+
+Betteker Lane, 9905-Patrick D. and Mariella V. Young to Yan Zhang, $680,000.
+
+Brushwood Way, 13149-Jennifer M. Whitlow to Jeffrey T. and Michele Molyn Napoliello, $1.73 million.
+
+Cambridge Manor Ct., 9237-Kathleen J.S. and Stevan A. Varga to Sean Wesley Hiapo and Jill Renee Olson, $1.82 million.
+
+Conestoga Way, 9708-RBL Ventures Corp. to Kevin Kyuhong and Yoojin Choi, $930,000.
+
+Democracy Blvd., 10240-Barbara and Gerard P. Champaloux to Ejike Asiegbunam, $1.8 million.
+
+Fallsmead Way, 1203-Wai Keen Chung and Junqing Liu to Colter Thomas and Alana Wase Bell, $753,000.
+
+Inverness Ridge Rd., 8145-Donna F. Panagos to Xun Sun and Linnu Cao, $560,000.
+
+Lloyd Rd., 10325-Mark B. and Donna Tasso Johnson to John K. Wilson and Katherine J. Scoville, $829,000.
+
+Milbern Dr., 11612-Sheshagiri Rao and Kusum A.R. Kalavar to James P. and Calie B. Lillis, $735,000.
+
+River Falls Dr., 8304-Edward J. and Elizabeth C. Hudson to Blair Alexander and Elizabeth Goergen Silver, $1.4 million.
+
+Stratton Dr., 2001-Michelle L. Snyder and Jonathon S. Colton to Ira S. Miller and Allison Buchman, $775,000.
+
+Turnberry Dr., 9472-Paul A. and Susan L. Commander Samakow to Virun Lee, $880,000.
+
+Willowbrook Dr., 11137-Pei Ying and Diana H. Chen to Kevin P. and Angela R. Murphy, $1.09 million.
+
+ROCKVILLE AREA
+
+Azalea Dr., 868, No. 21-Prashant and Quenie Thi Nguyen Goswami to Ehud Inbar, $350,000.
+
+Barbados Pl., 5916, No. 59-Trudy Bernstein to Ari Payes, $399,000.
+
+Boiling Brook Pkwy., 4722-Andrew J. Horos to Mohd Sulaiman and Moska Hakimzada, $390,000.
+
+Brentford Dr., 5109-Joseph C. Werner to Jimmy Su, $365,000.
+
+Charles St., 335-Leqin Shi to Patrick Jose Raminhos, $317,000.
+
+Dundee Rd., 2002-Tian Zhou to Peipei Hu, $515,000.
+
+Ertter Dr., 4904-Steven T. and Karon C. Martinez to Christopher A. Yen and Luyao Zhang, $590,000.
+
+Gaither Rd., 1017-Morgan Chiu and Hsiaofang Yeh to Gregory and Dorothy Yahr, $525,000.
+
+Glenmore Terr., 2267-Lawrence G. Lazar and Leilei He to Natalia Komissarova, $765,000.
+
+Linden Square Ct., 5804, No. 41-Karla Olsen to Andrea Basdekian, $535,000.
+
+Luxberry Ct., 9, No. 4-Shulamith B. and Donald D. Weisman to Michael Anthony O’Sullivan and Janet Rae Fox, $570,000.
+
+Monroe St., 114, No. 302-Yuri Berman to Gennadiy A. Pavlyukovets and Natallia S. Kotseneva, $235,000.
+
+Old Georgetown Rd., 11710, No. 1226-Scott Christopher and Alina Elizabeth Hotaling to Majid Majd, $325,000.
+
+Paulsboro Dr., 957-Heather A. Mulloy to Nurgul Gelic, $495,000.
+
+Rolling House Rd., 11327-Ira B. Mirsky to Thomas and Ola Chen, $850,000.
+
+Rose Ave., 930, No. 1906-Pike & Rose Condominium Inc. to Melony and Robert Muller, $479,900.
+
+Strathmore Park Ct., 10400, No. 303-Steven D. and Laurie J. Macht to Gerard E. and Germana B. Mitchell, $800,000.
+
+Topping Rd., 4704-Ryan M. and Angela H. Harper to Bradly M. Bauman and Kristen Elmezzi, $470,000.
+
+Warfield Dr., 618-Kevin Frederic and Cynthia Jo Brooks to Lucy Angela Carone Elliott, $650,000.
+
+Wickshire Way, 11020, No. A-5-Corey and Emily Baker to John Carlos Wong, $625,000.
+
+SENECA PARK-CEDAR GROVE AREA
+
+Amber Ridge Cir., 12031-George A. and Traci D. Crawford to Adam Shuaib and Amanda Stegmiller, $350,000.
+
+Bent Creek Terr., 11318-Jill R. Freund to Belinda B. Nyarko, $350,000.
+
+Owls Nest Cir., 21255, No. UN40-Seung H. and Hannah Weerae Lee to Fenton G. Dobard Jr. and Alicia R. Tellis, $355,000.
+
+Royal Crown Dr., 12509-Brian and Irina Mitchell to Swayne J. Singh and Tigest Eyasu, $500,000.
+
+Sojourn Ct., 21003, No. 33-Janice A. Thomas to Vernette V. Vernon, $280,000.
+
+SILVER SPRING AREA
+
+Cassedy St., 2737-Melinda Campos and Gloria Zagorski to Daniel J. Zarin, $627,500.
+
+Easley St., 701-Gunnar Grodsky to Ahmed and Nihad Fawzy, $1.34 million.
+
+Kingsbury Dr., 9105-Stanford D. Gillis to Gregory S. Avicola, $630,000.
+
+Russell Rd., 9411-Paul Skafte to Samuel R. Gilbert and Erica E. Eisenman, $665,000.
+
+Washington Ave., 2207, No. W-203-Amy T. and Jason R. Barnard to Beatriz Rodriguez, $280,000.
+
+Second Ave., 8926-Tage Jacob Rainsford and Danielle Nichole Bird to Jason David Schellhardt, $735,000.
+
+TAKOMA PARK AREA
+
+Carroll Ave., 7342-Keith A. and Sara Mercedes Allen Sieverding to Alfred Clarence and Claire Joanna Bertrand, $715,000.
+
+Hudson Ave., 601, No. 312-Leslie Charles and estate of Judith Ann Hobbs to Clara Ines Vargas, $175,000.
+
+TWINBROOK AREA
+
+Debeck Dr., 1004-Laura S. Johnson to Isabelle Raquin and Jonathan Honigman, $482,000.
+
+Gilbert Rd., 1003-Richard and Debora Branthover to Jordan A. Stubbs and Carol Oser, $370,000.
+
+Lemay Rd., 5935-Andrew J. Wilks and Edward H. Walker to Rajeev and Sandra Purohit, $448,402.
+
+Rockcrest Cir., 30-Kevin William Green and Kimberly Pisabaj to Gibran Shaikh and Zuha Moin, $485,000.
+
+WHEATON AREA
+
+Bluff Terr., 101-Benjamin Scott Sammon to Connie Lynn Bacon and John Patrick Andrews, $535,000.
+
+Cone Lane, 11004-Dorothy S. and John J. Crnkovic to William Henry Washington Jr. and Keshni Naicker, $400,000.
+
+Georgia Ave., 9806, No. 22-301-John Justin Gradowski to Deborah Meetze Hinton and James Reid Rowlett, $230,000.
+
+Hardy Ave., 2814-Andreas P. Gelner and Adrienne J. Capkovic to Endalew K. Delegassa and Eleni G. Dinkalem, $366,000.
+
+Imperial Dr., 1702-Laura L. Letson to Matthew O. Spencer and Greta Claire Harman, $499,000.
+
+Lamberton Dr., 800-Robert H. and Angela C. Liberman to Moshe B. and Melissa Broder, $660,000.
+
+Lovejoy St., 11803-Yossi Alkoby and Judith Meira Gershater to Scott Weinberg and Julia Ashkanazy, $522,500.
+
+Woodland Dr., 9900-Sara A. and Angelique J. Willis Hilbrich to Matthew G. Dean and Deborah A. Williams, $525,000.
+
+Frederick County
+
+These sales data recorded by the Maryland Department of Assessments and Taxation in August were provided by Black Knight Inc. For information about other residential real estate transactions, visit washingtonpost.com/homesales.
+
+ADAMSTOWN AREA
+
+Mount Ephraim Rd., 1888-Tom P. and Maureen T. Lapsa to Lindsay Turner Johnson, $725,000.
+
+BRUNSWICK AREA
+
+Crums Hollow Dr., 801-David M. Kilpatrick to Kenneth V. and Krisztina Baglyas Janosko, $413,000.
+
+Orndorff Dr. W., 134-Kelly A. Watson Huffer to Matthew and Cheyenne Smith, $170,000.
+
+Virginia Ave. N., 12-Jeff and Sam Edgin to Karen P. Orens, $280,000.
+
+BUCKEYSTOWN AREA
+
+Keller Lime Plant Rd., 6787-Charles M. and Julie N. McGuffin to Joseph Brooks Gatewood, $339,000.
+
+BURKITTSVILLE-JEFFERSON AREA
+
+Camden Dr., 4105-Larissa Lefebure to Joseph and Elizabeth Longo, $347,000.
+
+Pecan Ct., 3445-Gerard J. and Shirley L. Long to Jonathan H. and Lori M. Paquin, $459,900.
+
+EMMITSBURG AREA
+
+Huntley Cir., 1325-Allen Ambush to Skylar D. Poole and Megan S. Degrange, $320,000.
+
+FREDERICK CITY-ADAMSTOWN VILLAGE AREA
+
+Avonshire Pl., 5620, No. D-Paul Werking to Lai Thang and Kippar Van, $183,000.
+
+Black Creek Lane, 7203-Michael T. Malafarina to Rachael Hallyburton and Patrick Koogle, $278,000.
+
+Clifton Rd. S., 6205-Eric Seth Epstein to Rusty J. and Nancy J. Mikulas, $235,000.
+
+Duke Ct., 5184-Taruan D. and Daphne S. Matthews to Damien Lamont Ricketts, $210,000.
+
+Essex Pl., 518-Marijka A. Grey to Mary Joe Bayley, $191,500.
+
+Granville Ct., 6638-Mandy Schall McAteer to Jason W. Brinkley, $285,000.
+
+Hollyberry Way, 590-Eric J. Miller to Lasker N. Ahmed, $198,000.
+
+Jefferson Blvd., 6624-Payton M. and Bethany L. Reid to Harry Russell and Sandra Sessa Lashley, $515,000.
+
+Killdeer Ct., 6737-Brett A. and Caitlin E. Vanorsdel to Ryan Hopkins, $245,000.
+
+McGrath Pl., 6631-Calli Marie Rooney Lear to Nestor Arnoldo Nunez and Elizabeth A. Holden, $295,000.
+
+Old Swimming Pool Rd., 4902-Walter L. Hepker and Rebecca G. Full to Brian P. Howie, $314,900.
+
+Rivendell Pl., 5583-Marc Aaron and Christine Apolito to Sheila R. Bonney, $282,000.
+
+Small Gains Way, 4949-Steven C. and Jessi D. Barmoy to Luis Banoscare, $322,000.
+
+Sweet Bay Ct., 5775-Katherine C. Kelley to Jennifer Lynn Buckley, $209,900.
+
+Timberwolf Dr., 1415-Linda Greenberg to Omar Adonay Mendez Carias and Tylyn A. Medrano, $368,500.
+
+Walcott Lane, 6511, No. 102-Jaime Thompson to Darla H. Alterescu, $226,900.
+
+Wood Duck Ct., 6770-Nathan A. and Jessica R. Vanhouten to Jianyong and Xiuqin Gao, $224,400.
+
+FREDERICK CITY-LIBERTYTOWN AREA
+
+Baldridge Cir., 6140-Steven B. and Kendall Klosky Tiffany to Erica F. and Anthony N. Cooke, $282,000.
+
+Bear Den Rd., 2563-Ronald L. Mallow and Robin N. Gordon to Todd and Gail Fineberg, $389,900.
+
+Bridgewater Ct. W., 9402-Razvan A. and Jennifer Simonica to James and Lauren Ji Kim, $409,900.
+
+Catoctin Ave., 209-Joseph M. Shoemaker to James E. Rippeon II and Aimee Leigh Rider, $237,500.
+
+Church St. E., 217-Katie A. Pribyl to Dianne Dain, $555,000.
+
+Derrs Ct., 1800-Jason R. and Kathleen A. Sepanic to Michael A. and Evelyne Anzick, $380,000.
+
+Dogwood Dr., 1604-Daniel W. Trombetta to Paul Fritz, $305,000.
+
+Egret Way, 2625-Tracy Tucker and Kathleen Martin to Sean Gibson, $315,000.
+
+Greenleese Dr. N., 1801-Jeffrey T. and Kari B. Enama to Zachary Alan and Courtney Marie Davis, $424,000.
+
+Holden Rd., 832-Calatlantic Group Inc. to Joshua Adam and Sarah Anne Loftus, $497,473.
+
+Jubal Way, 926-Phineas Cornell and Sharander Lakilia Jackson to Edmond D. Fuentes, $260,000.
+
+Lamp Post Lane, 2213-Sean M. and Amanda M. McWilliams to Shayna L. Scott, $290,000.
+
+McMurray St., 104-David W. and Kathryn L. Humphries to Jennifer A. Wilson and Lesley J. Vandever, $270,000.
+
+Mill Island Pkwy., 3030, No. 310-Joseph A. Alexander to Judith Westbrook, $327,000.
+
+Palatine Dr., 3000-Wormald Development Co. to Joan T. Reilly, $473,900.
+
+Quay Ct., 7984-David H. Shiben to Jamaal Anwar Jones, $220,000.
+
+Sherman Ave., 304-Tarah M. Zuniga and Edison Zuniga Sanchez to Amanda N. Barrientez, $216,000.
+
+Springwater Ct., 6509, No. 6401-Jennifer Bolling Laggini Palmer to Annie Walker, $190,000.
+
+Stoners Ford Way, 3025-Lorraine J. Stoltz and Marsha D. Flowers to David F. and Jeannie R. Knollman, $462,000.
+
+Village Square Rd., 2231-Debra A. Bowman to Janet Jenkins, $333,500.
+
+Wheyfield Dr., 1618-Michael G. and Linda J. Murray to Michelle Garrett, $286,000.
+
+Fifth St. W., 235-Rachel E. Kavanagh to Brian Patrick Walsh, $239,000.
+
+FREDERICK CITY-MOUNTAINDALE AREA
+
+Andover Lane, 1636-Roberto Serpas Salmeron to Justin A. Mawdsley and Carol L. Paulson, $282,400.
+
+Boulder Rd., 9404-Sabrina Elizabeth Smith to Ivan and Kensy M. Alvarenga, $235,000.
+
+Buell Dr., 93-Anthony and Melinda Hite to Blyden Bonar Jr. and Nancy Kobe, $250,000.
+
+Catoctin Ct., 2500, No. 1-2B-Timothy L. and Terri J. Cannon to Chengkai Dai and Yishu He, $170,000.
+
+Coach House Way, 2508, No. 1C-Chris A. Turner and estate of Barbara A. Salt to Karen M. Cappolella, $185,000.
+
+Dominion Dr., 2406, No. 2C-Daniel L. and Tama R. Plombon to Patricia A. Lawton, $176,500.
+
+Ellsworth Way, 2408, No. 2A-Frank E. Warner to Amy Haggerty, $164,000.
+
+Fox Hunt Lane, 8223-Thomas E. and Kathleen E. Igo to David Michael and Joli Naomi Chism, $441,500.
+
+Heather Ridge Dr., 416-Wayne Deyton to Joseph S. and Gillian A. Kulina, $125,000.
+
+Jordan Valley Way, 8329-Richard W. and Linda S. Revolinsky to Edwin and Jackeline Cartagena, $470,000.
+
+Livingstone Terr., 9-Amanda M. and Joyce A. Zimmerman to Kenyan L. Summers, $219,900.
+
+Millstream Dr., 1844-Embrace Home Loans Inc. to Jasbir Singh Matharu, $205,000.
+
+Runny Ct., 7002-Anthony S. and Jennifer J. Kokoskie to David W. and Kathryn L. Humphries, $340,000.
+
+Shelley Cir., 2508, No. 8-Mark and David Degirolamo to Elinor J. Rouff, $189,000.
+
+Timber View Ct., 244-L&A Holdings Corp. to Kyle L. Georgius and Lauren N. Hicks, $280,000.
+
+Wilcox Valley Dr., 2053-Tiffany A. Glover and Tracy A. White to Michael R. and Ruthann McFadden, $409,000.
+
+GARFIELD AREA
+
+Loy Wolfe Rd., 13500-Richard M. Pryor to Trystin R. and David H. Alexander, $450,000.
+
+IJAMSVILLE AREA
+
+Melbourne Pl., 7503-Paul D. and Susan L. Manny to Michael A. Chlebda, $565,000.
+
+Shel Mar Dr., 1907-Barry Edwin and Sharon Joy Wagman to Jose M. Cambron Espino, $510,000.
+
+LIBERTYTOWN AREA
+
+Liberty Rd., 11920, No. 204A-Richard Lee and Heather L. Rippeon to Brittney Nicole Rowse, $126,000.
+
+MIDDLETOWN AREA
+
+Boileau Ct., 3-Gary and Sharon Diane Gregoire to Connor R. and Brenda L. Smith, $225,000.
+
+Feldspar Rd., 4630-Brian T. and Lisa A. Edwards to Jason Robert and Allison Jacob Jachowski, $480,000.
+
+Myersville Rd., 8620-Arthur D. Tringali to Jason B. and Patricia M. Leffson Nalley, $355,000.
+
+Springbrook Ct. E., 7311-David T. and Mary E. Sweeney to Anita L. Bright, $192,296.
+
+MULLINIX AREA
+
+Autumn Ridge Ct., 902-Robert H. and Terri L. King to John F. and Jessica E. Fisher, $452,500.
+
+Foggy Bottom Ct., 13887-Delores A. and Theodore L. Schwartzbeck to Virginia Elizabeth and James Arthur Lagger, $442,000.
+
+Mitchell Ct., 13904-Luke Tanner and Beth Mitchell to William J. and Jessica M. Walker, $648,000.
+
+Streamview Ct., 6204-John and Barbara McIntee to Steve Kelbaugh and Suzanne Shipley, $499,900.
+
+MYERSVILLE AREA
+
+Hunters Knl., 1007-Jay Eric Rhoderick to Jeffrey and Lisa K. Gottlieb, $610,000.
+
+NEW MARKET-LAKE LINGANORE AREA
+
+Beach Dr. E., 6617-Daniel B. and Kellie C. Ganoung to Charles J. Franco Jr. and Leslie Wang, $255,000.
+
+Country Club Rd., 11233-Gary and Sharon Witt to Anthony Paul and Stefanie E. Lavin, $455,000.
+
+Fox Chase Rd., 6925-Raymond J. and Cynthia A. Geraghty to Matthew and Shanna Bahen, $400,000.
+
+Isaac Russell St., 534-New Market Residential Corp. and Oak Hill Properties Corp. to Sean A. and Kristen L. Chaffman, $520,000.
+
+Meadowlake Rd., 6933-Lisa Hamlin and Brian St. John to Andrew Spangler and Jennifer Hake, $495,000.
+
+Richard Roberts St., 400-New Market Residential Corp. and Oak Hill Properties Corp. to Nila Via, $520,000.
+
+Shalom Ct., 10003-MS Aspen North Corp. to Brad Michael and Courtney Renee Bahr, $500,990.
+
+NEW WINDSOR AREA
+
+Wildrose Ct., 15610-Timothy L. and Deborah A. McQuay to Kenneth Eugene and Elizabeth Ann Lamb, $347,500.
+
+ROCKY RIDGE-CREAGERSTOWN AREA
+
+Motters Station Rd., 14619-Bernard J. and Dawn Marie Hobbs to Zachery Bryan Fritz and Heather Michalena Pozzouli, $269,000.
+
+THURMONT AREA
+
+Moser Cir., 224-William D. Shadle and Brooke N. Hildebrand to Minerva Carrasquillo and Alex Vazquez, $196,000.
+
+Stoney Mine Ct., 3-Corey A. Totten to James R. McGrady, $299,900.
+
+Utica Ct., 10849-Thomas J. Ledwell to Brandon M. Smith and Ashley A. Brown, $475,000.
+
+URBANA AREA
+
+Bartonsville Rd., 5817-Landmark Investment Properties Corp. to Michael Kevin Walsh and Sheryl Anderson Fast, $285,000.
+
+Belvedere Dr., 9099-Wilmington and Lehman XS Trust to Naseer Nayeem and Huma Hakim, $565,950.
+
+Buckeystown Pike, 4310-Jonathan M. and Elisabeth C. Clinton to Leslie Curtis and Mitchell R. Poe, $500,000.
+
+Dunraven St., 9443-Greg A. and Elizabeth G. Warner to Dale Anthony and Linda Marie Urlacher, $400,000.
+
+Hawk Ridge Rd., 5518-MS Gladhill Farm Corp. to John Austen and Corinne M. Carter, $484,960.
+
+Kenway Lane, 9148-Damian and Eboni Williams to Adrian A. Dragulescu and Christina Masterman, $420,000.
+
+Pine Bluff Rd., 8415-MS Gladhill Farm Corp. to Thomas D. and Eileen M. Lantzas, $470,000.
+
+Singleton Terr., 3717-Mihallaq and Brunilda Dhima to Melissa C. Altieri and Patrick J. Wenzler, $370,000.
+
+Urbana Pike., 3625-Robin Michael and Christine Rochelle Reeder to Shuang Guan, $350,000.
+
+Wyndham Dr., 9752-William M. and Tina J. Cullum to Shawn I. and Juliet D. Hossain, $589,900.
+
+WALKERSVILLE AREA
+
+Discovery Blvd., 8526-Healthy Homes Corp. to Stephen J. Green and Janet L. Brumer, $195,000.
+
+Old Island Ct., 202-James F. and Shelly L. Mullen to Sabrina E. Smith, $447,000.
+
+WOODSBORO AREA
+
+Coppermine Rd., 11207-Bradley W. and Amber L. Seiss to Anthony and Charlene Bishop, $615,000.",A man is riding a dirt bike down a dirt hill
+validation_low,low,248,249,0.6083984375,11,The little boy swung at the golf ball.,black and white cow standing near pile of snow .
+validation_low,low,256,257,0.61279296875,13,black and white cow standing near pile of snow .,what more can i do to improve my credit score ?
+validation_low,low,262,263,0.61572265625,9,a mostly black train on a track .,this further aggravated the situation .
+validation_low,low,268,269,0.619140625,9,this further aggravated the situation .,the man is going into the water .
+validation_low,low,272,273,0.62158203125,22,a woman is chopping a potato .,A man wearing black formal wear & a black top hat is riding a white show horse.
+validation_low,low,281,282,0.6259765625,30,A woman is standing and isn't looking at the waterfall,"the men had pakistani passports and reportedly were seen together at the airport earlier in the evening , law enforcement sources said ."
+validation_low,low,284,285,0.62744140625,24,There is no girl in pink twirling a ribbon,i would recommend asking questions in a way that doesn 't require a yes or no answer .
+validation_low,low,294,295,0.6328125,7,the black dog is running on the grass with a toy in it 's mouth .,Two people are riding motorbikes
+validation_low,low,300,301,0.6357421875,20,A lemur is eating,"abide by : act in accordance with rules , commands , or wishes ."
+validation_low,low,307,308,0.6396484375,8,the man is playing the guitar .,collect discarded or refused material .
+validation_low,low,312,313,0.64208984375,19,An animal is being ridden by a woman,"impose , involve , or imply as a necessary accompaniment or result ."
+validation_low,low,317,318,0.64453125,17,"about 22 % of twentysomethings are obese , which is roughly 30 pounds over a healthy weight .","The climbing equipment to rescue a man is hanging from a white, vertical rock"
+validation_low,low,326,327,0.64990234375,9,A woman is amalgamating eggs,two people are walking through some water .
+validation_high,high,647,658,0.82177734375,11,"abide by : act in accordance with rules , commands , or wishes .",take or have a position relative to others .
+validation_high,high,655,666,0.82568359375,7,cctv of gunmen in tunisia museum attack,twelve killed as gunmen raid village
+validation_high,high,666,677,0.83154296875,19,the activity of supplying or providing something .,"impose , involve , or imply as a necessary accompaniment or result ."
+validation_high,high,669,680,0.8330078125,16,elbaradei is the international atomic energy agency chief .,"iran , atomic agency in first talks since rowhani election"
+validation_high,high,674,685,0.83544921875,18,""" the electrical state at the terminal matches the battery "" "" s electrical state """,you have reached a point where the terminals are not connected to each other .
+validation_high,high,684,695,0.8408203125,27,"one killed , 40 injured in mexico candy factory blast","tragic . my thoughts and prayers go out to all ... "" at least 220 killed in brazil nightclub fire """
+validation_high,high,694,705,0.84619140625,9,"talk or behave amorously , without serious intentions .",move about in a confused manner .
+validation_high,high,697,708,0.84765625,15,Two dogs playing in a yard.,One white dog and one black one are running side by side on the grass
+validation_high,high,706,717,0.8525390625,9,twelve killed as gunmen raid village,8 soldiers killed in bomb attack in NW Pakistan
+validation_high,high,710,721,0.85400390625,16,A brown and white dog is jumping in the air with a tennis ball in its mouth,a small white and brown dog is jumping over a horizontal pole .
+validation_high,high,721,732,0.8603515625,8,A man is peeling a potato.,The man is slicing potatoes
+validation_high,high,727,738,0.86376953125,12,A dog with a ball is being chased in the grass,The golden dog is running through a field of tall grass
+validation_high,high,733,744,0.86669921875,30,"two kuwaitis and six palestinians with jordanian passports were among the suspects , the official said .","the men had pakistani passports and reportedly were seen together at the airport earlier in the evening , law enforcement sources said ."
+validation_high,high,739,752,0.869140625,12,Man in yellow canoe paddling through water.,turn the paddle ; in canoeing .
+validation_high,high,749,764,0.87109375,9,There is no dog jumping at a shiny blue soccer ball in a field of dry leaves,There is no brown dog standing in the water
+validation_high,high,757,772,0.873046875,9,There is no person riding a jetski in the waves,There is no brown dog standing in the water
+validation_high,high,766,782,0.87451171875,13,I guess it depends on what you're going to do.,You have to decide what you want to get out of this.
+validation_high,high,770,786,0.875,10,"if c burns out , then a and b are still in a closed path .",both components need to be in closed paths .
+validation_high,high,775,792,0.87646484375,14,the positive battery terminal is connected to terminal 6,because terminal 4 is connected to the positive terminal but not the negative terminal
+validation_high,high,785,804,0.87890625,11,if the other bulb is no longer contained in a closed path with the battery,if both bulbs are contained within a closed path
+validation_high,high,792,812,0.88037109375,9,There is no kitten drinking milk,There is no brown dog standing in the water
+validation_high,high,799,819,0.8818359375,16,wet with a spurt of liquid .,cause ( a liquid ) to leach or percolate .
+validation_high,high,802,823,0.8828125,10,if both bulbs are contained within a closed path,both components need to be in closed paths .
+validation_high,high,812,833,0.88427734375,18,"A dog, which is brown, is jumping in the air",A brown and white dog is jumping in the air with a tennis ball in its mouth
+validation_high,high,822,843,0.8857421875,14,"if c burns out , then a and b are still in a closed path .",bulb b and bulb c are contained within a closed path
+validation_high,high,830,851,0.88671875,11,Somebody is cutting a tomato,A person is slicing a potato.
+validation_high,high,834,855,0.88818359375,15,both components need to be in closed paths .,the switch has to be within a closed path with the bulb and battery
+validation_high,high,844,865,0.89013671875,10,military plane crashes in south france : authorities,death toll rises in russia plane crash
+validation_high,high,851,872,0.8916015625,9,a man is slicing potato .,A man is peeling a potato.
+validation_high,high,855,876,0.89208984375,7,someoen is playing guitar .,A man plays a guitar.
+validation_high,high,866,888,0.89697265625,10,A group of military personnel are playing in a brass quintet.,a group of men playing brass instruments .
+validation_high,high,869,891,0.8984375,10,the act of forcibly taking the opposition,the act of forcing out someone or something .
+validation_high,high,875,897,0.89990234375,12,request urgently and forcefully .,make a request or demand for something to somebody .
+validation_high,high,886,908,0.904296875,7,A man is shooting a shotgun,A man is shooting a weapon
+validation_high,high,893,916,0.90771484375,12,A potato is being peeled by a woman,a woman is chopping a potato .
+validation_high,high,896,919,0.9091796875,8,the terminals are not separated by a gap,terminal 1 is connected to the positive terminal
+validation_high,high,906,929,0.912109375,24,about 31 percent of americans are now obese — roughly 30 or more pounds over a healthy weight .,"about 22 % of twentysomethings are obese , which is roughly 30 pounds over a healthy weight ."
+validation_high,high,909,932,0.91357421875,15,if both bulbs are contained within a closed path,the switch has to be within a closed path with the bulb and battery
+validation_high,high,918,941,0.91845703125,12,A woman is amalgamating eggs,a woman is placing eggs into a pan .
+validation_high,high,920,943,0.91943359375,9,Bomb blast kills 10 in southwest Pakistan,8 soldiers killed in bomb attack in NW Pakistan
+validation_high,high,931,954,0.927734375,35,"his aides warn an abrupt departure could trigger more bloodshed , a view shared by many in liberia .","Taylor's aides warn an abrupt departure could trigger more chaos, a view shared by many in Liberia and, in private, even by mediators."
+validation_high,high,937,960,0.931640625,14,Bomb blast kills 10 in southwest Pakistan,blast kills 10 young girls in eastern afghanistan
+validation_high,high,943,966,0.94384765625,15,bulb b and c are on a closed path to the battery,the switch has to be within a closed path with the bulb and battery
+validation_high,high,948,971,0.9482421875,12,Chinese stocks open lower Friday,chinese shares close lower on wednesday
+validation_high,high,953,976,0.95361328125,11,The man is slicing potatoes,A person is slicing a potato.
+validation_high,high,961,985,0.96728515625,12,A woman is water skiing.,a woman is water skiing on a lake .
+validation_high,high,964,988,0.9775390625,8,The boy is not playing the piano,A boy is not playing a guitar
+validation_high,high,974,998,0.99853515625,13,a black dog fighting with a brown dog in the snow .,A black dog fighting with a brown dog in the snow.
+plot,low,23,23,0.5078125,14,"several different ways of computing these values , also known as ( term ) weights , have been developed .",No girl with a bikini is playing in the dunes
+plot,low,60,60,0.52001953125,7,"after all , they have recommended policies that politicians or taking into consideration .",A boy is eating a cupcake
+plot,low,104,104,0.53369140625,7,serve as a reason or cause or justification of .,A boy is eating a cupcake
+plot,low,148,148,0.55615234375,7,There is no person riding a jetski in the waves,make a written note of something
+plot,low,168,168,0.56689453125,16,a boy is playing guitar .,the health department spokesperson added the department is following centers for disease control protocol .
+plot,low,213,213,0.59033203125,12,the new zealand commerce commission had given westpac no indication whether it would have approved its deal .,"A man is rock climbing, stopping and calculating the route"
+plot,low,263,264,0.61669921875,9,jordan elected to take saudi seat on un security council,four black dogs run across the grass .
+plot,low,299,300,0.63525390625,27,A dirty soccer ball is rolling into a goal net,"i would happily have explained what i was actually saying , but you never asked - you simply launched into accusations ."
+plot,middle,351,352,0.66259765625,41,create an electrical short in something .,the united states and other nato members have refused to ratify the amended version until russia withdraws troops from former soviet republics moldova and georgia .
+plot,middle,394,396,0.68505859375,14,"Emory Lane, 16650-Patsy C. Herold to Julia Hernandez, $459,900.
+
+Hornbeam Dr., 4712-Clinton D. and Shenita Y. White to Stephen J. Tapparo and Luz M. Redondo, $685,000.
+
+Morgal St., 4410-Jeremy A. Schiffer and Rachel Werner to Daniel F. Rogers and Jennifer L. Gordon, $470,000.
+
+AD
+
+Veirs Mill Rd., 12732, No. 1-101-Steven W. Watts and estate of Bradley Nolan Watts to Janys A. Cabrera Diaz, $190,000.
+
+BETHESDA AREA
+
+Alta Vista Rd., 5511-Ihor G. and Catherine Murashchyk to Marco and Carolyn Macchiavelli, $707,500.
+
+AD
+
+Arrowood Rd., 7205-MSM Design Build Corp. to David Arash and Beth Javdan, $5.97 million.
+
+Bells Mill Rd., 6400-Ivan S. Dimitrov and James Norris Platt to Molly A. Herrera and Juan C. Herrera Trejo, $656,000.
+
+Brixton Lane, 9903-Jeffrey M. and Sheryl E. Prieto to Gabriel I. Parra and Natalia Gudino, $745,000.
+
+Burdette Rd., 8300, No. 502-Donna G. Smith and estate of Charles H. Goldberg to Kenneth H., Francine and Richard Shure, $680,000.
+
+AD
+
+Buttermere Lane, 6707-Irma Lee Westrell to Peter Glaser, $630,000.
+
+Exeter Rd., 7515-Barry L. and Sigrun F. Haase to Carlton Ervin, $3.5 million.
+
+Harling Lane, 4517-Anthony B. and Frank Crisafulli to Carlyle P. Thorsen, $889,000.
+
+Inglemere Dr., 9819-Masha Kruskal to Earle and Cynthia Ingalls, $830,000.
+
+Maple Ave., 4600-Richard Allen Lingle to Nathan K. Redmann and Bianca Elizabeth Bersani, $1.2 million.
+
+AD
+
+McLean Dr., 5605-Mid-Atlantic Custom Builders Corp. to Edward and Lerna Chaglassian, $2.33 million.
+
+Millwood Rd., 7208-Richard Coghlan and Sang Me Lee to Roman and Katja Elisabeth Heini, $2.65 million.
+
+Pelham Rd., 8507-George L. Richardson and Beatriz M. Romero Junquera to Huanhuan Deng and Bing Qi, $1.48 million.
+
+AD
+
+Rannoch Rd., 6800-John L. Stodola to Katherine E. Pappas and Craig D. Goldstein, $1.3 million.
+
+Sentinel Dr., 4970, No. 11-204-Kerry Lynn Edwards to Rae B. Wine, $564,000.
+
+Still Spring Ct., 8300-Eric Paul Hanson and Celia Noemi Cruz to Daniel P. Simon and Lisa Marie Yanni, $925,000.
+
+Vendome Dr., 9232-John D. Gordon and H. Allison Smith to Brian S. Gold, $1.44 million.
+
+Walton Rd., 5816-Natalie A. Albina to Stephen T. Power and Claudia A. Laguzzi, $1.58 million.
+
+Whitley Park Terr., 5450, No. 305-Cheryl L. Maltz and estate of Adrienne K. Maltz to Mohanlal, Panna and Dipti Mistry, $389,250.
+
+AD
+
+Winterberry Ct., 5-Guillermo Jose Aviles Mendoza and Juliana Kruse De Andrade Maia to Maria L. Bruno Ruiz and Daniel F.B. Ruiz, $852,500.
+
+AD
+
+BOYDS AREA
+
+Conrad Spring Rd., 15432-Rosemarie Borisow to James P. and Natacha C. Walsh, $765,000.
+
+Shiloh Church Rd., 23210-Joe D. and Mary V. Pace to Sam and Rima Abuobaid, $925,000.
+
+BROOKEVILLE AREA
+
+Briars Rd., 3422-Mark B. and Gail A. Gunod Green to Maura Burns and James Landers Sullivan, $519,500.
+
+Honeystone Way, 2302-Peter and Christina Donath to Vincent and Nicole T. Walker, $725,000.
+
+Saint George Way, 2515-Laura Kane and estate of Richard V. Fazio to Michael and Yelena C. Roshal, $727,000.
+
+BURTONSVILLE AREA
+
+Aldora Cir., 14119-Gary W. and Wendy Ann Whichard to Emmerson Nelson, $285,000.
+
+Bentley Park Dr., 14517-Daniel and Laura Davis to Tariq Shahzad and Humera Tariq, $660,000.
+
+AD
+
+AD
+
+Regalwood Terr., 4313-Gordon H. Fry to Nina M. Keach and Lou Deutschman, $300,000.
+
+Sorrento Ct., 14502-Tokozile and Rodwell Dlodlo to Akossiwa E. Atohoun, $290,000.
+
+CALVERTON-COLESVILLE AREA
+
+English Turn Dr., 13015-Itea Investments Corp. to Meseret Ibsa, $750,000.
+
+Lillian Lane, 111-Carol Delaney and Patrick J. Doyle to Mamoon Osman Hassan Saeed, $470,000.
+
+Peaceful Lane, 1415-Reginald L. Penny to Antoine D. Poole II and Marielys Montero, $435,000.
+
+Staley Manor Dr., 1743-Sarah M. Pevey to Harris Iqbal and Victoria Audrey Prevette, $310,000.
+
+Woodlake Dr., 3552, No. 19-Tara M. Royster to Titilayo O. Adigun, $365,000.
+
+CHEVY CHASE AREA
+
+Clifford Ave., 8804-Nancy B. and Condit N. Eddy to Patricia M. Diaz and Marcelino N. Andrade, $730,000.
+
+AD
+
+Falstone Ave., 4723-Brandon H. and Anna J. Lee to Helene Safire, $1.25 million.
+
+AD
+
+Inverness Dr., 3601-David J. Chorzempa to Brian P. and Cathleen D. Ciampa, $1.2 million.
+
+Levelle Dr., 9211-Steven D. and Kimberley C. Pearson to Rebecca S. and Daniel L. Weaver, $1.31 million.
+
+Wisconsin Ave., 5600, No. 1407-Terry Holtzman and estate of Mary Holtzman to Joseph E. Schwartz and Anne Weiss, $1.32 million.
+
+Wyndale Lane, 7404-Joy M. Leong to Robert A. Vricella, $975,000.
+
+CLARKSBURG AREA
+
+Basswood Hill Dr., 23114-Sun Kyung Yu to Mouhamed and Fatou Dioum, $430,400.
+
+Ebenezer Chapel Dr., 13070-Third Try Corp. to Manoj Maheshwari and Nitu Pasari, $515,000.
+
+Pond Pine Dr., 12109-Rui P. and Jessica Torres to Yong Guo and Shangwei Liu, $435,000.
+
+AD
+
+Winding Woods Way, 22002-Clarksburg Village Corp. to Jeffrey Glenn and Venita Yvette Scott, $601,395.
+
+CLOVERLY-EDNOR AREA
+
+Cantrell Rd., 14400-Musawwir A. and Tasnuva Khan to Luis M. and Edgar C. Loayas Aguilar, $550,000.
+
+AD
+
+Redgate Ct., 2-Roger M. Brown and Karen Jayne Doswell to Deborah Y. Clark, $706,000.
+
+DAMASCUS AREA
+
+Biscayne Lane, 9904-Lawrence and Lindsay Haley to Jason and Amanda Oakes, $395,000.
+
+Canvasback Way, 9958-Jessica M. McLaughlin and Mark R. Nettling to Yamila Medina, $249,000.
+
+Middleboro Dr., 10812-Susan M. Hensley to Junmin and Xiaoxiang Zhang, $550,000.
+
+Valley Park Terr., 25732, No. H-2-Jesus Arturo Parrau and Nicole Jennifer Hartwick to Caitlin Ann Caffrey, $259,000.
+
+AD
+
+DERWOOD AREA
+
+Cliffbourne Lane, 17817-Estate of Joan B. Carpenter to Kyle M. and Lynn E. Erickson, $515,000.
+
+Granby Rd., 6108-Florence M. Hallman and Patricia L. Boyer to Sonia Mundle Smith, $685,000.
+
+Nutwood Ct., 7609-Alan J. Diamond and Carol Janus to Laddawan Thirachawalit, $375,000.
+
+Wheat Fall Dr., 17521-John C. Vergelli and estate of Kathleen Ann Vergelli to Luis F. Retana and Betsy N. Lopez, $450,000.
+
+AD
+
+FOUR CORNERS-BURNT MILLS AREA
+
+Brewster Ct., 314-Andrew J. and Kristin A. Schrader to Cheryl Ann Hurwitz, $653,000.
+
+Dryden St., 1107-Laurie A. Yengo to Jodi Ilene Charles, $500,000.
+
+Glenwild Rd., 10615-Arceli Bacsinila to Ashley Nicole Macon and Shauna Natasha Davis, $482,500.
+
+Lowander Lane, 813-U.S. Bank and Legacy Mortgage Asset Trust to Yonas Nigatu Gurach, $440,000.
+
+Saybrook Ave., 9308-Laverne H. Havelka to Deanna L. Wright, $504,000.
+
+Sutherland Rd., 10003-Jared E. and Jennifer L. Gigliotti to Robert H. and Ashley S. Burch, $615,000.
+
+GAITHERSBURG AREA
+
+Barn Swallow Terr., 18728-Matthew and Shanna Bahen to James Michael Whalen, $276,000.
+
+Fertile Meadow Ct., 18023-Rajeev and Gunjan Jain to Maryonne A.C. Snow Smith, $350,000.
+
+Grosbeak Terr., 18632-Brian Williams to Dalicia Ashley Eschoe, $295,000.
+
+Hummingbird Terr., 9235-JLG Investments Corp. to Marc D. and Brandon Riley Goldstein, $325,000.
+
+AD
+
+Lindstrom Ct., 17615-Alan R. and Jan Briddell Stevens to Jaime Romeo Valiente Gallegos and Ruth Fransoli Valiente, $325,000.
+
+Pearlbush Dr., 7900, No. 302-Edward J. Maynes to Christine R. Kim and Ricky M. Zatz, $129,999.
+
+Tulip Dr., 110-Ashley J. White and Christopher A. Sibrizzi to Aaron K. and Anna K. Serrano, $400,000.
+
+GAITHERSBURG-NORTH POTOMAC AREA
+
+Apple Blossom Way, 112-Wen I. Wear and Jack Pai Young Liu to Kannan Chinnasamy and Harita Kannan, $610,000.
+
+Boat House Ct., 14-Qisheng Li and Jinwen Chen to Dun Liang and Sutan Wu, $771,000.
+
+Chestertown St., 122-Scott V. and Sharon L. Nystrom to Andrew and Jaclyn Nicoletta, $882,500.
+
+Clover Knoll Rd., 11925-Inge J. Caldwell to Eric Endicott and Heather Leeper, $515,000.
+
+Curry Ford Lane, 208-Suntrust Bank to Francis Aning Boddom, $320,000.
+
+Diamondback Dr., 506, No. 241-C.F. Sept Owner Corp. to Lok Wong Samson, $489,900.
+
+Fenceline Dr., 12-Maureen Q. Ponce to Umesh J. Rajani and Purvi R. Desai, $380,000.
+
+Helene St., 535-Blake E. and Ilene H. Godsey to Gary M. and Judith Lynn Katz, $809,900.
+
+Kimberly Ct. W., 785-Perfect Homes Corp. to Summer G. Martinez and Daniel Francis Cumberland Jr., $535,000.
+
+Linslade St., 724-Verna W. and Jerry C. Van Wert Jr. to Christopher Michael and Courtney B.K. Knaus, $800,000.
+
+Orchard Hills Dr., 111-Mark A. and Joanna Green to Ebrahim Rajabtabar Darvish and Hanieh Ataei, $550,000.
+
+Phelps St., 477-Rajesh Kumar and Anju Goel to Yang Liu and Yu Zhang, $624,000.
+
+Quince Orchard Blvd., 882, No. 202-Xiaoyou Chen to Anisur Rahman Palash and Afia A. Jahan, $115,000.
+
+Sylvan Glade Dr., 14440-Drew Evan and Ryann Leslie Morris to Shafiul and Mahabuba Alam Elahee, $1 million.
+
+Water Oak Dr., 15105-Jai Raj Narain and Tara B. Rajan to Chawan Elliot Barnes and Sadaf Afkhami, $620,000.
+
+GERMANTOWN AREA
+
+Ambassador Dr., 13600-Hao Ping Chai to Hwei Chun Chou, $259,900.
+
+Chalet Dr., 18140, No. 7-101-Hsiu Ling Hsu to Annette Richards, $178,000.
+
+Dairymaid Dr., 13139, No. 103-Fang Xu to Bowen Yang, $155,000.
+
+Esmond Ct., 27-Joseph Beall and Paul Yanoshik to Eric Robert and Keke Schuler, $308,900.
+
+Lake Park Dr., 19918, No. 922-Sandra and Maria Pazmino to Augustina Boamah and Kwame Konadu, $310,000.
+
+Lowfield Terr., 13413-Jasbir and Piari Singh to Mario and Janeth Andino, $345,000.
+
+Martins Landing Dr., 18700-Stephen P. Macloud to Michael L. Tash, $284,500.
+
+Moonwalk Ct., 18910-Chad and Amanda Berkhammer to Vitaly Avilov and Qi Zeng, $564,900.
+
+Rayfield Dr., 19425-Juan A. and Isabel Galvez Salgado to Scott and Mignonette Petersen, $401,000.
+
+Shipley Terr., 20209, No. 1-B-201-Hector A. and Jose Omar Andino Rivera to Hector Hermando Neira Herrera and Graciela Q. Neira, $180,000.
+
+Summer Oak Dr., 11527-Mark M. and Megan A. Jackowski to Timothy R. and Alena Lynn Carter, $305,000.
+
+Warrior Brook Dr., 19141-Zhengliang Bu and Lanlan Zhang to Robert Eugene and Danielle Ross Franklin, $409,900.
+
+Winding Creek Way, 12041-Francoise A. Andre and Apostol T. Vassilev to Jibran Misbah and Farah Reyaz, $322,000.
+
+KENSINGTON AREA
+
+Brunswick Ave., 10700-Roy E. and Herlyth B. Clark to Thomas G. and Madison Dickinson Hendren, $550,000.
+
+Flanders Ave., 5307-Silviu C. and Leana Cretu to Steven H. Ngo, $650,000.
+
+Midvale Rd., 11120-Jerome Rossignuolo and Chu Chu Lan to Timothy Jerome White Jr. and Ghazal Parsa, $769,000.
+
+Saul Rd., 4501-Jonathan George Mathis to Rosita Alyssa Baua Hermann, $699,000.
+
+LAYTONSVILLE AREA
+
+Flamingo Terr., 24340-James P. and Natacha C. Walsh to William Marshall Lee and Casey Christine Robertson, $380,000.
+
+Lochaven Ct., 20924-Donna M. Marino to Michael Anthony and Leslie Susan Gladu, $625,000.
+
+Watkins Rd., 9631-Suzanne and Donald L. Diddle to Scott D. Parello, $480,000.
+
+Woodfield School Rd., 25130-Joseph Allen and Cheryl Peters Wyatt to Patricia and Terry Nichols, $635,000.
+
+MONTGOMERY VILLAGE AREA
+
+Brassie Way, 9620-Shannon Frye Robb to Richard Pineda and Alicia D. Valle Toledo, $199,900.
+
+Copps Hill Pl., 18124-Fabiana I. and Ismelda Gaona to Marco Antonio Uceda Juica, $225,000.
+
+Hellingly Pl., 9728, No. 203-Anthony Malek to Nicolaas Johannes Van Staden, $114,000.
+
+Mills Choice Rd., 19023, No. 4-James I. and Tuanhwa H. Cheng to Leo Stanley and Konika A. Rodriguese, $130,000.
+
+Ravenglass Way, 8732-Patricia M. Benjamin to Nicolas E. Quinones, $195,000.
+
+Sterncroft Ct., 20504-Jesus Huaman and Frida Mojonero to Ketty E. Peraza and Cristofer Adalverto Gonzalez, $238,500.
+
+Transhire Rd., 19551-John Charles Marshall to Laurel Foster, $240,000.
+
+NEW HAMPSHIRE ESTATES-HILLANDALE AREA
+
+Hedin Dr., 9809-Clifford H. and Sandra Ivery to Saleela and Shailesh Kumar Sharma, $416,500.
+
+NORBECK-LAYHILL AREA
+
+Bel Pre Rd., 3750, No. 11-Andrew and Paulette M. Ladas to Marcos R. Tamayo Olivier and Carla A. Luis, $92,500.
+
+Camellia Dr., 12813-Gary and Elizabeth M. Gilliam to Erica S. St. Louis and Herbert Russell Frisby III, $475,000.
+
+Edelmar Terr., 3612, No. 127-A-Woodrow W. Hancock Jr. to Alice C. McGurty, $241,500.
+
+Greenery Lane, 2308, No. 302-13-Federal National Mortgage Association and BWW Law Group Corp. to Rasheda Akter and Nazifa Tazrian Munia, $189,900.
+
+Innsbruck Ct., 14420, No. 3-AB-Steve J. Chaney to Francisco N. Hernandez Savinon, $185,000.
+
+Interlachen Dr., 15101, No. 1-414-Estate of Barry Friedberg to Ann M. McDowell, $280,000.
+
+Island Creek Ct., 3423, No. 132-A-Robert S. and Emilene Werner to Katherine L. and Thomas G. Bugenhagen, $468,000.
+
+Leisure World Blvd. N., 3200, No. 619-Cindy Ann Gilman and estate of Freeda S. Wolf to Gail Roe, $404,000.
+
+Leisure World Blvd. N., 3330, No. 5-915-Roger D. Feldman and estate of Gertrude Coburn Feldman to Val S. and Judith Sasmore, $152,500.
+
+Ludham Dr., 3209, No. 193-A-Edward A. Perron to Sherry Lynne Stargel, $315,000.
+
+Nordic Hill Cir., 1651-Kenneth Cutler and Wioleta Laska to Eugenio J. Aleman and Maria C. Vassallo, $494,000.
+
+Redspire Dr., 13302-Dale and Lilyan Kang to Hoang M. Nguyen and Mai X. Huynh, $825,000.
+
+Weller Rd., 2604-Luciano and Lidia DiFranco to Tena Gebretsadik and Hana Wondimu, $450,000.
+
+OLNEY AREA
+
+Buehler Rd., 17816, No. 1-B-2-Luis Anthony Jaramillo to Peter J. and Joseph Toller Leicht, $125,000.
+
+Gelding Lane, 3811-Michelle R. Cascio to Paulina M. Kozorosky, $373,000.
+
+Overwood Dr., 17804-Maurice L. Vekeman Jr. to Nicholas Domenico Richards and Jennifer Steiger, $472,500.
+
+Shadowridge Terr., 18606-Cynthia L. Dunn to Seble Abebe and Mulugeta T. Fisseha, $421,000.
+
+POOLESVILLE AREA
+
+Hughes Rd., 17300-Jeffrey Dayton and estate of Leona J. Nelson to Jesse Ryan and Jennifer Loznak, $443,500.
+
+Spurrier Ave., 19812-Randolph C. and Nancy L. Halphen to Stephen and Angela Amanda Trice, $430,000.
+
+POTOMAC AREA
+
+Bartonshire Way, 1294-Donna R. Foley to Laurence Wade and Sarah Maria Tivnan, $710,000.
+
+Betteker Lane, 9905-Patrick D. and Mariella V. Young to Yan Zhang, $680,000.
+
+Brushwood Way, 13149-Jennifer M. Whitlow to Jeffrey T. and Michele Molyn Napoliello, $1.73 million.
+
+Cambridge Manor Ct., 9237-Kathleen J.S. and Stevan A. Varga to Sean Wesley Hiapo and Jill Renee Olson, $1.82 million.
+
+Conestoga Way, 9708-RBL Ventures Corp. to Kevin Kyuhong and Yoojin Choi, $930,000.
+
+Democracy Blvd., 10240-Barbara and Gerard P. Champaloux to Ejike Asiegbunam, $1.8 million.
+
+Fallsmead Way, 1203-Wai Keen Chung and Junqing Liu to Colter Thomas and Alana Wase Bell, $753,000.
+
+Inverness Ridge Rd., 8145-Donna F. Panagos to Xun Sun and Linnu Cao, $560,000.
+
+Lloyd Rd., 10325-Mark B. and Donna Tasso Johnson to John K. Wilson and Katherine J. Scoville, $829,000.
+
+Milbern Dr., 11612-Sheshagiri Rao and Kusum A.R. Kalavar to James P. and Calie B. Lillis, $735,000.
+
+River Falls Dr., 8304-Edward J. and Elizabeth C. Hudson to Blair Alexander and Elizabeth Goergen Silver, $1.4 million.
+
+Stratton Dr., 2001-Michelle L. Snyder and Jonathon S. Colton to Ira S. Miller and Allison Buchman, $775,000.
+
+Turnberry Dr., 9472-Paul A. and Susan L. Commander Samakow to Virun Lee, $880,000.
+
+Willowbrook Dr., 11137-Pei Ying and Diana H. Chen to Kevin P. and Angela R. Murphy, $1.09 million.
+
+ROCKVILLE AREA
+
+Azalea Dr., 868, No. 21-Prashant and Quenie Thi Nguyen Goswami to Ehud Inbar, $350,000.
+
+Barbados Pl., 5916, No. 59-Trudy Bernstein to Ari Payes, $399,000.
+
+Boiling Brook Pkwy., 4722-Andrew J. Horos to Mohd Sulaiman and Moska Hakimzada, $390,000.
+
+Brentford Dr., 5109-Joseph C. Werner to Jimmy Su, $365,000.
+
+Charles St., 335-Leqin Shi to Patrick Jose Raminhos, $317,000.
+
+Dundee Rd., 2002-Tian Zhou to Peipei Hu, $515,000.
+
+Ertter Dr., 4904-Steven T. and Karon C. Martinez to Christopher A. Yen and Luyao Zhang, $590,000.
+
+Gaither Rd., 1017-Morgan Chiu and Hsiaofang Yeh to Gregory and Dorothy Yahr, $525,000.
+
+Glenmore Terr., 2267-Lawrence G. Lazar and Leilei He to Natalia Komissarova, $765,000.
+
+Linden Square Ct., 5804, No. 41-Karla Olsen to Andrea Basdekian, $535,000.
+
+Luxberry Ct., 9, No. 4-Shulamith B. and Donald D. Weisman to Michael Anthony O’Sullivan and Janet Rae Fox, $570,000.
+
+Monroe St., 114, No. 302-Yuri Berman to Gennadiy A. Pavlyukovets and Natallia S. Kotseneva, $235,000.
+
+Old Georgetown Rd., 11710, No. 1226-Scott Christopher and Alina Elizabeth Hotaling to Majid Majd, $325,000.
+
+Paulsboro Dr., 957-Heather A. Mulloy to Nurgul Gelic, $495,000.
+
+Rolling House Rd., 11327-Ira B. Mirsky to Thomas and Ola Chen, $850,000.
+
+Rose Ave., 930, No. 1906-Pike & Rose Condominium Inc. to Melony and Robert Muller, $479,900.
+
+Strathmore Park Ct., 10400, No. 303-Steven D. and Laurie J. Macht to Gerard E. and Germana B. Mitchell, $800,000.
+
+Topping Rd., 4704-Ryan M. and Angela H. Harper to Bradly M. Bauman and Kristen Elmezzi, $470,000.
+
+Warfield Dr., 618-Kevin Frederic and Cynthia Jo Brooks to Lucy Angela Carone Elliott, $650,000.
+
+Wickshire Way, 11020, No. A-5-Corey and Emily Baker to John Carlos Wong, $625,000.
+
+SENECA PARK-CEDAR GROVE AREA
+
+Amber Ridge Cir., 12031-George A. and Traci D. Crawford to Adam Shuaib and Amanda Stegmiller, $350,000.
+
+Bent Creek Terr., 11318-Jill R. Freund to Belinda B. Nyarko, $350,000.
+
+Owls Nest Cir., 21255, No. UN40-Seung H. and Hannah Weerae Lee to Fenton G. Dobard Jr. and Alicia R. Tellis, $355,000.
+
+Royal Crown Dr., 12509-Brian and Irina Mitchell to Swayne J. Singh and Tigest Eyasu, $500,000.
+
+Sojourn Ct., 21003, No. 33-Janice A. Thomas to Vernette V. Vernon, $280,000.
+
+SILVER SPRING AREA
+
+Cassedy St., 2737-Melinda Campos and Gloria Zagorski to Daniel J. Zarin, $627,500.
+
+Easley St., 701-Gunnar Grodsky to Ahmed and Nihad Fawzy, $1.34 million.
+
+Kingsbury Dr., 9105-Stanford D. Gillis to Gregory S. Avicola, $630,000.
+
+Russell Rd., 9411-Paul Skafte to Samuel R. Gilbert and Erica E. Eisenman, $665,000.
+
+Washington Ave., 2207, No. W-203-Amy T. and Jason R. Barnard to Beatriz Rodriguez, $280,000.
+
+Second Ave., 8926-Tage Jacob Rainsford and Danielle Nichole Bird to Jason David Schellhardt, $735,000.
+
+TAKOMA PARK AREA
+
+Carroll Ave., 7342-Keith A. and Sara Mercedes Allen Sieverding to Alfred Clarence and Claire Joanna Bertrand, $715,000.
+
+Hudson Ave., 601, No. 312-Leslie Charles and estate of Judith Ann Hobbs to Clara Ines Vargas, $175,000.
+
+TWINBROOK AREA
+
+Debeck Dr., 1004-Laura S. Johnson to Isabelle Raquin and Jonathan Honigman, $482,000.
+
+Gilbert Rd., 1003-Richard and Debora Branthover to Jordan A. Stubbs and Carol Oser, $370,000.
+
+Lemay Rd., 5935-Andrew J. Wilks and Edward H. Walker to Rajeev and Sandra Purohit, $448,402.
+
+Rockcrest Cir., 30-Kevin William Green and Kimberly Pisabaj to Gibran Shaikh and Zuha Moin, $485,000.
+
+WHEATON AREA
+
+Bluff Terr., 101-Benjamin Scott Sammon to Connie Lynn Bacon and John Patrick Andrews, $535,000.
+
+Cone Lane, 11004-Dorothy S. and John J. Crnkovic to William Henry Washington Jr. and Keshni Naicker, $400,000.
+
+Georgia Ave., 9806, No. 22-301-John Justin Gradowski to Deborah Meetze Hinton and James Reid Rowlett, $230,000.
+
+Hardy Ave., 2814-Andreas P. Gelner and Adrienne J. Capkovic to Endalew K. Delegassa and Eleni G. Dinkalem, $366,000.
+
+Imperial Dr., 1702-Laura L. Letson to Matthew O. Spencer and Greta Claire Harman, $499,000.
+
+Lamberton Dr., 800-Robert H. and Angela C. Liberman to Moshe B. and Melissa Broder, $660,000.
+
+Lovejoy St., 11803-Yossi Alkoby and Judith Meira Gershater to Scott Weinberg and Julia Ashkanazy, $522,500.
+
+Woodland Dr., 9900-Sara A. and Angelique J. Willis Hilbrich to Matthew G. Dean and Deborah A. Williams, $525,000.
+
+Frederick County
+
+These sales data recorded by the Maryland Department of Assessments and Taxation in August were provided by Black Knight Inc. For information about other residential real estate transactions, visit washingtonpost.com/homesales.
+
+ADAMSTOWN AREA
+
+Mount Ephraim Rd., 1888-Tom P. and Maureen T. Lapsa to Lindsay Turner Johnson, $725,000.
+
+BRUNSWICK AREA
+
+Crums Hollow Dr., 801-David M. Kilpatrick to Kenneth V. and Krisztina Baglyas Janosko, $413,000.
+
+Orndorff Dr. W., 134-Kelly A. Watson Huffer to Matthew and Cheyenne Smith, $170,000.
+
+Virginia Ave. N., 12-Jeff and Sam Edgin to Karen P. Orens, $280,000.
+
+BUCKEYSTOWN AREA
+
+Keller Lime Plant Rd., 6787-Charles M. and Julie N. McGuffin to Joseph Brooks Gatewood, $339,000.
+
+BURKITTSVILLE-JEFFERSON AREA
+
+Camden Dr., 4105-Larissa Lefebure to Joseph and Elizabeth Longo, $347,000.
+
+Pecan Ct., 3445-Gerard J. and Shirley L. Long to Jonathan H. and Lori M. Paquin, $459,900.
+
+EMMITSBURG AREA
+
+Huntley Cir., 1325-Allen Ambush to Skylar D. Poole and Megan S. Degrange, $320,000.
+
+FREDERICK CITY-ADAMSTOWN VILLAGE AREA
+
+Avonshire Pl., 5620, No. D-Paul Werking to Lai Thang and Kippar Van, $183,000.
+
+Black Creek Lane, 7203-Michael T. Malafarina to Rachael Hallyburton and Patrick Koogle, $278,000.
+
+Clifton Rd. S., 6205-Eric Seth Epstein to Rusty J. and Nancy J. Mikulas, $235,000.
+
+Duke Ct., 5184-Taruan D. and Daphne S. Matthews to Damien Lamont Ricketts, $210,000.
+
+Essex Pl., 518-Marijka A. Grey to Mary Joe Bayley, $191,500.
+
+Granville Ct., 6638-Mandy Schall McAteer to Jason W. Brinkley, $285,000.
+
+Hollyberry Way, 590-Eric J. Miller to Lasker N. Ahmed, $198,000.
+
+Jefferson Blvd., 6624-Payton M. and Bethany L. Reid to Harry Russell and Sandra Sessa Lashley, $515,000.
+
+Killdeer Ct., 6737-Brett A. and Caitlin E. Vanorsdel to Ryan Hopkins, $245,000.
+
+McGrath Pl., 6631-Calli Marie Rooney Lear to Nestor Arnoldo Nunez and Elizabeth A. Holden, $295,000.
+
+Old Swimming Pool Rd., 4902-Walter L. Hepker and Rebecca G. Full to Brian P. Howie, $314,900.
+
+Rivendell Pl., 5583-Marc Aaron and Christine Apolito to Sheila R. Bonney, $282,000.
+
+Small Gains Way, 4949-Steven C. and Jessi D. Barmoy to Luis Banoscare, $322,000.
+
+Sweet Bay Ct., 5775-Katherine C. Kelley to Jennifer Lynn Buckley, $209,900.
+
+Timberwolf Dr., 1415-Linda Greenberg to Omar Adonay Mendez Carias and Tylyn A. Medrano, $368,500.
+
+Walcott Lane, 6511, No. 102-Jaime Thompson to Darla H. Alterescu, $226,900.
+
+Wood Duck Ct., 6770-Nathan A. and Jessica R. Vanhouten to Jianyong and Xiuqin Gao, $224,400.
+
+FREDERICK CITY-LIBERTYTOWN AREA
+
+Baldridge Cir., 6140-Steven B. and Kendall Klosky Tiffany to Erica F. and Anthony N. Cooke, $282,000.
+
+Bear Den Rd., 2563-Ronald L. Mallow and Robin N. Gordon to Todd and Gail Fineberg, $389,900.
+
+Bridgewater Ct. W., 9402-Razvan A. and Jennifer Simonica to James and Lauren Ji Kim, $409,900.
+
+Catoctin Ave., 209-Joseph M. Shoemaker to James E. Rippeon II and Aimee Leigh Rider, $237,500.
+
+Church St. E., 217-Katie A. Pribyl to Dianne Dain, $555,000.
+
+Derrs Ct., 1800-Jason R. and Kathleen A. Sepanic to Michael A. and Evelyne Anzick, $380,000.
+
+Dogwood Dr., 1604-Daniel W. Trombetta to Paul Fritz, $305,000.
+
+Egret Way, 2625-Tracy Tucker and Kathleen Martin to Sean Gibson, $315,000.
+
+Greenleese Dr. N., 1801-Jeffrey T. and Kari B. Enama to Zachary Alan and Courtney Marie Davis, $424,000.
+
+Holden Rd., 832-Calatlantic Group Inc. to Joshua Adam and Sarah Anne Loftus, $497,473.
+
+Jubal Way, 926-Phineas Cornell and Sharander Lakilia Jackson to Edmond D. Fuentes, $260,000.
+
+Lamp Post Lane, 2213-Sean M. and Amanda M. McWilliams to Shayna L. Scott, $290,000.
+
+McMurray St., 104-David W. and Kathryn L. Humphries to Jennifer A. Wilson and Lesley J. Vandever, $270,000.
+
+Mill Island Pkwy., 3030, No. 310-Joseph A. Alexander to Judith Westbrook, $327,000.
+
+Palatine Dr., 3000-Wormald Development Co. to Joan T. Reilly, $473,900.
+
+Quay Ct., 7984-David H. Shiben to Jamaal Anwar Jones, $220,000.
+
+Sherman Ave., 304-Tarah M. Zuniga and Edison Zuniga Sanchez to Amanda N. Barrientez, $216,000.
+
+Springwater Ct., 6509, No. 6401-Jennifer Bolling Laggini Palmer to Annie Walker, $190,000.
+
+Stoners Ford Way, 3025-Lorraine J. Stoltz and Marsha D. Flowers to David F. and Jeannie R. Knollman, $462,000.
+
+Village Square Rd., 2231-Debra A. Bowman to Janet Jenkins, $333,500.
+
+Wheyfield Dr., 1618-Michael G. and Linda J. Murray to Michelle Garrett, $286,000.
+
+Fifth St. W., 235-Rachel E. Kavanagh to Brian Patrick Walsh, $239,000.
+
+FREDERICK CITY-MOUNTAINDALE AREA
+
+Andover Lane, 1636-Roberto Serpas Salmeron to Justin A. Mawdsley and Carol L. Paulson, $282,400.
+
+Boulder Rd., 9404-Sabrina Elizabeth Smith to Ivan and Kensy M. Alvarenga, $235,000.
+
+Buell Dr., 93-Anthony and Melinda Hite to Blyden Bonar Jr. and Nancy Kobe, $250,000.
+
+Catoctin Ct., 2500, No. 1-2B-Timothy L. and Terri J. Cannon to Chengkai Dai and Yishu He, $170,000.
+
+Coach House Way, 2508, No. 1C-Chris A. Turner and estate of Barbara A. Salt to Karen M. Cappolella, $185,000.
+
+Dominion Dr., 2406, No. 2C-Daniel L. and Tama R. Plombon to Patricia A. Lawton, $176,500.
+
+Ellsworth Way, 2408, No. 2A-Frank E. Warner to Amy Haggerty, $164,000.
+
+Fox Hunt Lane, 8223-Thomas E. and Kathleen E. Igo to David Michael and Joli Naomi Chism, $441,500.
+
+Heather Ridge Dr., 416-Wayne Deyton to Joseph S. and Gillian A. Kulina, $125,000.
+
+Jordan Valley Way, 8329-Richard W. and Linda S. Revolinsky to Edwin and Jackeline Cartagena, $470,000.
+
+Livingstone Terr., 9-Amanda M. and Joyce A. Zimmerman to Kenyan L. Summers, $219,900.
+
+Millstream Dr., 1844-Embrace Home Loans Inc. to Jasbir Singh Matharu, $205,000.
+
+Runny Ct., 7002-Anthony S. and Jennifer J. Kokoskie to David W. and Kathryn L. Humphries, $340,000.
+
+Shelley Cir., 2508, No. 8-Mark and David Degirolamo to Elinor J. Rouff, $189,000.
+
+Timber View Ct., 244-L&A Holdings Corp. to Kyle L. Georgius and Lauren N. Hicks, $280,000.
+
+Wilcox Valley Dr., 2053-Tiffany A. Glover and Tracy A. White to Michael R. and Ruthann McFadden, $409,000.
+
+GARFIELD AREA
+
+Loy Wolfe Rd., 13500-Richard M. Pryor to Trystin R. and David H. Alexander, $450,000.
+
+IJAMSVILLE AREA
+
+Melbourne Pl., 7503-Paul D. and Susan L. Manny to Michael A. Chlebda, $565,000.
+
+Shel Mar Dr., 1907-Barry Edwin and Sharon Joy Wagman to Jose M. Cambron Espino, $510,000.
+
+LIBERTYTOWN AREA
+
+Liberty Rd., 11920, No. 204A-Richard Lee and Heather L. Rippeon to Brittney Nicole Rowse, $126,000.
+
+MIDDLETOWN AREA
+
+Boileau Ct., 3-Gary and Sharon Diane Gregoire to Connor R. and Brenda L. Smith, $225,000.
+
+Feldspar Rd., 4630-Brian T. and Lisa A. Edwards to Jason Robert and Allison Jacob Jachowski, $480,000.
+
+Myersville Rd., 8620-Arthur D. Tringali to Jason B. and Patricia M. Leffson Nalley, $355,000.
+
+Springbrook Ct. E., 7311-David T. and Mary E. Sweeney to Anita L. Bright, $192,296.
+
+MULLINIX AREA
+
+Autumn Ridge Ct., 902-Robert H. and Terri L. King to John F. and Jessica E. Fisher, $452,500.
+
+Foggy Bottom Ct., 13887-Delores A. and Theodore L. Schwartzbeck to Virginia Elizabeth and James Arthur Lagger, $442,000.
+
+Mitchell Ct., 13904-Luke Tanner and Beth Mitchell to William J. and Jessica M. Walker, $648,000.
+
+Streamview Ct., 6204-John and Barbara McIntee to Steve Kelbaugh and Suzanne Shipley, $499,900.
+
+MYERSVILLE AREA
+
+Hunters Knl., 1007-Jay Eric Rhoderick to Jeffrey and Lisa K. Gottlieb, $610,000.
+
+NEW MARKET-LAKE LINGANORE AREA
+
+Beach Dr. E., 6617-Daniel B. and Kellie C. Ganoung to Charles J. Franco Jr. and Leslie Wang, $255,000.
+
+Country Club Rd., 11233-Gary and Sharon Witt to Anthony Paul and Stefanie E. Lavin, $455,000.
+
+Fox Chase Rd., 6925-Raymond J. and Cynthia A. Geraghty to Matthew and Shanna Bahen, $400,000.
+
+Isaac Russell St., 534-New Market Residential Corp. and Oak Hill Properties Corp. to Sean A. and Kristen L. Chaffman, $520,000.
+
+Meadowlake Rd., 6933-Lisa Hamlin and Brian St. John to Andrew Spangler and Jennifer Hake, $495,000.
+
+Richard Roberts St., 400-New Market Residential Corp. and Oak Hill Properties Corp. to Nila Via, $520,000.
+
+Shalom Ct., 10003-MS Aspen North Corp. to Brad Michael and Courtney Renee Bahr, $500,990.
+
+NEW WINDSOR AREA
+
+Wildrose Ct., 15610-Timothy L. and Deborah A. McQuay to Kenneth Eugene and Elizabeth Ann Lamb, $347,500.
+
+ROCKY RIDGE-CREAGERSTOWN AREA
+
+Motters Station Rd., 14619-Bernard J. and Dawn Marie Hobbs to Zachery Bryan Fritz and Heather Michalena Pozzouli, $269,000.
+
+THURMONT AREA
+
+Moser Cir., 224-William D. Shadle and Brooke N. Hildebrand to Minerva Carrasquillo and Alex Vazquez, $196,000.
+
+Stoney Mine Ct., 3-Corey A. Totten to James R. McGrady, $299,900.
+
+Utica Ct., 10849-Thomas J. Ledwell to Brandon M. Smith and Ashley A. Brown, $475,000.
+
+URBANA AREA
+
+Bartonsville Rd., 5817-Landmark Investment Properties Corp. to Michael Kevin Walsh and Sheryl Anderson Fast, $285,000.
+
+Belvedere Dr., 9099-Wilmington and Lehman XS Trust to Naseer Nayeem and Huma Hakim, $565,950.
+
+Buckeystown Pike, 4310-Jonathan M. and Elisabeth C. Clinton to Leslie Curtis and Mitchell R. Poe, $500,000.
+
+Dunraven St., 9443-Greg A. and Elizabeth G. Warner to Dale Anthony and Linda Marie Urlacher, $400,000.
+
+Hawk Ridge Rd., 5518-MS Gladhill Farm Corp. to John Austen and Corinne M. Carter, $484,960.
+
+Kenway Lane, 9148-Damian and Eboni Williams to Adrian A. Dragulescu and Christina Masterman, $420,000.
+
+Pine Bluff Rd., 8415-MS Gladhill Farm Corp. to Thomas D. and Eileen M. Lantzas, $470,000.
+
+Singleton Terr., 3717-Mihallaq and Brunilda Dhima to Melissa C. Altieri and Patrick J. Wenzler, $370,000.
+
+Urbana Pike., 3625-Robin Michael and Christine Rochelle Reeder to Shuang Guan, $350,000.
+
+Wyndham Dr., 9752-William M. and Tina J. Cullum to Shawn I. and Juliet D. Hossain, $589,900.
+
+WALKERSVILLE AREA
+
+Discovery Blvd., 8526-Healthy Homes Corp. to Stephen J. Green and Janet L. Brumer, $195,000.
+
+Old Island Ct., 202-James F. and Shelly L. Mullen to Sabrina E. Smith, $447,000.
+
+WOODSBORO AREA
+
+Coppermine Rd., 11207-Bradley W. and Amber L. Seiss to Anthony and Charlene Bishop, $615,000.",police stated that-- chung has been on the run .
+plot,middle,428,430,0.703125,17,"quotes from leaders , family at mandela memorial","stop for a moment , as if out of uncertainty or caution ."
+plot,middle,457,459,0.7177734375,15,syria envoy calls for national unity government,Two kids are looking up at the camera and one is sticking out his tongue
+plot,middle,505,508,0.74365234375,10,A cute puppy is repeatedly rolling from side to side on its back,a tiger is walking around .
+plot,middle,530,534,0.75732421875,10,a dog jumping into a swimming pool .,A light brown dog is running up a street
+plot,middle,548,553,0.76708984375,16,Three men are jumping off a tall wall,A few horses are racing furiously over the green grass and jumping the obstacle
+plot,middle,606,616,0.7998046875,7,A man is mixing,A man is playing drums.
+plot,middle,633,643,0.8134765625,11,to catch in or as if in a trap ; immobilize,the act or means of getting rid of something .
+plot,high,675,686,0.8359375,11,"oppose or approach , as in hostility or competition",take or have a position relative to others .
+plot,high,713,724,0.85595703125,13,The man is slicing potatoes,a man is slicing a leave .
+plot,high,752,767,0.8720703125,18,The brown animal is jumping in the air,A brown and white dog is jumping in the air with a tennis ball in its mouth
+plot,high,773,790,0.87646484375,10,a white and black dog is jumping into a pool .,a dog is looking into swimming pool .
+plot,high,833,854,0.8876953125,13,the black dog is running on the grass with a toy in it 's mouth .,A dog with a ball is being chased in the grass
+plot,high,881,903,0.90380859375,22,A man with a top hat riding a white horse.,A man wearing black formal wear & a black top hat is riding a white show horse.
+plot,high,904,927,0.9111328125,21,the health department spokesperson added the department is following centers for disease control protocol .,knox county health department is following national centers for disease control and prevention protocol to contain infection .
+plot,high,959,983,0.9658203125,11,a man is slicing potato .,A person is slicing a potato.
