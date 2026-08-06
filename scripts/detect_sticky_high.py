@@ -461,7 +461,7 @@ def main() -> None:
         screen = add_constraint_violation(
             pd.read_csv(screen_path, keep_default_na=False), thresholds
         )
-        screen = rank_candidates(screen)
+        screen = rank_candidates(screen.drop(columns=["rank"], errors="ignore"))
         screen.insert(0, "rank", np.arange(1, len(screen) + 1))
 
     combined_screen_parts = [screen.drop(columns=["rank"], errors="ignore")]
@@ -515,7 +515,9 @@ def main() -> None:
             pair_screen = add_constraint_violation(
                 pd.read_csv(pair_screen_path, keep_default_na=False), thresholds
             )
-            pair_screen = rank_candidates(pair_screen)
+            pair_screen = rank_candidates(
+                pair_screen.drop(columns=["rank"], errors="ignore")
+            )
             pair_screen.insert(0, "rank", np.arange(1, len(pair_screen) + 1))
             pair_candidates = pair_screen[component_columns].copy()
         combined_screen_parts.append(
