@@ -494,7 +494,13 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     _write_json(output / "resolved_config.json", config)
     started = time.time()
-    encoder = SentenceTransformerEncoder(config["model"]["id"], config["model"]["device"], str(resolve_path(config, config["model"]["cache_folder"])) if config["model"].get("cache_folder") else None, bool(config["model"].get("trust_remote_code", False)))
+    encoder = SentenceTransformerEncoder(
+        config["model"]["id"],
+        config["model"]["device"],
+        str(resolve_path(config, config["model"]["cache_folder"])) if config["model"].get("cache_folder") else None,
+        bool(config["model"].get("trust_remote_code", False)),
+        config["model"].get("local_path"),
+    )
     data_path = resolve_path(config, config["data"]["path"])
     frame = load_pairs(data_path, encoder.tokenizer, min_tokens=int(config["data"]["min_tokens"]), max_tokens=int(config["data"]["max_tokens"]))
     fractions = config["data"]["split"]

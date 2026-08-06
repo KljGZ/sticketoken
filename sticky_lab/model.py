@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Sequence
 
 import numpy as np
@@ -16,12 +17,14 @@ class SentenceTransformerEncoder:
     device: str
     cache_folder: str | None = None
     trust_remote_code: bool = False
+    local_path: str | None = None
 
     def __post_init__(self) -> None:
         if self.device.startswith("cuda") and not torch.cuda.is_available():
             raise RuntimeError(f"CUDA requested but unavailable: {self.device}")
+        model_source = self.local_path if self.local_path and Path(self.local_path).exists() else self.model_id
         self.model = SentenceTransformer(
-            self.model_id,
+            model_source,
             device=self.device,
             cache_folder=self.cache_folder,
             trust_remote_code=self.trust_remote_code,
@@ -69,4 +72,3 @@ class SentenceTransformerEncoder:
         first = next(iter(modules.values()), None)
         auto_model = getattr(first, "auto_model", None)
         return getattr(getattr(auto_model, "config", None), "_commit_hash", None)
-
