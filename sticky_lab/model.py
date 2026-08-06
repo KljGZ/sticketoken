@@ -67,7 +67,7 @@ class SentenceTransformerEncoder:
 
     @property
     def max_length(self) -> int:
-        value = int(getattr(self.tokenizer, "model_max_length", 512))
+        value = int(getattr(self.model, "max_seq_length", getattr(self.tokenizer, "model_max_length", 512)))
         return min(value, 8192) if value < 10**6 else 512
 
     @property

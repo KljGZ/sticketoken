@@ -213,6 +213,10 @@ def repulsive_attractor_metrics(
             "high_tail": max(0.0, -constraints["high_drop_tolerance"] - high_q05) / max(constraints["high_drop_tolerance"], 1e-12),
             "low_gain": max(0.0, constraints["min_low_gain"] - low_gain) / max(abs(constraints["min_low_gain"]), 1e-12),
         }
+        uniqueness_margin = float(displacement_q05 - compact_radius_q95)
+        if "min_local_uniqueness_lower_bound" in constraints:
+            target = constraints["min_local_uniqueness_lower_bound"]
+            violations["local_uniqueness"] = max(0.0, target - uniqueness_margin) / max(abs(target), 0.01)
         total_violation = float(sum(violations.values()))
         objective = low_gain - constraints.get("compactness_weight", 0.5) * compact_loss
         records.append(
@@ -230,7 +234,7 @@ def repulsive_attractor_metrics(
                 "compact_radius_q95": float(compact_radius_q95),
                 "triggered_pairwise_similarity": float(min(pairwise_similarity_by_mode)),
                 "center_norm": float(min(center_norm_by_mode)),
-                "local_uniqueness_lower_bound": float(displacement_q05 - compact_radius_q95),
+                "local_uniqueness_lower_bound": uniqueness_margin,
                 **{f"violation_{name}": float(value) for name, value in violations.items()},
             }
         )

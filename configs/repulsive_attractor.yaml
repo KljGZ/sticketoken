@@ -40,8 +40,9 @@ insertion:
 constraints:
   min_low_gain: 0.02
   high_drop_tolerance: 0.02
-  min_displacement_q05: 0.20
-  max_compact_radius_q95: 0.70
+  min_displacement_q05: 0.35
+  max_compact_radius_q95: 0.45
+  min_local_uniqueness_lower_bound: 0.02
   compactness_weight: 0.50
 
 candidate_pool:
@@ -65,7 +66,7 @@ search:
   probability_floor: 0.0001
   repulsion_curriculum:
     start: 0.05
-    end: 0.20
+    end: 0.35
 
 validation:
   candidate_count: 64

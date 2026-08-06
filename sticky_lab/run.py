@@ -179,17 +179,41 @@ def _repeat_curves(
     separator: str,
     batch_size: int,
     shared: bool,
-) -> np.ndarray:
+) -> tuple[np.ndarray, dict[str, Any]]:
+    # Fix the source-text budget once using the largest requested trigger.  This
+    # prevents later curve points from silently truncating a suffix trigger and
+    # avoids changing the source text at different x values.
+    frame = dataset.frame.iloc[indices]
+    max_trigger = repeat_literal(trigger, max_count, separator="")
+    trigger_tokens = encoder.tokenize([max_trigger], add_special_tokens=False)[0]
+    reserved_special = 1
+    source_budget = max(1, encoder.max_length - len(trigger_tokens) - reserved_special)
+
+    def truncate(values: Sequence[str]) -> tuple[list[str], list[int]]:
+        tokenized = encoder.tokenize([str(value) for value in values], add_special_tokens=False)
+        removed = [max(0, len(ids) - source_budget) for ids in tokenized]
+        return [encoder.decode(ids[:source_budget]) for ids in tokenized], removed
+
+    first_texts, first_removed = truncate(frame["sentence1"].tolist())
+    second_texts, second_removed = truncate(frame["sentence2"].tolist())
+    original_first = encoder.encode_texts(first_texts, batch_size=batch_size)
+    original_second = encoder.encode_texts(second_texts, batch_size=batch_size)
     curves = np.empty((len(indices), max_count + 1), dtype=float)
-    curves[:, 0] = dataset.baseline[indices]
+    curves[:, 0] = np.einsum("pd,pd->p", original_first, original_second, optimize=True)
     for count in range(1, max_count + 1):
         repeated = repeat_literal(trigger, count, separator="")
         if shared:
-            first, second = _shared_embeddings(encoder, dataset, indices, [repeated], [mode], seed=seed, separator=separator, batch_size=batch_size)
-            curves[:, count] = np.einsum("pd,pd->p", first[0, 0], second[0, 0], optimize=True)
+            modified_first = [insert_trigger(text, repeated, mode, seed=seed, separator=separator) for text in first_texts]
+            modified_second = [insert_trigger(text, repeated, mode, seed=seed, separator=separator) for text in second_texts]
+            encoded_first = encoder.encode_texts(modified_first, batch_size=batch_size)
+            encoded_second = encoder.encode_texts(modified_second, batch_size=batch_size)
+            curves[:, count] = np.einsum("pd,pd->p", encoded_first, encoded_second, optimize=True)
         else:
-            curves[:, count] = _one_sided_similarities(encoder, dataset, indices, [repeated], [mode], seed=seed, separator=separator, batch_size=batch_size)[0, 0]
-    return curves
+            modified_second = [insert_trigger(text, repeated, mode, seed=seed, separator=separator) for text in second_texts]
+            encoded_second = encoder.encode_texts(modified_second, batch_size=batch_size)
+            curves[:, count] = np.einsum("pd,pd->p", original_first, encoded_second, optimize=True)
+    removed = np.asarray(first_removed + second_removed, dtype=int)
+    return curves, {"model_max_length": encoder.max_length, "max_trigger_token_count": len(trigger_tokens), "source_token_budget": source_budget, "truncated_text_rate": float(np.mean(removed > 0)), "total_source_tokens_removed": int(removed.sum())}
 
 
 def _screen_booster_tokens(
@@ -339,11 +363,11 @@ def run_single_sticky(config: dict[str, Any], encoder: SentenceTransformerEncode
     candidates[candidates["certified"]].to_csv(output / "validated_sticky_tokens.csv", index=False)
     best = candidates.iloc[0]
     plot_indices = _plot_indices(dataset, int(config["plot"]["pair_count"]), seed + 4)
-    curves = _repeat_curves(encoder, dataset, plot_indices, str(best["literal"]), mode=str(config["plot"]["insertion_mode"]), max_count=int(config["plot"]["max_insertions"]), seed=seed, separator=insertion["separator"], batch_size=batch_size, shared=False)
+    curves, plot_truncation = _repeat_curves(encoder, dataset, plot_indices, str(best["literal"]), mode=str(config["plot"]["insertion_mode"]), max_count=int(config["plot"]["max_insertions"]), seed=seed, separator=insertion["separator"], batch_size=batch_size, shared=False)
     curves_to_frame(curves, dataset.frame.iloc[plot_indices]).to_csv(output / "similarity_curves.csv", index=False)
     plot_similarity_curves(curves, output / "similarity_curves.png", xlabel="Inserted number of sticky token", dpi=int(config["plot"]["dpi"]))
     _write_json(output / "pair_filter_statistics.json", {"search_below_mean": len(search_available), "search_used": len(search_indices), "validation_below_mean": len(validation_available), "validation_used": len(validation_indices), "test_below_mean": len(test_available), "test_used": len(test_indices)})
-    return {"mode": "single_sticky", "u": mean_similarity, "vocab_size": int(getattr(encoder.tokenizer, "vocab_size", len(vocabulary))), "valid_vocab_size": len(vocabulary), "repeat_count": repeat_count, "sample_pair_count": len(search_indices), "candidate_count": candidate_count, "epsilon": epsilon, "validated_count": int(candidates["certified"].sum()), "best_trigger": str(best["literal"]), "best_token_id": int(best["token_id"]), "best_test_GE_max": float(best["test_GE_max"])}
+    return {"mode": "single_sticky", "u": mean_similarity, "vocab_size": int(getattr(encoder.tokenizer, "vocab_size", len(vocabulary))), "valid_vocab_size": len(vocabulary), "repeat_count": repeat_count, "sample_pair_count": len(search_indices), "candidate_count": candidate_count, "epsilon": epsilon, "validated_count": int(candidates["certified"].sum()), "best_trigger": str(best["literal"]), "best_token_id": int(best["token_id"]), "best_test_GE_max": float(best["test_GE_max"]), "plot_truncation": plot_truncation}
 
 
 def _run_multi_mode(config: dict[str, Any], encoder: SentenceTransformerEncoder, dataset: PairDataset, vocabulary: pd.DataFrame, output: Path, *, repulsive: bool) -> dict[str, Any]:
@@ -377,26 +401,33 @@ def _run_multi_mode(config: dict[str, Any], encoder: SentenceTransformerEncoder,
             low_mask, high_mask = base <= low, base >= high
             if repulsive:
                 first, second = _shared_embeddings(encoder, dataset, search_indices, triggers, modes, seed=seed, separator=insertion["separator"], batch_size=batch_size)
-                current_constraints = dict(constraints)
-                curriculum = search_cfg.get("repulsion_curriculum")
-                if curriculum:
-                    fraction = min(1.0, iteration / max(int(search_cfg["iterations"]) - 1, 1))
-                    current_constraints["min_displacement_q05"] = float(curriculum["start"] + fraction * (curriculum["end"] - curriculum["start"]))
-                metrics = repulsive_attractor_metrics(first, second, dataset.sentence1_embeddings[search_indices], dataset.sentence2_embeddings[search_indices], base, low_mask, high_mask, current_constraints)
+                metrics = repulsive_attractor_metrics(first, second, dataset.sentence1_embeddings[search_indices], dataset.sentence2_embeddings[search_indices], base, low_mask, high_mask, constraints)
             else:
                 similarities = _one_sided_similarities(encoder, dataset, search_indices, triggers, modes, seed=seed, separator=insertion["separator"], batch_size=batch_size)
                 metrics = booster_metrics(similarities, base, low_mask, high_mask, constraints)
             cache.update(zip(missing, metrics))
-        return [dict(cache[sequence]) for sequence in sequences]
+        records = [dict(cache[sequence]) for sequence in sequences]
+        curriculum = search_cfg.get("repulsion_curriculum") if repulsive else None
+        if curriculum:
+            fraction = min(1.0, iteration / max(int(search_cfg["iterations"]) - 1, 1))
+            current_target = float(curriculum["start"] + fraction * (curriculum["end"] - curriculum["start"]))
+            for record in records:
+                record["violation_repulsion"] = max(0.0, current_target - float(record["displacement_q05"])) / max(current_target, 1e-12)
+                record["constraint_violation"] = float(sum(float(value) for key, value in record.items() if key.startswith("violation_")))
+                record["feasible"] = record["constraint_violation"] <= 1e-12
+        return records
 
     result = run_search(str(search_cfg["algorithm"]), len(pool), int(search_cfg["trigger_length"]), score_fn, search_cfg, seed)
-    search_frame = _search_records_frame(result.candidates, pool)
+    # Re-rank the archive under the final registered constraints.  This is
+    # essential for the repulsion curriculum: early weak-threshold feasibility
+    # is never allowed to leak into validation candidate selection.
+    final_archive = [{"sequence": tuple(record["sequence"]), **cache[tuple(record["sequence"])]} for record in result.candidates]
+    search_frame = _search_records_frame(final_archive, pool)
     search_frame.to_csv(output / "search_candidates.csv", index=False)
     pd.DataFrame(result.history).to_csv(output / "search_history.csv", index=False)
 
-    validation_count = min(int(config["validation"]["candidate_count"]), len(result.candidates))
-    validation_records = result.candidates[:validation_count]
-    validation_sequences = [tuple(record["sequence"]) for record in validation_records]
+    validation_count = min(int(config["validation"]["candidate_count"]), len(search_frame))
+    validation_sequences = [tuple(map(int, value.split(","))) for value in search_frame.head(validation_count)["pool_sequence"]]
     validation_triggers = [_sequence_trigger(sequence, pool) for sequence in validation_sequences]
     validation_base = dataset.baseline[validation_indices]
     validation_low, validation_high = validation_base <= low, validation_base >= high
@@ -443,7 +474,7 @@ def _run_multi_mode(config: dict[str, Any], encoder: SentenceTransformerEncoder,
     final[final["certified"]].to_csv(output / "certified_candidates.csv", index=False)
     best = final.iloc[0]
     plot_indices = _plot_indices(dataset, int(config["plot"]["pair_count"]), seed + 6)
-    curves = _repeat_curves(encoder, dataset, plot_indices, str(best["trigger"]), mode=str(config["plot"]["insertion_mode"]), max_count=int(config["plot"]["max_insertions"]), seed=seed, separator=insertion["separator"], batch_size=batch_size, shared=repulsive)
+    curves, plot_truncation = _repeat_curves(encoder, dataset, plot_indices, str(best["trigger"]), mode=str(config["plot"]["insertion_mode"]), max_count=int(config["plot"]["max_insertions"]), seed=seed, separator=insertion["separator"], batch_size=batch_size, shared=repulsive)
     curves_to_frame(curves, dataset.frame.iloc[plot_indices]).to_csv(output / "similarity_curves.csv", index=False)
     xlabel = "Inserted number of attractor string" if repulsive else "Inserted number of sticky_high token"
     plot_similarity_curves(curves, output / ("inserted_number_of_attractor_string.png" if repulsive else "inserted_number_of_sticky_high_token.png"), xlabel=xlabel, dpi=int(config["plot"]["dpi"]))
@@ -452,7 +483,7 @@ def _run_multi_mode(config: dict[str, Any], encoder: SentenceTransformerEncoder,
         original = np.concatenate([dataset.sentence1_embeddings[plot_indices], dataset.sentence2_embeddings[plot_indices]], axis=0)
         triggered = np.concatenate([projection_first[0, 0], projection_second[0, 0]], axis=0)
         plot_embedding_projection(original, triggered, output / "embedding_projection.png", dpi=int(config["plot"]["dpi"]))
-    return {"mode": mode_name, "low_threshold": low, "high_threshold": high, "vocab_screen_count": len(screen), "candidate_pool_size": len(pool), "search_archive_size": len(search_frame), "validation_candidate_count": len(validation_frame), "test_candidate_count": len(final), "certified_count": int(final["certified"].sum()), "best_trigger": str(best["trigger"]), "best_component_token_ids": str(best["component_token_ids"]), "best_feasible": bool(best["feasible"]), "best_certified": bool(best["certified"]), "best_constraint_violation": float(best["constraint_violation"]), "best_objective": float(best["objective"]), "best_metrics": {key: value for key, value in best.to_dict().items() if key not in {"trigger", "pool_sequence"}}}
+    return {"mode": mode_name, "low_threshold": low, "high_threshold": high, "vocab_screen_count": len(screen), "candidate_pool_size": len(pool), "search_archive_size": len(search_frame), "validation_candidate_count": len(validation_frame), "test_candidate_count": len(final), "certified_count": int(final["certified"].sum()), "best_trigger": str(best["trigger"]), "best_component_token_ids": str(best["component_token_ids"]), "best_feasible": bool(best["feasible"]), "best_certified": bool(best["certified"]), "best_constraint_violation": float(best["constraint_violation"]), "best_objective": float(best["objective"]), "plot_truncation": plot_truncation, "best_metrics": {key: value for key, value in best.to_dict().items() if key not in {"trigger", "pool_sequence"}}}
 
 
 def main() -> None:
