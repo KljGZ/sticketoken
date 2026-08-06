@@ -460,10 +460,34 @@ def main() -> None:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--device", default=None)
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Run a deterministic, explicitly non-scientific 64-token pipeline check.",
+    )
     args = parser.parse_args()
     config = load_config(args.config)
     if args.device:
         config["model"]["device"] = args.device
+    if args.smoke:
+        config["vocabulary"]["max_candidates"] = 64
+        config["runtime"]["batch_size"] = 32
+        config["runtime"]["candidate_chunk_size"] = 16
+        config["runtime"]["show_progress"] = False
+        config["plot"]["pair_count"] = 5
+        config["plot"]["max_insertions"] = 3
+        if config["mode"] == "single_sticky":
+            config["single_sticky"]["candidate_ratio"] = 0.10
+            config["single_sticky"]["validation_pair_limit"] = 8
+            config["single_sticky"]["test_pair_limit"] = 8
+        else:
+            config["data"]["pairs_per_group"] = {"search": 2, "validation": 3, "test": 4}
+            config["candidate_pool"]["size"] = 16
+            config["candidate_pool"]["reuse_screen"] = None
+            config["search"]["population_size"] = 12
+            config["search"]["iterations"] = 2
+            config["validation"]["candidate_count"] = 4
+            config["validation"]["test_candidate_count"] = 2
     seed_everything(int(config["seed"]))
     repo_root = Path(__file__).resolve().parents[1]
     output = (args.output_dir.resolve() if args.output_dir else resolve_path(config, config["output_dir"]))
@@ -476,6 +500,8 @@ def main() -> None:
     fractions = config["data"]["split"]
     dataset = build_dataset(frame, encoder, batch_size=int(config["runtime"]["batch_size"]), seed=int(config["seed"]), fractions=(float(fractions["search"]), float(fractions["validation"]), float(fractions["test"])), show_progress=bool(config["runtime"].get("show_progress", True)))
     vocabulary = load_vocabulary(resolve_path(config, config["vocabulary"]["analysis_path"]), allow_special=bool(config["vocabulary"]["allow_special_tokens"]), max_chars=int(config["vocabulary"]["max_chars"]))
+    if config["vocabulary"].get("max_candidates"):
+        vocabulary = vocabulary.head(int(config["vocabulary"]["max_candidates"])).reset_index(drop=True)
     low = high = None
     if config["mode"] != "single_sticky":
         low, high = _tail_thresholds(dataset, config)
@@ -493,4 +519,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
