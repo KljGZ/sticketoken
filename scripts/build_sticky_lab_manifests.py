@@ -39,9 +39,13 @@ def main() -> None:
             for path in sorted(run_dir.iterdir())
             if path.is_file() and path.name not in {"artifact_manifest.json", "token_embeddings.npy"}
         ]
+        registered_inputs = [record(data_path, root), record(vocab_path, root)]
+        reused_screen = config.get("candidate_pool", {}).get("reuse_screen")
+        if reused_screen:
+            registered_inputs.append(record(root / reused_screen, root))
         manifest = {
             "schema_version": 1,
-            "registered_inputs": [record(data_path, root), record(vocab_path, root)],
+            "registered_inputs": registered_inputs,
             "portable_outputs": [record(path, root) for path in portable_outputs],
             "excluded_reproducible_cache": "token_embeddings.npy",
         }
