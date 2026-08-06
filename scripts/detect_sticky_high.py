@@ -18,6 +18,7 @@ import importlib.metadata
 import json
 import platform
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,12 @@ import numpy as np
 import pandas as pd
 import torch
 from sentence_transformers import SentenceTransformer
+
+# Support the documented ``python scripts/detect_sticky_high.py`` invocation
+# without relying on a machine-specific /root/StickyToken path.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from stickytoken.sticky_high import (
     StickyHighThresholds,
@@ -249,7 +256,7 @@ def write_split_manifest(
 
 def main() -> None:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = REPO_ROOT
     data_path = (
         args.data
         or repo_root / "data/sentence_t5_base/sampled_sentence_pairs.csv"
