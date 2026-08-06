@@ -1,4 +1,32 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Local secrets and machine-specific configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local analysis downloads and runtime artifacts
+tmp/
+models/
+checkpoints/
+wandb/
+
 # Full-vocabulary embedding caches are reproducible but too large for Git.
 results/sticky_lab/**/token_embeddings.npy
-__pycache__/
-*.pyc
