@@ -9,3 +9,5 @@
 | repulsive_attractor | "lucrarea earthquake Smartphoneărălucrarea" | 0 | False | 2.905104182368986 | 165.26105213165283 |
 
 详细条件见 `docs/three_mode_experiments.md`，逐候选证据见各模式目录中的 CSV 和 `run_summary.json`。
+
+完整解释与失败项分析见 [`docs/first_three_mode_results.md`](../../../../docs/first_three_mode_results.md)。
