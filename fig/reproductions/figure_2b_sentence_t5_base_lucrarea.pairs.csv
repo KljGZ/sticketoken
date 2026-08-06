@@ -1,0 +1,64 @@
+pair_id,source_row,data_row,sentence1,sentence2,sentence2_token_length,selection_target,stored_initial_similarity,computed_initial_similarity
+0,0,0,There is no person riding a jetski in the waves,"Besides these 28 OCT4-regulated genes, the Oct4-OETN included 8 more genes of a recently published list of OCT4-correlated transcripts expressed in ESCs.",41,0.47928232,0.47928232,0.4792
+1,1,2,There is no rope being climbed by a man,"Besides these 28 OCT4-regulated genes, the Oct4-OETN included 8 more genes of a recently published list of OCT4-correlated transcripts expressed in ESCs.",41,0.49796004416666667,0.49184301,0.4917
+2,2,21,No girl with a bikini is playing in the dunes,"Besides these 28 OCT4-regulated genes, the Oct4-OETN included 8 more genes of a recently published list of OCT4-correlated transcripts expressed in ESCs.",41,0.5166377683333333,0.5054116,0.5054
+3,3,172,There is no person riding a jetski in the waves,"this frame contains transparent nouns ( and some adjectives ) denoting quantities of a mass or of individuals. as opposed to aggregate words such as group , set , these quantity do not have a status as wholes on their own. initially , at least , we annotate both quantity of masses and of individuals in this frame , though we may split the frame along these lines later on .",90,0.5353154925,0.56870687,0.569
+4,4,175,‚ äėglee ‚ äô star cory monteith found dead in hotel room,"i 've only made a couple of bbq sauces , but they 've always come out really well .",31,0.5539932166666667,0.57027036,0.5703
+5,5,185,There is no girl in pink twirling a ribbon,"the offer is also subject to goldman signing an agreement with drax 's senior banks , senior bond holders and hedging banks by sept . 30 , it said .",41,0.5726709408333333,0.5754696,0.575
+6,7,211,A shirtless man is leading a horse that is pulling a carriage,"i 've only made a couple of bbq sauces , but they 've always come out really well .",31,0.5913486649999999,0.58898884,0.5894
+7,10,247,There is no girl brushing her hair,"pratt & whitney had said that 75 per cent of the engine equipment would be outsourced to europe , with final assembly in germany .",37,0.6100263891666666,0.6077047,0.608
+8,13,289,afghan parliament votes to oust key ministers,parent is defined as a point of origin . i 'm not done being the best parent i can be for ben . not by a very long measure,38,0.6287041133333333,0.62954247,0.6294
+9,17,334,( medicine ) the capacity of an organism to defend against disease .,"The dollar fell as low as $1.1624 per euro from $1.1486 on Friday, and traded at $1.1594 at 10:15 a.m. in London.",39,0.6473818375,0.6529392,0.6533
+10,18,352,create an electrical short in something .,the united states and other nato members have refused to ratify the amended version until russia withdraws troops from former soviet republics moldova and georgia .,41,0.6660595616666667,0.6622983,0.6626
+11,21,390,if the other bulb is no longer contained in a closed path with the battery,"that said , i would caution against the attempted use of proof by anecdote here to prove the effectiveness and validity of the concealed carry laws .",36,0.6847372858333334,0.6820556,0.6826
+12,26,434,manila to increase counter-terror team,"the offer is also subject to goldman signing an agreement with drax 's senior banks , senior bond holders and hedging banks by sept . 30 , it said .",41,0.70341501,0.7049324,0.7046
+13,29,467,( cause to ) move gently back and forth,"driven by a need to compete or remorse ? armstrong admits doping , and says he will testify",30,0.7220927341666666,0.7220901,0.722
+14,31,499,"Chanceller Rishi Sunak has announced a £9 billion package of support to give self-employed people up to £2,500 a month to help them cope with the effects of coronavirus.
+
+The Chancellor tonight said the scheme, which will be open for at least three months, will cover 80 per cent of a self-employed person's average monthly profits.
+
+But it may not be available until June and will only be available to those who have a tax return for 2019, meaning the newly self-employed will be ineligible.
+
+And Mr Sunak warned that the self-employed could face tax hikes in the future as part of the effort to ""right the ship"" and repair the battered public finances after the coronavirus crisis is over.
+
+Details of the scheme came as the Department of Health announced a total of 578 people who have tested positive for coronavirus in the UK have died as of 5pm on March 25.
+
+Some 11,658 people have tested positive in the UK as of 9am on March 26.
+
+Mr Sunak's scheme will be open to those with a trading profit of less than £50,000 in 2018-19 or an average trading profit of less than £50,000 from 2016-17, 2017-18 and 2018-19.
+
+To qualify, more than half of their income in these periods must come from self-employment.
+
+Up to 3.8 million people will qualify for support, with average monthly payments expected to be £940 per person.
+
+Mr Sunak said the scheme, which will last for at least three months, ""is one of the most generous in the world"".
+
+""It targets support to those who need help most, offering the self-employed the same level of support as those in work.""
+
+He said the measure covers 95 per cent of people who receive the majority of their income from self-employment.
+
+But in a hint that the self-employed could be asked to pay more to the taxman in future he said it was ""now much harder to justify"" the tax breaks on offer to the self-employed if they were receiving the same level of state support.
+
+He said everyone would be ""chipping in together to right the ship afterwards"" once the crisis is over.
+
+A number of self-employed workers welcomed the Chancellor's measures but expressed concern about having to wait until June to claim.
+
+Louise Barina, a production manager who lives in London, said: ""After having spoken to our landlord, he has outright said no, that we can't get a delay on our rent.
+
+""In terms of the payment coming in June, that's really problematic for us as that's obviously three months of payment where we need to find the money for that.""
+
+Meanwhile the Department of Health said revising its reporting approach for coronavirus deaths ""to ensure data can be verified and published in a timely, consistent way"".
+
+A statement on Twitter said: ""Figures issued today are recorded as of 5pm on March 24 to 5pm on March 25.
+
+""Going forwards, figures on deaths will be recorded for the 24-hour period as of 5pm the previous day. Figures on tests remain as of the 24-hour period from 9am that day.""","two kuwaitis and six palestinians with jordanian passports were among the suspects , the official said .",31,0.7407704583333333,0.73872995,0.7393
+15,35,529,the difference is the amount of protein contained in the flour which can range from 5 % to 15 % .,"this frame contains transparent nouns ( and some adjectives ) denoting quantities of a mass or of individuals. as opposed to aggregate words such as group , set , these quantity do not have a status as wholes on their own. initially , at least , we annotate both quantity of masses and of individuals in this frame , though we may split the frame along these lines later on .",90,0.7594481824999999,0.75432634,0.7544
+16,36,592,"ambient conditions of temperature , precipitation , windiness , and sunniness pertain at a certain place and time. further specification of the conditions that pertain may also be indicated .","this frame contains transparent nouns ( and some adjectives ) denoting quantities of a mass or of individuals. as opposed to aggregate words such as group , set , these quantity do not have a status as wholes on their own. initially , at least , we annotate both quantity of masses and of individuals in this frame , though we may split the frame along these lines later on .",90,0.7781259066666666,0.78708166,0.787
+17,37,647,a solid piece of something ( usually having flat rectangular sides ) .,"this frame contains transparent nouns ( and some adjectives ) denoting quantities of a mass or of individuals. as opposed to aggregate words such as group , set , these quantity do not have a status as wholes on their own. initially , at least , we annotate both quantity of masses and of individuals in this frame , though we may split the frame along these lines later on .",90,0.7968036308333333,0.81568253,0.8154
+18,38,667,a prominent attribute or aspect of something .,"this frame contains transparent nouns ( and some adjectives ) denoting quantities of a mass or of individuals. as opposed to aggregate words such as group , set , these quantity do not have a status as wholes on their own. initially , at least , we annotate both quantity of masses and of individuals in this frame , though we may split the frame along these lines later on .",90,0.815481355,0.82608724,0.826
+19,40,688,japan suffers severe flooding - in pictures,"Reuters witnesses said many houses had been flattened and the city squares were packed with crying children and the homeless, huddled in blankets to protect them from the cold.",39,0.8341590791666667,0.8369566,0.8374
+20,41,742,"ahmadinejad are embarking on an adventure , not bernanke .","and , perhaps most important , ahmadinejad exerts a destabilizing influence , not bernanke .",33,0.8528368033333333,0.86503446,0.8657
+21,42,744,"two kuwaitis and six palestinians with jordanian passports were among the suspects , the official said .","the men had pakistani passports and reportedly were seen together at the airport earlier in the evening , law enforcement sources said .",30,0.8715145275,0.86623466,0.8667
+22,43,874,earthquake of 6.3 magnitude strikes off indonesia island,"5.9-magnitude quake hits sunda strait , indonesia : usgs",30,0.8901922516666667,0.8919827,0.892
+23,44,954,"his aides warn an abrupt departure could trigger more bloodshed , a view shared by many in liberia .","Taylor's aides warn an abrupt departure could trigger more chaos, a view shared by many in Liberia and, in private, even by mediators.",35,0.9088699758333333,0.9275477,0.9277
+24,39,669,a chart or map showing the movements or progress of an object .,this frame contains lus that express the form which a piece of artwork represents. the form may also represent the entire body of an artist 's work. the form may be further characterized by the time of some artwork 's creation or other descriptors .,58,0.9275477,0.8271066,0.827
