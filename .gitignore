@@ -30,3 +30,5 @@ wandb/
 
 # Full-vocabulary embedding caches are reproducible but too large for Git.
 results/sticky_lab/**/token_embeddings.npy
+results/sticky_lab/logs/
+results/sticky_lab/smoke/
