@@ -1,2 +1,4 @@
 # Full-vocabulary embedding caches are reproducible but too large for Git.
 results/sticky_lab/**/token_embeddings.npy
+__pycache__/
+*.pyc
