@@ -195,6 +195,47 @@ For a fast pipeline smoke test, add `--max-candidates 64 --search-per-group 2
 --finalist-size 4`. A capped run is a software check, not a complete
 vocabulary experiment.
 
+### Unified three-mode Sticky / Attractor lab
+
+The repository now separates three geometrically different questions instead
+of calling every optimized string a "sticky token":
+
+1. `single_sticky`: the paper-faithful, repeated single-token mean-attraction
+   detector;
+2. `multi_booster`: a multi-token monotone similarity booster that rewards the
+   low tail while constraining high-tail loss, global drops, range collapse and
+   rank collapse;
+3. `repulsive_attractor`: a shared-trigger, source-repulsive compact attractor
+   with explicit displacement, compact-radius and local-uniqueness bounds.
+
+Run the registered Sentence-T5-base experiments with:
+
+```bash
+python -m sticky_lab.run --config configs/single_sticky.yaml
+python -m sticky_lab.run --config configs/multi_booster.yaml
+python -m sticky_lab.run --config configs/repulsive_attractor.yaml
+```
+
+Modes 2 and 3 are project extensions motivated by Sticky Token and
+uniqueness--compactness trigger search; they are not claims made by the
+original Sticky Token paper.  Each run uses a seeded, similarity-stratified,
+disjoint search/validation/test partition and evaluates prefix, suffix and
+deterministic random-boundary insertion.  Candidate search never reads test
+metrics.  Final multi-token candidates must also pass raw-text retokenization
+and, for mode 2, prefix-path validation.
+
+Use `--smoke` only to check the software pipeline on 64 vocabulary entries.  A
+smoke result is marked by its resolved configuration and is not a scientific
+experiment.  The remote full-run launcher is:
+
+```bash
+bash scripts/run_three_mode_remote.sh /home/jkl/StickyToken
+```
+
+The exact protocol, metrics, certification conditions and interpretation
+boundaries are documented in
+[`docs/three_mode_experiments.md`](docs/three_mode_experiments.md).
+
 ### Interactive Demo
 
 You can explore the effects of sticky tokens using the gradio demo notebook:
