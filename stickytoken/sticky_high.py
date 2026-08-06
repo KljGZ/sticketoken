@@ -332,6 +332,45 @@ def _quantile(values: np.ndarray, probability: float) -> float:
     return float(np.quantile(values, probability))
 
 
+def add_constraint_violation(
+    frame: pd.DataFrame,
+    thresholds: StickyHighThresholds,
+) -> pd.DataFrame:
+    """Add normalized distance from the registered sticky-high constraints."""
+
+    thresholds.validate()
+    result = frame.copy()
+    required = {"low_gain_q10", "high_gain_q05", "high_failure_rate"}
+    missing = required - set(result.columns)
+    if missing:
+        raise ValueError(f"Missing constraint metric columns: {sorted(missing)}")
+    low_scale = max(thresholds.min_low_gain, 1e-12)
+    high_scale = max(thresholds.high_drop_tolerance, 1e-12)
+    failure_scale = max(thresholds.max_high_failure_rate, 1e-12)
+    violation = (
+        np.maximum(0.0, thresholds.min_low_gain - result["low_gain_q10"])
+        / low_scale
+        + np.maximum(
+            0.0,
+            -thresholds.high_drop_tolerance - result["high_gain_q05"],
+        )
+        / high_scale
+        + np.maximum(
+            0.0,
+            result["high_failure_rate"] - thresholds.max_high_failure_rate,
+        )
+        / failure_scale
+    )
+    for column in ("low_step_failure_rate", "high_step_failure_rate"):
+        if column in result and result[column].notna().any():
+            step_values = pd.to_numeric(result[column], errors="coerce").fillna(0.0)
+            violation += np.maximum(
+                0.0, step_values - thresholds.max_step_failure_rate
+            ) / max(thresholds.max_step_failure_rate, 1e-12)
+    result["constraint_violation"] = violation.astype(float)
+    return result
+
+
 def summarize_candidate(
     similarities: np.ndarray,
     baseline: np.ndarray,
@@ -404,7 +443,7 @@ def summarize_candidate(
             and high_step_failure <= thresholds.max_step_failure_rate
         )
     )
-    return {
+    record: dict[str, float | bool] = {
         "objective": float(objective),
         "low_gain_mean": float(np.mean(low_delta)),
         "low_gain_median": float(np.median(low_delta)),
@@ -422,6 +461,13 @@ def summarize_candidate(
         "curve_constraints_pass": bool(curve_constraints),
         "certified": bool(final_constraints and curve_constraints and full_curve),
     }
+    record_frame = add_constraint_violation(
+        pd.DataFrame([record]), thresholds
+    )
+    record["constraint_violation"] = float(
+        record_frame.iloc[0]["constraint_violation"]
+    )
+    return record
 
 
 def score_candidate_frame(
@@ -459,9 +505,17 @@ def rank_candidates(frame: pd.DataFrame) -> pd.DataFrame:
     for column in ("certified", "final_constraints_pass"):
         if column not in ranked:
             ranked[column] = False
+    if "constraint_violation" not in ranked:
+        ranked["constraint_violation"] = float("inf")
     return ranked.sort_values(
-        ["certified", "final_constraints_pass", "objective", "low_gain_q10"],
-        ascending=[False, False, False, False],
+        [
+            "certified",
+            "final_constraints_pass",
+            "constraint_violation",
+            "objective",
+            "low_gain_q10",
+        ],
+        ascending=[False, False, True, False, False],
         kind="mergesort",
     ).reset_index(drop=True)
 
@@ -517,8 +571,13 @@ def select_diverse_candidates(
 
         add(
             group.sort_values(
-                ["final_constraints_pass", "objective", "low_gain_q10"],
-                ascending=[False, False, False],
+                [
+                    "final_constraints_pass",
+                    "constraint_violation",
+                    "objective",
+                    "low_gain_q10",
+                ],
+                ascending=[False, True, False, False],
                 kind="mergesort",
             ),
             objective_count,
@@ -547,8 +606,13 @@ def select_diverse_candidates(
         if current_group_count < quota:
             add(
                 group.sort_values(
-                    ["final_constraints_pass", "objective", "low_gain_q10"],
-                    ascending=[False, False, False],
+                    [
+                        "final_constraints_pass",
+                        "constraint_violation",
+                        "objective",
+                        "low_gain_q10",
+                    ],
+                    ascending=[False, True, False, False],
                     kind="mergesort",
                 ),
                 quota - current_group_count,
@@ -557,8 +621,13 @@ def select_diverse_candidates(
     if len(selected_indices) < min(size, len(source)):
         add(
             source.sort_values(
-                ["final_constraints_pass", "objective", "low_gain_q10"],
-                ascending=[False, False, False],
+                [
+                    "final_constraints_pass",
+                    "constraint_violation",
+                    "objective",
+                    "low_gain_q10",
+                ],
+                ascending=[False, True, False, False],
                 kind="mergesort",
             ),
             size - len(selected_indices),

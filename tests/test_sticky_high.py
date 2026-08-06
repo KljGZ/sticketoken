@@ -7,6 +7,7 @@ import numpy as np
 
 from stickytoken.sticky_high import (
     StickyHighThresholds,
+    add_constraint_violation,
     append_candidate,
     compose_ordered_candidate_pairs,
     load_token_candidates,
@@ -145,13 +146,39 @@ class StickyHighTests(unittest.TestCase):
                         "certified": False,
                     }
                 )
+        thresholds = StickyHighThresholds()
         selected = select_diverse_candidates(
-            pd.DataFrame(rows), 8, StickyHighThresholds()
+            add_constraint_violation(pd.DataFrame(rows), thresholds), 8, thresholds
         )
         self.assertEqual(
             selected["candidate_kind"].value_counts().to_dict(),
             {"ordered_token_pair": 4, "single_token": 4},
         )
+
+    def test_constraint_violation_prefers_balanced_near_feasible_candidate(self):
+        import pandas as pd
+
+        thresholds = StickyHighThresholds()
+        frame = pd.DataFrame(
+            [
+                {
+                    "candidate": "tiny-uplift",
+                    "low_gain_q10": 0.003,
+                    "high_gain_q05": -0.017,
+                    "high_failure_rate": 0.0,
+                },
+                {
+                    "candidate": "balanced",
+                    "low_gain_q10": 0.012,
+                    "high_gain_q05": -0.023,
+                    "high_failure_rate": 0.08,
+                },
+            ]
+        )
+        scored = add_constraint_violation(frame, thresholds).sort_values(
+            "constraint_violation"
+        )
+        self.assertEqual(scored.iloc[0]["candidate"], "balanced")
 
 
 if __name__ == "__main__":

@@ -35,6 +35,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from stickytoken.sticky_high import (
     StickyHighThresholds,
+    add_constraint_violation,
     baseline_embeddings,
     compose_ordered_candidate_pairs,
     evaluate_candidate_batch,
@@ -457,7 +458,11 @@ def main() -> None:
         screen.to_csv(screen_path, index=False)
     else:
         screen_path = reuse_screen_dir / "screen_scores.csv"
-        screen = pd.read_csv(screen_path, keep_default_na=False)
+        screen = add_constraint_violation(
+            pd.read_csv(screen_path, keep_default_na=False), thresholds
+        )
+        screen = rank_candidates(screen)
+        screen.insert(0, "rank", np.arange(1, len(screen) + 1))
 
     combined_screen_parts = [screen.drop(columns=["rank"], errors="ignore")]
     pair_screen_path: Path | None = None
@@ -507,7 +512,11 @@ def main() -> None:
             pair_screen.to_csv(pair_screen_path, index=False)
         else:
             pair_screen_path = reuse_screen_dir / "pair_screen_scores.csv"
-            pair_screen = pd.read_csv(pair_screen_path, keep_default_na=False)
+            pair_screen = add_constraint_violation(
+                pd.read_csv(pair_screen_path, keep_default_na=False), thresholds
+            )
+            pair_screen = rank_candidates(pair_screen)
+            pair_screen.insert(0, "rank", np.arange(1, len(pair_screen) + 1))
             pair_candidates = pair_screen[component_columns].copy()
         combined_screen_parts.append(
             pair_screen.drop(columns=["rank"], errors="ignore")
