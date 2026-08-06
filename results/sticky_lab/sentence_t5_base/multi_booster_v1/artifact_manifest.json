@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/candidate_pool.csv",
+      "size_bytes": 82554,
+      "sha256": "d2b2015c90bd773e33ccca7563cf8fdc7f8e9954129bc3145e3c41ffc41f9bb0"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/certified_candidates.csv",
+      "size_bytes": 447,
+      "sha256": "033363c6566814e89940b34d57f7127b65f8fbd6a65de6d15b964b417d09fcca"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/final_similarity_boxplot.png",
+      "size_bytes": 121374,
+      "sha256": "4583f951ce213df56c9b0c22d3b9b83086a4e3710f41025f8e974e8c8533170a"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/inserted_number_of_sticky_high_token.png",
+      "size_bytes": 387183,
+      "sha256": "76ba804ab2f399b9220af13115b97b30514789fa260e9da68f45cef6e6a28412"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/resolved_config.json",
+      "size_bytes": 2136,
+      "sha256": "c086f7a3fd46ab54797d97e959fabada51888a15b76763e9de3a7fd3ed850425"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/run_summary.json",
+      "size_bytes": 2706,
+      "sha256": "88863c96befc4c8ee81bdd520a95518802ed49f026e310ee71ad914a952cf295"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/search_candidates.csv",
+      "size_bytes": 789906,
+      "sha256": "37f4bfa802b01c21c3feae416abfebc36a033d9d2f08dcf0ca594424ab633a43"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/search_history.csv",
+      "size_bytes": 2394,
+      "sha256": "0ff0b47d0ac939598f185ea8269ef980d50f60e3f538f5fc28ae20625167a057"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/similarity_curves.csv",
+      "size_bytes": 21734,
+      "sha256": "3282ee05148857fcf579d3074d6c6275cb2aa6f6ad492b1ae94571f028816a9c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/single_token_screen.csv",
+      "size_bytes": 10781863,
+      "sha256": "70dc21fc3700a40bdb87b033a03cff58269308eeb00938d5b85f5723b1b039ec"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/split_manifest.csv",
+      "size_bytes": 258291,
+      "sha256": "e2ffc02269c3ea8650da43d93b9bcedf725a5a076f03d3a09d2eeb7eb06473cd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/test_candidates.csv",
+      "size_bytes": 7844,
+      "sha256": "7a05ea824053f8bb6bc9b0a24ea5014ac756d0d678fd8ace7e5e2f554f707402"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/validation_candidates.csv",
+      "size_bytes": 23075,
+      "sha256": "c63cdd2678526f3e629054502c3cdf2f198a127423339f6081df4f5f38c25ce5"
+    }
+  ],
+  "excluded_reproducible_cache": "token_embeddings.npy"
+}

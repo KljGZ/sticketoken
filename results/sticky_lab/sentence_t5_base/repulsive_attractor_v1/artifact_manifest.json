@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v1/single_token_screen.csv",
+      "size_bytes": 10781863,
+      "sha256": "70dc21fc3700a40bdb87b033a03cff58269308eeb00938d5b85f5723b1b039ec"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/candidate_pool.csv",
+      "size_bytes": 78857,
+      "sha256": "dead313b0e7c2df70f4c6dc81e42fa19fd9beee660a2c679978e4b252a000a52"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/certified_candidates.csv",
+      "size_bytes": 472,
+      "sha256": "e7be87fe4483a7ee43b64c248503c08a9a5bc34cad7846f66e0f6afbcc3eed87"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/embedding_projection.png",
+      "size_bytes": 305452,
+      "sha256": "f2a0b17ec88902d87c13828ea9f6ea03545fc83132ca5bca53f24f898b2cee71"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/final_similarity_boxplot.png",
+      "size_bytes": 137521,
+      "sha256": "a8ec2d199906531c6db4e0edae7b0e724d43585dd3bf078f7f5d16b27d5b6a0b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/inserted_number_of_attractor_string.png",
+      "size_bytes": 268098,
+      "sha256": "9ecaa068b200218bb8de484480620f3361a4288071e4f309985dcdc78657a9ec"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/resolved_config.json",
+      "size_bytes": 2505,
+      "sha256": "86cd761062dfc7aa3f54fbb0ab2bd6b41bac3e5ffe8d2d187291a29d3e3fa5cc"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/run_summary.json",
+      "size_bytes": 2690,
+      "sha256": "ba515cb0db1043a2726cd66e06bd4413a6557b02cc5347a8edef7c5ffeea478c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/search_candidates.csv",
+      "size_bytes": 801062,
+      "sha256": "788de52baef6a01246648f9fbfb6ffd6274486a5d0ea9a88ee8d26348a823819"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/search_history.csv",
+      "size_bytes": 2850,
+      "sha256": "1616ab54090fdb7d4e7400afb4f4ed34538c2c19b89c3c952da0c3aa0835bc0d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/similarity_curves.csv",
+      "size_bytes": 21750,
+      "sha256": "e8331d1086e69117230858ef923ee56f44a8a6e5a3c21d45b048f7c2ff588d06"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/split_manifest.csv",
+      "size_bytes": 258291,
+      "sha256": "e2ffc02269c3ea8650da43d93b9bcedf725a5a076f03d3a09d2eeb7eb06473cd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/test_candidates.csv",
+      "size_bytes": 7591,
+      "sha256": "07890d32c3dace3e5fba262dbad4ab7f3aa0485739cb6385ce7912b16becf547"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1/validation_candidates.csv",
+      "size_bytes": 26032,
+      "sha256": "193488fa6e2f38d0c97fc2526a0d5b2d4e23c985d9629c86d823fccbfe93447d"
+    }
+  ],
+  "excluded_reproducible_cache": "token_embeddings.npy"
+}

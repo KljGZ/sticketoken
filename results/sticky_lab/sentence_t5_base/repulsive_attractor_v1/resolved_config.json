@@ -1,0 +1,97 @@
+{
+  "mode": "repulsive_attractor",
+  "seed": 42,
+  "output_dir": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v1",
+  "model": {
+    "id": "sentence-transformers/sentence-t5-base",
+    "device": "cuda:7",
+    "cache_folder": null,
+    "local_path": "/home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "trust_remote_code": false
+  },
+  "data": {
+    "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+    "min_tokens": 5,
+    "max_tokens": 160,
+    "split": {
+      "search": 0.2,
+      "validation": 0.3,
+      "test": 0.5
+    },
+    "pairs_per_group": {
+      "search": 8,
+      "validation": 48,
+      "test": 64
+    }
+  },
+  "similarity_groups": {
+    "method": "quantile",
+    "low_quantile": 0.3,
+    "high_quantile": 0.7
+  },
+  "vocabulary": {
+    "analysis_path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+    "allow_special_tokens": false,
+    "max_chars": 64
+  },
+  "insertion": {
+    "protocol": "shared_trigger",
+    "modes": [
+      "prefix",
+      "suffix",
+      "random"
+    ],
+    "separator": ""
+  },
+  "constraints": {
+    "min_low_gain": 0.02,
+    "high_drop_tolerance": 0.02,
+    "min_displacement_q05": 0.35,
+    "max_compact_radius_q95": 0.45,
+    "min_local_uniqueness_lower_bound": 0.02,
+    "compactness_weight": 0.5
+  },
+  "candidate_pool": {
+    "size": 256,
+    "reuse_screen": "results/sticky_lab/sentence_t5_base/multi_booster_v1/single_token_screen.csv",
+    "screen_min_low_coverage": 0.6,
+    "screen_global_drop_tolerance": 0.03,
+    "screen_max_global_drop_rate": 0.15,
+    "screen_min_range_ratio": 0.6,
+    "screen_min_spearman": 0.7,
+    "screen_low_gain_margin": 0.01,
+    "screen_coverage_weight": 0.05
+  },
+  "search": {
+    "algorithm": "cem",
+    "trigger_length": 5,
+    "population_size": 128,
+    "elite_ratio": 0.1,
+    "iterations": 30,
+    "update_alpha": 0.3,
+    "probability_floor": 0.0001,
+    "repulsion_curriculum": {
+      "start": 0.05,
+      "end": 0.35
+    }
+  },
+  "validation": {
+    "candidate_count": 64,
+    "test_candidate_count": 16,
+    "min_realizability": 0.95,
+    "step_drop_tolerance": 0.002,
+    "max_step_failure_rate": 0.1
+  },
+  "runtime": {
+    "batch_size": 256,
+    "candidate_chunk_size": 64,
+    "show_progress": true
+  },
+  "plot": {
+    "pair_count": 25,
+    "insertion_mode": "suffix",
+    "max_insertions": 30,
+    "dpi": 300
+  },
+  "config_path": "/home/jkl/StickyToken/configs/repulsive_attractor.yaml"
+}

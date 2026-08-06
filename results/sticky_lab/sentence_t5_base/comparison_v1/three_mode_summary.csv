@@ -1,0 +1,4 @@
+mode,best_trigger_json,certified_count,candidate_count,best_certified,best_feasible,best_constraint_violation,runtime_seconds,model_revision,seed,precision,insertion_modes
+single_sticky,""" <extra_id_27>""",0,642,False,False,0.0,735.5820434093475,fc5d4628481afbbaaacd7af6bb07cf9d3865f781,42,float32 search and final validation,"prefix,suffix,random"
+multi_booster,"""lucrareatial senzati sportingenţă""",0,16,False,False,1.0425912141799927,1004.6469066143036,fc5d4628481afbbaaacd7af6bb07cf9d3865f781,42,float32 search and final validation,"prefix,suffix,random"
+repulsive_attractor,"""lucrarea earthquake Smartphoneărălucrarea""",0,16,False,False,2.905104182368986,165.26105213165283,fc5d4628481afbbaaacd7af6bb07cf9d3865f781,42,float32 search and final validation,"prefix,suffix,random"

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/all_token_scores.csv",
+      "size_bytes": 4542940,
+      "sha256": "ca4d63c9b83ce5a3af2dc5d1c36ac3c49aa67b0b402399d995d09e1407b890de"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/candidate_validation.csv",
+      "size_bytes": 92568,
+      "sha256": "80c78f1ee760b755d8b81eec7f67aa689dff3c20e30d7e834b24e20852c8f15d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/final_similarity_boxplot.png",
+      "size_bytes": 135517,
+      "sha256": "297d2303cd9b4f9752be822867451e183bae1331ad6b372c154ee651debf82a4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/model_similarity_mean.json",
+      "size_bytes": 134,
+      "sha256": "0e9d55bce844d5adad286a9abb8411b4e6d2bac780b411376cc4d6a3d35a62fd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/pair_filter_statistics.json",
+      "size_bytes": 154,
+      "sha256": "656ae7d886a893d98ea195e90ddfc9a875611760012eb7738a137753dc889934"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/resolved_config.json",
+      "size_bytes": 1533,
+      "sha256": "77afdd243353dd7f899c1ba100534ceba3b2c710bbec00c5a838b2d377a72c2a"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/run_summary.json",
+      "size_bytes": 1401,
+      "sha256": "1b6e21093f62d9cfb95f6dc84c69292c05bb8a1b918399ed7ee0023237490354"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/similarity_curves.csv",
+      "size_bytes": 21800,
+      "sha256": "3c133f5b242556a5edd77afb97834dd63d54de4a788460fcca0a9b1f12ab2874"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/similarity_curves.png",
+      "size_bytes": 373980,
+      "sha256": "a56b92db5697c762d2e098d29354d194945a0e24b132497fed859a4bf72a104d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/split_manifest.csv",
+      "size_bytes": 256828,
+      "sha256": "d6c7598ef82e21cd20187142076c8ad393fe733c40975fcf8723797cea636fc8"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/validated_sticky_tokens.csv",
+      "size_bytes": 225,
+      "sha256": "3788ffcf388369ef8645a8d336feec444564b2e46603be806678076895537906"
+    }
+  ],
+  "excluded_reproducible_cache": "token_embeddings.npy"
+}

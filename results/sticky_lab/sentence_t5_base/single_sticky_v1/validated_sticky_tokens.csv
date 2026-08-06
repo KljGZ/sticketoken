@@ -1,0 +1,1 @@
+rank,token_id,literal,raw_vocab,category,component_ids,sticky_score,semantic_penalty,M_positive,M_negative,F_positive,F_negative,nonpositive_denominator_count,validation_GE_max,validation_pass,test_GE_max,test_pass,certified

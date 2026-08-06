@@ -1,0 +1,63 @@
+{
+  "mode": "single_sticky",
+  "seed": 42,
+  "output_dir": "results/sticky_lab/sentence_t5_base/single_sticky_v1",
+  "model": {
+    "id": "sentence-transformers/sentence-t5-base",
+    "device": "cuda:5",
+    "cache_folder": null,
+    "local_path": "/home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "trust_remote_code": false
+  },
+  "data": {
+    "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+    "min_tokens": 5,
+    "max_tokens": 160,
+    "split": {
+      "search": 0.2,
+      "validation": 0.3,
+      "test": 0.5
+    }
+  },
+  "vocabulary": {
+    "analysis_path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+    "allow_special_tokens": true,
+    "max_chars": 64
+  },
+  "insertion": {
+    "protocol": "one_sided",
+    "modes": [
+      "prefix",
+      "suffix",
+      "random"
+    ],
+    "separator": ""
+  },
+  "single_sticky": {
+    "repeat_count": 8,
+    "sample_pair_count": 5,
+    "candidate_ratio": 0.02,
+    "pair_filter_margin": 0.0,
+    "validation_pair_limit": 128,
+    "test_pair_limit": 192,
+    "alpha": 1.0,
+    "beta": 1.0,
+    "gamma": 1e-06,
+    "validation": {
+      "epsilon_mode": "fixed",
+      "epsilon": 0.1106
+    }
+  },
+  "runtime": {
+    "batch_size": 256,
+    "candidate_chunk_size": 64,
+    "show_progress": true
+  },
+  "plot": {
+    "pair_count": 25,
+    "insertion_mode": "suffix",
+    "max_insertions": 30,
+    "dpi": 300
+  },
+  "config_path": "/home/jkl/StickyToken/configs/single_sticky.yaml"
+}

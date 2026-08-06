@@ -1,0 +1,6 @@
+{
+  "u": 0.7959119364774819,
+  "formula": "(||sum(z)||^2-M)/(M(M-1))",
+  "accumulator_dtype": "float64",
+  "valid_vocab_size": 32097
+}
