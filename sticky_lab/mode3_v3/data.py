@@ -109,7 +109,7 @@ def build_unique_corpus(
             duplicate_source_conflicts += 1
             groups = sorted({str(previous["source_group"]), str(record["source_group"])})
             previous["source_group"] = "shared:" + ":".join(groups)
-    frame = pd.DataFrame.from_records(records.values())
+    frame = pd.DataFrame.from_records(list(records.values()))
     if frame.empty:
         raise ValueError("No non-empty unique texts were found")
     lengths = _token_lengths(tokenizer, frame["text"].tolist())
@@ -175,7 +175,7 @@ def build_ood_corpus(
     for record in _iter_rows(raw, text_columns, None):
         if record["sentence_id"] not in excluded_sentence_ids:
             records.setdefault(str(record["sentence_id"]), record)
-    frame = pd.DataFrame.from_records(records.values())
+    frame = pd.DataFrame.from_records(list(records.values()))
     if frame.empty:
         return frame
     lengths = _token_lengths(tokenizer, frame["text"].tolist())
