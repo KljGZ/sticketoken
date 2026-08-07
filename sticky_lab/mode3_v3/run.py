@@ -233,6 +233,7 @@ def _evaluate_triggers(
                 )
             )
         record["position"] = position
+        record["min_displacement_q05"] = constraints["min_displacement_q05"]
         record["max_compact_radius_q95"] = constraints["max_compact_radius_q95"]
         records.append(record)
     return records, triggered

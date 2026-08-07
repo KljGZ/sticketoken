@@ -94,7 +94,7 @@ M_{density}=r_k(c_x,B)-\rho_{95}-Q_{.95}(r_k(b,B)).
 所有核心硬指标在 validation/test 上使用 500 次 grouped bootstrap、95% 双侧区间。下界约束用 CI lower，上界约束用 CI upper。
 
 - Level 1 `shift_certified`：位移 q05 的 CI lower 至少 0.02；
-- Level 2 `separator_certified`：`M_sep` 的 CI lower 大于 0；
+- Level 2 `separator_certified`：Level 1 已通过，且 `M_sep` 的 CI lower 大于 0；
 - Level 3 `compact_certified`：`rho95` 的 CI upper 不超过 0.40；
 - Level 4 分别输出 `sample_blank_certified`、`cluster_blank_certified`、`density_blank_certified`。
 

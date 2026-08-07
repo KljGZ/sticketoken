@@ -111,7 +111,7 @@ def evaluate_mode3(
     cluster_margin = support.cluster_blank_margin(center, radius_q95)
     density_margin = support.knn_density_margin(center, radius_q95)
     shift_ok = float(np.quantile(displacement, 0.05)) >= float(constraints.get("min_displacement_q05", 0.0))
-    separator_ok = separation > float(constraints.get("min_separation_margin", 0.0))
+    separator_ok = shift_ok and separation > float(constraints.get("min_separation_margin", 0.0))
     compact_ok = radius_q95 <= float(constraints.get("max_compact_radius_q95", float("inf")))
     sample_ok = sample_margin > float(constraints.get("min_sample_blank_margin", 0.0))
     cluster_ok = cluster_margin > float(constraints.get("min_cluster_blank_margin", 0.0))
@@ -239,7 +239,8 @@ def grouped_bootstrap(
         result["displacement_q05_ci_lower"] >= float(constraints.get("min_displacement_q05", 0.0))
     )
     result["separator_certified"] = bool(
-        result["separation_margin_ci_lower"] > float(constraints.get("min_separation_margin", 0.0))
+        result["shift_certified"]
+        and result["separation_margin_ci_lower"] > float(constraints.get("min_separation_margin", 0.0))
     )
     result["compact_certified"] = bool(
         result["compact_radius_q95_ci_upper"] <= float(constraints.get("max_compact_radius_q95", float("inf")))
@@ -263,7 +264,9 @@ def grouped_bootstrap(
 
 
 def separator_sort_key(record: dict[str, Any]) -> tuple[float, ...]:
-    violation = max(0.0, -float(record.get("separation_margin", -float("inf"))))
+    displacement_limit = float(record.get("min_displacement_q05", 0.02))
+    violation = max(0.0, displacement_limit - float(record.get("displacement_q05", -float("inf"))))
+    violation += max(0.0, -float(record.get("separation_margin", -float("inf"))))
     return (
         0.0 if bool(record.get("separator_certified", False)) else 1.0,
         violation,
@@ -274,8 +277,10 @@ def separator_sort_key(record: dict[str, Any]) -> tuple[float, ...]:
 
 def blank_sort_key(record: dict[str, Any]) -> tuple[float, ...]:
     radius_limit = float(record.get("max_compact_radius_q95", 0.40))
+    displacement_limit = float(record.get("min_displacement_q05", 0.02))
     violations = (
-        max(0.0, -float(record.get("separation_margin", -float("inf"))))
+        max(0.0, displacement_limit - float(record.get("displacement_q05", -float("inf"))))
+        + max(0.0, -float(record.get("separation_margin", -float("inf"))))
         + max(0.0, -float(record.get("sample_blank_margin", -float("inf"))))
         + max(0.0, float(record.get("compact_radius_q95", float("inf"))) - radius_limit)
         + min(
