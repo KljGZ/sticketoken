@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from sticky_lab.mode3_v3.cem_search import cem_search
-from sticky_lab.mode3_v3.data import build_unique_corpus
+from sticky_lab.mode3_v3.data import build_ood_corpus, build_unique_corpus
 from sticky_lab.mode3_v3.metrics import evaluate_mode3, grouped_bootstrap
 from sticky_lab.mode3_v3.support import BenignSupportModel, fit_spherical_kmeans
 
@@ -47,6 +47,49 @@ def test_v3_unique_data_filters_both_columns_and_has_no_leakage(tmp_path) -> Non
     assert groups["search"].isdisjoint(groups["test"])
     assert groups["validation"].isdisjoint(groups["test"])
     assert audit["document_provenance_available"]
+
+
+def test_v3_multi_file_corpus_respects_fixed_limits_and_ood_exclusion(tmp_path) -> None:
+    paths = []
+    for file_index in range(2):
+        frame = pd.DataFrame(
+            {
+                "sentence1": [f"source {file_index} left {row}" for row in range(15)],
+                "sentence2": [f"source {file_index} right {row}" for row in range(15)],
+            }
+        )
+        path = tmp_path / f"pairs_{file_index}.csv"
+        frame.to_csv(path, index=False)
+        paths.append(path)
+    splits, audit = build_unique_corpus(
+        paths,
+        _WhitespaceTokenizer(),
+        text_columns=["sentence1", "sentence2"],
+        source_column=None,
+        min_tokens=4,
+        max_tokens=4,
+        fractions=(0.6, 0.2, 0.2),
+        seed=11,
+        sample_limits={"search": 12, "validation": 4, "test": 4},
+    )
+    assert {name: len(part) for name, part in splits.items()} == {"search": 12, "validation": 4, "test": 4}
+    assert audit["input_file_count"] == 2
+    assert audit["fallback_grouping"] == "one_group_per_unique_sentence"
+    assert all(value == 0 for value in audit["overlap"].values())
+
+    excluded = set(pd.concat(splits.values(), ignore_index=True)["sentence_id"])
+    ood = build_ood_corpus(
+        paths,
+        _WhitespaceTokenizer(),
+        text_columns=["sentence1", "sentence2"],
+        min_tokens=4,
+        max_tokens=4,
+        excluded_sentence_ids=excluded,
+        sample_limit=7,
+        seed=12,
+    )
+    assert len(ood) == 7
+    assert set(ood["sentence_id"]).isdisjoint(excluded)
 
 
 def test_true_spherical_kmeans_iterates_and_normalizes_centers() -> None:
