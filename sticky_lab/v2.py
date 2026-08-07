@@ -605,6 +605,204 @@ def prepare(config: dict[str, Any], encoder: SentenceTransformerEncoder, output:
     }
 
 
+def prepare_common_only(
+    config: dict[str, Any],
+    encoder: SentenceTransformerEncoder,
+    output: Path,
+) -> dict[str, Any]:
+    """Prepare immutable split/geometry artifacts without screening tokens."""
+    if config["mode"] == "single_sticky":
+        raise ValueError("Mode 1 uses --phase full")
+    dataset = _prepare_common(config, encoder, output)
+    if config["mode"] == "multi_booster":
+        low, high = _tail_thresholds(dataset, config)
+        geometry = {"low_threshold": low, "high_threshold": high, "derived_from": "search split only"}
+    else:
+        for split in ("search", "validation", "test"):
+            unique = unique_sentences(dataset, split)
+            embeddings = encoder.encode_texts(
+                unique["text"].tolist(),
+                batch_size=int(config["runtime"]["batch_size"]),
+                show_progress=bool(config["runtime"].get("show_progress", True)),
+            )
+            unique.to_csv(output / f"unique_{split}.csv", index=False)
+            np.save(output / f"unique_{split}_embeddings.npy", embeddings)
+        search_frame, search_embeddings = _load_unique(output, "search")
+        centers, radii, search_labels, selection = _fit_spherical_clusters(search_embeddings, config)
+        np.save(output / "cluster_centers.npy", centers)
+        pd.DataFrame({"cluster": np.arange(len(radii)), "radius_q95": radii}).to_csv(
+            output / "cluster_radii.csv", index=False
+        )
+        search_frame["source_cluster"] = search_labels
+        search_frame["source_cluster_distance"] = np.linalg.norm(
+            search_embeddings - centers[search_labels], axis=1
+        )
+        search_frame.to_csv(output / "unique_search.csv", index=False)
+        for split in ("validation", "test"):
+            frame, embeddings = _load_unique(output, split)
+            labels = np.argmax(embeddings @ centers.T, axis=1)
+            frame["source_cluster"] = labels
+            frame["source_cluster_distance"] = np.linalg.norm(embeddings - centers[labels], axis=1)
+            frame.to_csv(output / f"unique_{split}.csv", index=False)
+        _write_json(output / "clustering_selection.json", selection)
+        from sklearn.neighbors import NearestNeighbors
+
+        k = min(int(config["mode3"].get("knn_k", 10)) + 1, len(search_embeddings))
+        self_distances = (
+            NearestNeighbors(n_neighbors=k, metric="euclidean")
+            .fit(search_embeddings)
+            .kneighbors(search_embeddings, return_distance=True)[0][:, -1]
+        )
+        _write_json(
+            output / "benign_density_reference.json",
+            {"knn_k": k - 1, "benign_knn_q95": float(np.quantile(self_distances, 0.95))},
+        )
+        geometry = {
+            "cluster_count": len(centers),
+            "cluster_radii_quantile": 0.95,
+            "clustering_fit_split": "search",
+        }
+    _write_json(output / "frozen_search_geometry.json", geometry)
+    return {
+        "phase": "prepare-common",
+        "mode": config["mode"],
+        "split_sizes": {name: len(indices) for name, indices in dataset.split_indices.items()},
+        **geometry,
+    }
+
+
+def screen_shard(
+    config: dict[str, Any],
+    encoder: SentenceTransformerEncoder,
+    output: Path,
+    shard_index: int,
+    shard_count: int,
+) -> dict[str, Any]:
+    """Exhaustively score one deterministic vocabulary-index shard."""
+    if shard_count < 1 or not 0 <= shard_index < shard_count:
+        raise ValueError("Invalid vocabulary shard index/count")
+    if not (output / "prepared_pairs.csv").exists():
+        raise FileNotFoundError("Run --phase prepare-common before screen-shard")
+    vocabulary = load_vocabulary(
+        _resolve(config, config["vocabulary"]["analysis_path"]),
+        allow_special=bool(config["vocabulary"]["allow_special_tokens"]),
+        max_chars=int(config["vocabulary"]["max_chars"]),
+    )
+    if config["vocabulary"].get("max_candidates"):
+        vocabulary = vocabulary.head(int(config["vocabulary"]["max_candidates"])).reset_index(drop=True)
+    shard_indices = np.array_split(np.arange(len(vocabulary), dtype=int), shard_count)[shard_index]
+    shard = vocabulary.iloc[shard_indices].reset_index(drop=True)
+    dataset = load_prepared_dataset(output)
+    geometry = _read_json(output / "frozen_search_geometry.json")
+    chunk_size = int(config["runtime"]["screen_candidate_chunk_size"])
+    frames: list[pd.DataFrame] = []
+    if config["mode"] == "multi_booster":
+        low, high = float(geometry["low_threshold"]), float(geometry["high_threshold"])
+        search_indices = dataset.split_indices["search"]
+        low_indices = search_indices[dataset.baseline[search_indices] <= low]
+        high_indices = search_indices[dataset.baseline[search_indices] >= high]
+        per_group = int(config["runtime"]["screen_examples_per_group"])
+        examples = np.concatenate(
+            [
+                select_balanced(low_indices, dataset.baseline, per_group, int(config["seed"])),
+                select_balanced(high_indices, dataset.baseline, per_group, int(config["seed"]) + 1),
+            ]
+        )
+        for start in range(0, len(shard), chunk_size):
+            chunk = shard.iloc[start : start + chunk_size].reset_index(drop=True)
+            print(
+                f"mode2 shard {shard_index + 1}/{shard_count}: {start + 1}-{start + len(chunk)} / {len(shard)}",
+                flush=True,
+            )
+            metrics = _mode2_evaluate(
+                encoder, dataset, examples, chunk["literal"].tolist(), config, low, high
+            )
+            frames.append(pd.concat([chunk, pd.DataFrame([_flatten_record(item) for item in metrics])], axis=1))
+    else:
+        unique_frame, unique_embeddings = _load_unique(output, "search")
+        centers = np.load(output / "cluster_centers.npy")
+        radii = pd.read_csv(output / "cluster_radii.csv")["radius_q95"].to_numpy(dtype=float)
+        count = min(int(config["runtime"]["screen_unique_sentences"]), len(unique_frame))
+        chosen = np.random.default_rng(int(config["seed"])).choice(len(unique_frame), size=count, replace=False)
+        examples = unique_frame.iloc[chosen].reset_index(drop=True)
+        example_embeddings = unique_embeddings[chosen]
+        for start in range(0, len(shard), chunk_size):
+            chunk = shard.iloc[start : start + chunk_size].reset_index(drop=True)
+            print(
+                f"mode3 shard {shard_index + 1}/{shard_count}: {start + 1}-{start + len(chunk)} / {len(shard)}",
+                flush=True,
+            )
+            metrics = _mode3_evaluate(
+                encoder,
+                examples,
+                example_embeddings,
+                chunk["literal"].tolist(),
+                config,
+                centers,
+                radii,
+                include_density=False,
+            )
+            frames.append(pd.concat([chunk, pd.DataFrame([_flatten_record(item) for item in metrics])], axis=1))
+    frame = pd.concat(frames, ignore_index=True)
+    shard_dir = output / "screen_shards"
+    shard_dir.mkdir(parents=True, exist_ok=True)
+    path = shard_dir / f"shard_{shard_index:02d}_of_{shard_count:02d}.csv"
+    frame.to_csv(path, index=False)
+    return {
+        "phase": "screen-shard",
+        "mode": config["mode"],
+        "shard_index": shard_index,
+        "shard_count": shard_count,
+        "first_vocabulary_index": int(shard_indices[0]) if len(shard_indices) else None,
+        "last_vocabulary_index": int(shard_indices[-1]) if len(shard_indices) else None,
+        "row_count": len(frame),
+        "output": str(path),
+    }
+
+
+def merge_prepare_shards(
+    config: dict[str, Any],
+    output: Path,
+    shard_count: int,
+) -> dict[str, Any]:
+    paths = [output / "screen_shards" / f"shard_{index:02d}_of_{shard_count:02d}.csv" for index in range(shard_count)]
+    missing = [str(path) for path in paths if not path.exists()]
+    if missing:
+        raise FileNotFoundError(f"Missing screen shards: {missing}")
+    screen = pd.concat([pd.read_csv(path, keep_default_na=False) for path in paths], ignore_index=True)
+    vocabulary = load_vocabulary(
+        _resolve(config, config["vocabulary"]["analysis_path"]),
+        allow_special=bool(config["vocabulary"]["allow_special_tokens"]),
+        max_chars=int(config["vocabulary"]["max_chars"]),
+    )
+    if config["vocabulary"].get("max_candidates"):
+        vocabulary = vocabulary.head(int(config["vocabulary"]["max_candidates"])).reset_index(drop=True)
+    expected_token_ids = set(vocabulary["token_id"].astype(int).tolist())
+    merged_token_ids = screen["token_id"].astype(int)
+    if (
+        len(screen) != len(vocabulary)
+        or merged_token_ids.nunique() != len(vocabulary)
+        or set(merged_token_ids.tolist()) != expected_token_ids
+    ):
+        raise AssertionError("Merged screen is not an exhaustive, duplicate-free vocabulary partition")
+    key = mode2_sort_key if config["mode"] == "multi_booster" else mode3_sort_key
+    screen = pd.DataFrame(sorted(screen.to_dict("records"), key=key))
+    screen.insert(0, "rank", np.arange(1, len(screen) + 1))
+    screen.to_csv(output / "single_token_screen.csv", index=False)
+    pool = _candidate_pool(screen, vocabulary, config)
+    pool.to_csv(output / "candidate_pool.csv", index=False)
+    geometry = _read_json(output / "frozen_search_geometry.json")
+    return {
+        "phase": "merge-prepare",
+        "mode": config["mode"],
+        "valid_vocabulary_size": len(vocabulary),
+        "merged_screen_size": len(screen),
+        "candidate_pool_size": len(pool),
+        "shard_count": shard_count,
+        **geometry,
+    }
+
+
 def _dynamic_mode2_indices(dataset, low: float, high: float, count: int, seed: int) -> np.ndarray:
     search = dataset.split_indices["search"]
     low_indices = search[dataset.baseline[search] <= low]
@@ -1435,9 +1633,23 @@ def _smoke_overrides(config: dict[str, Any]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("--phase", choices=["prepare", "search", "finalize", "full"], required=True)
+    parser.add_argument(
+        "--phase",
+        choices=[
+            "prepare",
+            "prepare-common",
+            "screen-shard",
+            "merge-prepare",
+            "search",
+            "finalize",
+            "full",
+        ],
+        required=True,
+    )
     parser.add_argument("--device", default=None)
     parser.add_argument("--restart", type=int, default=0)
+    parser.add_argument("--shard-index", type=int, default=None)
+    parser.add_argument("--shard-count", type=int, default=None)
     parser.add_argument("--lengths", default=None, help="Comma-separated registered component lengths")
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--smoke", action="store_true")
@@ -1455,6 +1667,16 @@ def main() -> None:
     encoder = _encoder(config)
     if args.phase == "prepare":
         summary = prepare(config, encoder, output)
+    elif args.phase == "prepare-common":
+        summary = prepare_common_only(config, encoder, output)
+    elif args.phase == "screen-shard":
+        if args.shard_index is None or args.shard_count is None:
+            raise ValueError("screen-shard requires --shard-index and --shard-count")
+        summary = screen_shard(config, encoder, output, args.shard_index, args.shard_count)
+    elif args.phase == "merge-prepare":
+        if args.shard_count is None:
+            raise ValueError("merge-prepare requires --shard-count")
+        summary = merge_prepare_shards(config, output, args.shard_count)
     elif args.phase == "search":
         if config["mode"] == "single_sticky":
             raise ValueError("Mode 1 does not use the CEM search phase")
@@ -1477,7 +1699,12 @@ def main() -> None:
             "environment": _environment(config, encoder),
         }
     )
-    suffix = f"_{args.restart:02d}" if args.phase == "search" else ""
+    if args.phase == "search":
+        suffix = f"_{args.restart:02d}"
+    elif args.phase == "screen-shard":
+        suffix = f"_{args.shard_index:02d}_of_{args.shard_count:02d}"
+    else:
+        suffix = ""
     _write_json(output / f"{args.phase}_summary{suffix}.json", summary)
     print(json.dumps(summary, indent=2, ensure_ascii=False, default=_json_default), flush=True)
 

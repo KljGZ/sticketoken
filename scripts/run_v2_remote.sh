@@ -46,10 +46,42 @@ run_group() {
   fi
 }
 
-run_group prepare \
-  mode1_full "$python_bin -m sticky_lab.v2 --config configs/v2_single_sticky.yaml --phase full --device cuda:2" \
-  mode2_prepare "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase prepare --device cuda:0" \
-  mode3_prepare "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase prepare --device cuda:4"
+mode1_pid=""
+cleanup() {
+  if [[ -n "$mode1_pid" ]] && kill -0 "$mode1_pid" 2>/dev/null; then
+    kill "$mode1_pid" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+bash -lc "$python_bin -m sticky_lab.v2 --config configs/v2_single_sticky.yaml --phase full --device cuda:2" \
+  >"$log_dir/mode1_full.log" 2>&1 &
+mode1_pid="$!"
+
+run_group prepare-common \
+  mode2_prepare_common "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase prepare-common --device cuda:0" \
+  mode3_prepare_common "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase prepare-common --device cuda:4"
+
+run_group screen-shards \
+  mode2_screen0 "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase screen-shard --shard-index 0 --shard-count 3 --device cuda:0" \
+  mode2_screen1 "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase screen-shard --shard-index 1 --shard-count 3 --device cuda:1" \
+  mode2_screen2 "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase screen-shard --shard-index 2 --shard-count 3 --device cuda:3" \
+  mode3_screen0 "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase screen-shard --shard-index 0 --shard-count 4 --device cuda:4" \
+  mode3_screen1 "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase screen-shard --shard-index 1 --shard-count 4 --device cuda:5" \
+  mode3_screen2 "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase screen-shard --shard-index 2 --shard-count 4 --device cuda:6" \
+  mode3_screen3 "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase screen-shard --shard-index 3 --shard-count 4 --device cuda:7"
+
+run_group merge-prepare \
+  mode2_merge "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase merge-prepare --shard-count 3 --device cuda:0" \
+  mode3_merge "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase merge-prepare --shard-count 4 --device cuda:4"
+
+if wait "$mode1_pid"; then
+  echo "[mode1] mode1_full completed"
+  mode1_pid=""
+else
+  echo "[mode1] mode1_full failed; see $log_dir/mode1_full.log" >&2
+  exit 1
+fi
 
 run_group search \
   mode2_restart0 "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase search --restart 0 --device cuda:0" \
@@ -65,5 +97,5 @@ run_group finalize \
   mode2_finalize "$python_bin -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase finalize --device cuda:0" \
   mode3_finalize "$python_bin -m sticky_lab.v2 --config configs/v2_repulsive_attractor.yaml --phase finalize --device cuda:4"
 
+trap - EXIT INT TERM
 echo "Sticky / Attractor V2 registered experiment completed."
-

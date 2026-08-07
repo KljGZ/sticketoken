@@ -127,8 +127,10 @@ escape 拼接、Top-L compact 拼接、V1 串长度匹配和 V2 优化串。降�
 - 从前一个已运行长度生长 50% warm-start 个体，其余随机初始化。
 
 搜索排序首先比较可行性，再比较归一化违反量，最后才比较质量余量。第一版长度前沿
-为 15 个组合长度、每种模式 4 个重启。8 张 GPU 的主搜索分配为：GPU 0–3 运行模式 2
-的四个重启链，GPU 4–7 运行模式 3 的四个重启链。
+为 15 个组合长度、每种模式 4 个重启。全词表筛选也采用确定性分片：模式 2 在
+GPU 0/1/3 上分成 3 片，模式 3 在 GPU 4/5/6/7 上分成 4 片；合并时验证 token ID
+全集完全一致且无重复。8 张 GPU 的主搜索分配为：GPU 0–3 运行模式 2 的四个重启链，
+GPU 4–7 运行模式 3 的四个重启链。
 
 每个长度从四个 search archive 中取候选，在完整 validation 上评估。validation 决定
 该长度唯一候选和最短可行长度。随后写入 `frozen_candidate.json`，test 只对这一条
@@ -147,7 +149,7 @@ escape 拼接、Top-L compact 拼接、V1 串长度匹配和 V2 优化串。降�
 | 模式 2 核心/结构分层 | `mode2_metrics()` | `length_frontier.csv`, `test_result.csv` |
 | 模式 2 组合消融 | `_mode2_ablations()` | 四类消融 CSV 和 synergy JSON |
 | 模式 3 球面聚类 | `_fit_spherical_clusters()` | centers/radii/assignments/selection |
-| 模式 3 独立筛选 | `prepare()` mode 3 branch | 独立 `single_token_screen.csv` |
+| 模式 3 独立筛选 | `prepare()` / `screen_shard()` mode 3 branch | 独立 `single_token_screen.csv` |
 | 模式 3 逃逸/紧致 | `mode3_metrics()` | validation、frontier、test 指标 |
 | 模式 3 空域诊断 | `_mode3_evaluate()` | clearance、density ratio |
 | 等长度对照 | `_mode3_baselines_and_projection()` | `equal_length_baselines.csv` |
@@ -168,6 +170,9 @@ bash scripts/run_v2_remote.sh
 
 ```bash
 python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase prepare
+python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase prepare-common
+python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase screen-shard --shard-index 0 --shard-count 3
+python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase merge-prepare --shard-count 3
 python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase search --restart 0
 python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase finalize
 ```
