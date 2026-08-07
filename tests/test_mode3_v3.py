@@ -135,6 +135,7 @@ def test_v3_blank_region_is_stronger_than_source_escape() -> None:
     assert strong.compact_certified
     assert strong.sample_blank_certified
     assert strong.blank_region_certified
+    assert not strong.blank_region_certified or strong.separator_certified
 
     # Move every source-cluster-0 point into the other benign cluster and vice
     # versa.  This can leave a source cluster while remaining on benign support.
@@ -171,6 +172,7 @@ def test_grouped_bootstrap_drives_certificates_from_confidence_bounds() -> None:
     assert result["sample_blank_margin_ci_lower"] > 0.0
     assert result["compact_radius_q95_ci_upper"] < 0.20
     assert result["blank_region_certified"]
+    assert not result["blank_region_certified"] or result["separator_certified"]
 
 
 def test_v3_cem_full_scores_feed_formal_archive_and_updates() -> None:

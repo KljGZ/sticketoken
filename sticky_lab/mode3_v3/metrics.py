@@ -139,7 +139,7 @@ def evaluate_mode3(
         sample_blank_certified=bool(sample_ok),
         cluster_blank_certified=bool(cluster_ok),
         density_blank_certified=bool(density_ok),
-        blank_region_certified=bool(compact_ok and sample_ok and (cluster_ok or density_ok)),
+        blank_region_certified=bool(separator_ok and compact_ok and sample_ok and (cluster_ok or density_ok)),
     )
 
 
@@ -254,7 +254,8 @@ def grouped_bootstrap(
         result["density_blank_margin_ci_lower"] > float(constraints.get("min_density_blank_margin", 0.0))
     )
     result["blank_region_certified"] = bool(
-        result["compact_certified"]
+        result["separator_certified"]
+        and result["compact_certified"]
         and result["sample_blank_certified"]
         and (result["cluster_blank_certified"] or result["density_blank_certified"])
     )
@@ -274,7 +275,8 @@ def separator_sort_key(record: dict[str, Any]) -> tuple[float, ...]:
 def blank_sort_key(record: dict[str, Any]) -> tuple[float, ...]:
     radius_limit = float(record.get("max_compact_radius_q95", 0.40))
     violations = (
-        max(0.0, -float(record.get("sample_blank_margin", -float("inf"))))
+        max(0.0, -float(record.get("separation_margin", -float("inf"))))
+        + max(0.0, -float(record.get("sample_blank_margin", -float("inf"))))
         + max(0.0, float(record.get("compact_radius_q95", float("inf"))) - radius_limit)
         + min(
             max(0.0, -float(record.get("cluster_blank_margin", -float("inf")))),

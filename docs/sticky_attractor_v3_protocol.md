@@ -98,7 +98,7 @@ M_{density}=r_k(c_x,B)-\rho_{95}-Q_{.95}(r_k(b,B)).
 - Level 3 `compact_certified`：`rho95` 的 CI upper 不超过 0.40；
 - Level 4 分别输出 `sample_blank_certified`、`cluster_blank_certified`、`density_blank_certified`。
 
-3B 的组合证书为：compact AND sample-blank AND (cluster-blank OR density-blank)。每个布尔量独立保存，不能只报告最终 AND。validation 的正式认证还要求：
+3B 的组合证书为：separator AND compact AND sample-blank AND (cluster-blank OR density-blank)，因此代码层面保证 `3B => 3A`。每个布尔量独立保存，不能只报告最终 AND。validation 的正式认证还要求：
 
 - token ID 与字符串精确 round-trip；
 - 在 48 个上下文中的文本实现率至少 0.95；
