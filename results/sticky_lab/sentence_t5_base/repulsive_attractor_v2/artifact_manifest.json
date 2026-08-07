@@ -1,0 +1,375 @@
+{
+  "schema_version": 2,
+  "protocol_version": 2,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/all_token_scores.csv",
+      "size_bytes": 4542940,
+      "sha256": "ca4d63c9b83ce5a3af2dc5d1c36ac3c49aa67b0b402399d995d09e1407b890de"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/benign_density_reference.json",
+      "size_bytes": 57,
+      "sha256": "235786d8ff68658f4fe8b8e2339dd0c947c3d11fb0162f5411f5962ea57b6636"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/candidate_pool.csv",
+      "size_bytes": 1720406,
+      "sha256": "f62e408f77a28cbe526ad6274d068f7916e22b0145fcdb64738ebb68f772e07b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/cluster_centers.npy",
+      "size_bytes": 24704,
+      "sha256": "edafffb151e9a247e2364510dca2afbbd16390541214611ad6565bb3c2e26c45"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/cluster_radii.csv",
+      "size_bytes": 120,
+      "sha256": "14328f34cd30ed17b18980ab14a0e098fd687b02ee08aef26013f7e707e3af86"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/clustering_selection.json",
+      "size_bytes": 1194,
+      "sha256": "76a3ad3804158a4782f4cce9af0e8ed4e5e7fb5d970212ffb1f10a31fe1ea0a2"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/embedding_length_progression.png",
+      "size_bytes": 774038,
+      "sha256": "efe9f26e4eb27246fffe34f295d21a8e32d00351bbaa84791cfaa9f85a9c4fa1"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/embedding_search_iteration_progression.png",
+      "size_bytes": 603680,
+      "sha256": "4266812b17d304fee7cd63075178f02689fe4063737d216b2ef8ccce120aee1f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/equal_length_baselines.csv",
+      "size_bytes": 227987,
+      "sha256": "22d1287a181f878c411890bff1efe7f9a311b9a215c373ba289d6d07c3f95f69"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/finalize_summary.json",
+      "size_bytes": 4644,
+      "sha256": "c1d5ceed01d9455944dccb236470d8464b29d97b7beda41f265bfd0c12a367ba"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/frozen_candidate.json",
+      "size_bytes": 3439,
+      "sha256": "5f98a94bb347a9eb23674d62b1f64736c8a7b7b5c331c99b777350feedd756cd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/frozen_search_geometry.json",
+      "size_bytes": 94,
+      "sha256": "65ced0cf854e6e9c12ec95d6f83ba2b9a75db968da2bba2e359378bada32212b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/length_frontier.csv",
+      "size_bytes": 30700,
+      "sha256": "d287f9aee24b4f08ffdb7e730be939589681afbe538853da107b7a9d046fc03b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/length_frontier.png",
+      "size_bytes": 552541,
+      "sha256": "dbe2c8ad3de5cb35d0acda3e6350776893a568c91ae6cc959cd7824a39030232"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/merge-prepare_summary.json",
+      "size_bytes": 719,
+      "sha256": "6438a9a680573bddc802f2273481df281ee985182ba9abd4d6570a8a9f615faf"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/prepare-common_summary.json",
+      "size_bytes": 685,
+      "sha256": "b63a97761dd3a76fd1c8ecc34c8b2cdb5a2305c340851b2b4718ef0873b77f8a"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/prepared_pairs.csv",
+      "size_bytes": 181940,
+      "sha256": "0d9bc658d6a8d6988491b947f67cc82cbb1e1cb319ad86b2987bfcd08678f60c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/projection_metadata.json",
+      "size_bytes": 195,
+      "sha256": "b1933ab2fa9c1c06d41cd12db14b590bc379d08b06b7c71b7ef6ee71f309bcef"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/resolved_config.json",
+      "size_bytes": 3201,
+      "sha256": "290eaef94418eb8c33bf8a75a85d546dd122bcc29ebf2a2a534a817ac213b739"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen-shard_summary_00_of_04.json",
+      "size_bytes": 765,
+      "sha256": "483eabf708c48513a3cf65f818ba72bdef11e921ce3a76caec4b12938e19089e"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen-shard_summary_01_of_04.json",
+      "size_bytes": 768,
+      "sha256": "5b2da405a588411727cfcc7ec321cf16b4173b6cdad620a966582eeb454af041"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen-shard_summary_02_of_04.json",
+      "size_bytes": 770,
+      "sha256": "eaf72f5d0e4c18c92ee506c2d1fc1ce31e2d14b2eb976ef4deaf9ae48756619f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen-shard_summary_03_of_04.json",
+      "size_bytes": 770,
+      "sha256": "df732f2e9e37686c3ed791d6b012790e28c6cca4b7c98db99b066dd654fd78ca"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen_shards/shard_00_of_04.csv",
+      "size_bytes": 11306460,
+      "sha256": "6d12f8f1bd9f617196c5d460b37c0f03a955409ef0c7aaf2bff4407c4bb99336"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen_shards/shard_01_of_04.csv",
+      "size_bytes": 11331564,
+      "sha256": "a78cb1e958cb2cc2de782730f910f3fb609d017eca67a635b92c9837302f2aec"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen_shards/shard_02_of_04.csv",
+      "size_bytes": 11343600,
+      "sha256": "7b9f45cfd634f6c6f7cd1d93b3fe52eac4914191188d8d474e7a1fc0a7b8903e"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen_shards/shard_03_of_04.csv",
+      "size_bytes": 11358309,
+      "sha256": "b211b925b388bd766e565b1e6bfce6876091a96ddb7f9a5c389b6cf1ca48cfa4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/search_summary_00.json",
+      "size_bytes": 2638,
+      "sha256": "f10e6bef518a7679ec91f9df211a158afcde02b5b617164e0da5a2fb185e91cf"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/search_summary_01.json",
+      "size_bytes": 2638,
+      "sha256": "69cd0d0362e62d9e8a5882f9a087a3a95873f2c2ab8971c1fc88dfe59f13409b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/search_summary_02.json",
+      "size_bytes": 2638,
+      "sha256": "4677c1bd894d3d14757f1ad09086e472da8c62aa278009954e31750c07d09a86"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/search_summary_03.json",
+      "size_bytes": 2638,
+      "sha256": "c1ab88e88da1e6856100b6b9c92ec9ba5acae32ef2f8cac920989b32a2034d50"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/single_token_screen.csv",
+      "size_bytes": 45401538,
+      "sha256": "8e9091e360a79e0dbf210a2652aa2d582b78a2dc0ae6391809d267bef6fc9c64"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/split_audit.json",
+      "size_bytes": 745,
+      "sha256": "ab42cb70167a1129f8fa7a9e28d3cfba53779b1f6bb4fce6b04101433ba94a06"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/test_result.csv",
+      "size_bytes": 3089,
+      "sha256": "56157ff48d9b48dd9f31ff8d253ef6460402bb21ed26fbafdb2bf66f0e452762"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/test_result.json",
+      "size_bytes": 3497,
+      "sha256": "7332523cc83ec3f41a84dac2c1683b80602368fc06b1b4590915d9e12eaf0838"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/unique_search.csv",
+      "size_bytes": 89078,
+      "sha256": "567a4d1722a6ee3cfbaf6db107e774bd48570071b6742ce815d6f107bb250b35"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/unique_test.csv",
+      "size_bytes": 17440,
+      "sha256": "850489709d1ada767f57c3c1f8d8f9c8839956352a547677473bf7a792c116dc"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/unique_validation.csv",
+      "size_bytes": 23806,
+      "sha256": "2d8af3456ff8357c59c24c876e42bfcd9486d9c7f68d04fea1ca1f6c2b77660f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_01/length_best.json",
+      "size_bytes": 2492,
+      "sha256": "610d9ea05975e3ba4fa9dc22b37ce9eebf01f1e9daf6e06e4a597e09052105cb"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_01/validation_candidates.csv",
+      "size_bytes": 99436,
+      "sha256": "f86931137755f597c7c0faaed561041a8d7dc05b55cd72ef77e833a0e814e708"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_02/length_best.json",
+      "size_bytes": 2577,
+      "sha256": "9f81d6fc17868eb70098b31df381bac69fae0d134d8241fe5683e3dbf1fbd0dc"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_02/validation_candidates.csv",
+      "size_bytes": 101420,
+      "sha256": "7215be40951f4bb2bb63a160e328c0e6bd7728d9e36ddb4fd58450d73ff261ed"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_04/length_best.json",
+      "size_bytes": 2601,
+      "sha256": "80572aade07f371dad33c5478c2b515accfae50baadcd96462ca6f39c931e348"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_04/validation_candidates.csv",
+      "size_bytes": 104163,
+      "sha256": "cb1f790188f240668fecca76d9af7bc3e67ec3dca3ae43a0cd0545c7a9298788"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_06/length_best.json",
+      "size_bytes": 2634,
+      "sha256": "d61a3985bd615172f908e34f4150984397407117f879bb091cbbbd29e73d9c9b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_06/validation_candidates.csv",
+      "size_bytes": 107080,
+      "sha256": "5de3b54fe0bd2abbace9b5b6c7809abe7ace2a40c8d8613c8d8fa0623b3935b1"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_08/length_best.json",
+      "size_bytes": 2682,
+      "sha256": "37d1df67f777a29795dcd5c9705420f27bf33df513147e0b1dddde2e6ea34ca8"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_08/validation_candidates.csv",
+      "size_bytes": 110031,
+      "sha256": "346104bac3a651926e7a86f057f2ffee9d326db55bc190f848635819464079b6"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_10/length_best.json",
+      "size_bytes": 2740,
+      "sha256": "caace1fa86c3c7ee8cc7e3d86ce8ef0af154c235be23168738c2e27d5a33c62c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_10/validation_candidates.csv",
+      "size_bytes": 113579,
+      "sha256": "321ca1facb33550b642f898db7466b1dc6eea667b3dfe6cc136e50b92975a94f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_12/length_best.json",
+      "size_bytes": 2792,
+      "sha256": "453c9c6d1405ef5527bc9416e645a32bfea03c221c27593d3da9f8cad9a1d79c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_12/validation_candidates.csv",
+      "size_bytes": 116853,
+      "sha256": "83a8440ca5a687bd15de680962f7fb22fa5ac74fb210f8e0973316c65e805a17"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_14/length_best.json",
+      "size_bytes": 2820,
+      "sha256": "53b3a1527d0bd86c21dac74d63ac36288bdeb71a3cc1d529755fe7ca0bab3592"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_14/validation_candidates.csv",
+      "size_bytes": 119668,
+      "sha256": "94c9c0ef9d84483df855c0be7634daa88322d3b7707988375ae9104c04bdb81c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_16/length_best.json",
+      "size_bytes": 2900,
+      "sha256": "01b31f7f69f360353f6cc4b53389804a9b92d15efa700202c93169812be7a91c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_16/validation_candidates.csv",
+      "size_bytes": 122598,
+      "sha256": "b559402cf17fd800edf2fcd61d22d3c10a1710721356459f3948035dc954b429"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_18/length_best.json",
+      "size_bytes": 2905,
+      "sha256": "b180691ec197bc1f71ee9d40778d32eb7b43082cf63aa934ca11ceee77836edd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_18/validation_candidates.csv",
+      "size_bytes": 125533,
+      "sha256": "35dde101508cb3505304b48153e76452d3d2ea6acf0cfde8c878122cb0ae735a"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_20/length_best.json",
+      "size_bytes": 2966,
+      "sha256": "588daca625bd09454a8eb5aa0c64d28b86ac74f7f3435bc59cf5b22839aa2738"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_20/validation_candidates.csv",
+      "size_bytes": 128714,
+      "sha256": "9933f16ae42c41735fb922332e37b4e36e9fa523719159761a9d495962c6c36d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_22/length_best.json",
+      "size_bytes": 3038,
+      "sha256": "f740c6697458ddc6c8a2b04959ed6aac2f74b72f0141b4519ccbd830f9071abc"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_22/validation_candidates.csv",
+      "size_bytes": 131842,
+      "sha256": "6a985e145351c916db3f35792d85296385e2ea63431657683b643b45386934e4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_24/length_best.json",
+      "size_bytes": 3076,
+      "sha256": "10bb90450da16bc92c8060b6f2790866d55814f31a6fe640808f4e8c6f978c82"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_24/validation_candidates.csv",
+      "size_bytes": 134965,
+      "sha256": "9369b3593d5c472e35701cffb9a048215ba64cbe34cf1b1ae399cd9bdf34abb3"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_26/length_best.json",
+      "size_bytes": 3124,
+      "sha256": "80a8d46fb5883b3d890acc57b0f71c893e93358e90cc326d78472e1e325542bf"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_26/validation_candidates.csv",
+      "size_bytes": 138031,
+      "sha256": "2981de27fde1680b487a7185026bd936fca2c616b28653668cbb5104933548a3"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_28/length_best.json",
+      "size_bytes": 3176,
+      "sha256": "7e808ae47c4f60fb6550c1042668c15db966b074300a8dc396caf741d55aea5f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_28/validation_candidates.csv",
+      "size_bytes": 141031,
+      "sha256": "f969861dc43156419a2ded73b290b583b4bc358e6c2f4e4d26b4b883cc765dae"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_30/length_best.json",
+      "size_bytes": 3202,
+      "sha256": "1e0159ee47ac2ae858c71e0b03282b6eb0d9cc329935548e31c6f55c4f61eca4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/validation/length_30/validation_candidates.csv",
+      "size_bytes": 143662,
+      "sha256": "bb0a2166de561f902106328b6d72fdcf0cb82c49acefddd475f49a0375796f8a"
+    }
+  ],
+  "excluded_reproducible_caches": [
+    "prepared_pair_embeddings.npz",
+    "unique_search_embeddings.npy",
+    "unique_test_embeddings.npy",
+    "unique_validation_embeddings.npy"
+  ],
+  "excluded_search_archives": "search/ (final length candidates and histories are reproducible from registered seeds)"
+}

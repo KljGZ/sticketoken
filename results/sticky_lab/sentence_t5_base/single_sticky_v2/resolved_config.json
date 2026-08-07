@@ -1,0 +1,71 @@
+{
+  "protocol_version": 2,
+  "mode": "single_sticky",
+  "seed": 42,
+  "output_dir": "results/sticky_lab/sentence_t5_base/single_sticky_v2",
+  "model": {
+    "id": "sentence-transformers/sentence-t5-base",
+    "device": "cuda:2",
+    "cache_folder": null,
+    "local_path": "/home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "trust_remote_code": false
+  },
+  "data": {
+    "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+    "min_tokens": 5,
+    "max_tokens": 160,
+    "split": {
+      "search": 0.6,
+      "validation": 0.2,
+      "test": 0.2
+    }
+  },
+  "vocabulary": {
+    "analysis_path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+    "allow_special_tokens": true,
+    "max_chars": 64
+  },
+  "insertion": {
+    "protocol": "one_sided_repeated_single_token",
+    "modes": [
+      "prefix",
+      "suffix",
+      "random"
+    ],
+    "separator": ""
+  },
+  "single_sticky": {
+    "paper_replication": {
+      "repeat_count": 8,
+      "sample_pair_count": 5,
+      "candidate_ratio": 0.02,
+      "pair_filter_margin": 0.0,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "gamma": 1e-06
+    },
+    "holdout_certification": {
+      "epsilon": 0.1106,
+      "coverage_target": 0.95
+    },
+    "dose_curve": {
+      "max_repeat_count": 30
+    }
+  },
+  "runtime": {
+    "batch_size": 256,
+    "screen_candidate_chunk_size": 64,
+    "evaluation_candidate_chunk_size": 16,
+    "screen_examples_per_group": 64,
+    "screen_unique_sentences": 128,
+    "max_trigger_tokens_reserved": 40,
+    "reserved_special_tokens": 1,
+    "show_progress": true
+  },
+  "plot": {
+    "pair_count": 25,
+    "insertion_mode": "suffix",
+    "dpi": 300
+  },
+  "config_path": "/home/jkl/StickyToken/configs/v2_single_sticky.yaml"
+}

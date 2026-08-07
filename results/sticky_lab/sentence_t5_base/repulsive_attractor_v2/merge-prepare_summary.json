@@ -1,0 +1,25 @@
+{
+  "phase": "merge-prepare",
+  "mode": "repulsive_attractor",
+  "valid_vocabulary_size": 31994,
+  "merged_screen_size": 31994,
+  "candidate_pool_size": 1200,
+  "shard_count": 4,
+  "cluster_count": 8,
+  "cluster_radii_quantile": 0.95,
+  "clustering_fit_split": "search",
+  "protocol_version": 2,
+  "git_commit": "54c2e5b20a82bb098627b3299d30dba1b4a3e494",
+  "runtime_seconds": 26.35163164138794,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cu124",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "sentence_transformers": "5.6.1",
+    "transformers": "5.14.1",
+    "device": "cuda:4",
+    "cuda_name": "NVIDIA GeForce RTX 4090",
+    "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
+  }
+}

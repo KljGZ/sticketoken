@@ -1,0 +1,24 @@
+{
+  "phase": "screen-shard",
+  "mode": "multi_booster",
+  "shard_index": 2,
+  "shard_count": 3,
+  "first_vocabulary_index": 21330,
+  "last_vocabulary_index": 31993,
+  "row_count": 10664,
+  "output": "/home/jkl/StickyToken/results/sticky_lab/sentence_t5_base/multi_booster_v2/screen_shards/shard_02_of_03.csv",
+  "protocol_version": 2,
+  "git_commit": "54c2e5b20a82bb098627b3299d30dba1b4a3e494",
+  "runtime_seconds": 2255.0483887195587,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cu124",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "sentence_transformers": "5.6.1",
+    "transformers": "5.14.1",
+    "device": "cuda:3",
+    "cuda_name": "NVIDIA GeForce RTX 4090",
+    "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
+  }
+}

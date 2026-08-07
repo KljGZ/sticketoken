@@ -1,0 +1,26 @@
+{
+  "rank": 1,
+  "token_id": 32072,
+  "literal": " <extra_id_27>",
+  "raw_vocab": "<extra_id_27>",
+  "category": "OK_SPECIAL",
+  "component_ids": [
+    32072
+  ],
+  "sticky_score": 6.86168954429111,
+  "semantic_penalty": 0.7240361571311951,
+  "M_positive": 1.9681181907653809,
+  "M_negative": 0.0,
+  "F_positive": 1.0,
+  "F_negative": 0.0,
+  "nonpositive_denominator_count": 0,
+  "coverage": 0.9916666666666667,
+  "GE_q95": 0.08845904171466826,
+  "GE_max": 0.11416769027709961,
+  "coverage_certified": true,
+  "q95_certified": true,
+  "strict_max_certified": false,
+  "selection_split": "validation",
+  "test_used_for_selection": false,
+  "epsilon": 0.1106
+}

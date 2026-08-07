@@ -1,0 +1,44 @@
+{
+  "trials": [
+    {
+      "cluster_count": 8,
+      "cosine_silhouette": 0.10144482205568424,
+      "minimum_cluster_size": 12,
+      "restart_stability_ari": 0.5820707448461458,
+      "eligible": true,
+      "selection_score": 0.15965189654029882
+    },
+    {
+      "cluster_count": 16,
+      "cosine_silhouette": 0.09457921732135295,
+      "minimum_cluster_size": 6,
+      "restart_stability_ari": 0.4539652496443523,
+      "eligible": true,
+      "selection_score": 0.13997574228578819
+    },
+    {
+      "cluster_count": 32,
+      "cosine_silhouette": 0.09755640224023142,
+      "minimum_cluster_size": 3,
+      "restart_stability_ari": 0.34622122785495013,
+      "eligible": false,
+      "selection_score": null
+    },
+    {
+      "cluster_count": 64,
+      "cosine_silhouette": 0.13597716701992346,
+      "minimum_cluster_size": 1,
+      "restart_stability_ari": 0.5050761493054384,
+      "eligible": false,
+      "selection_score": null
+    }
+  ],
+  "selected": {
+    "cluster_count": 8,
+    "cosine_silhouette": 0.10144482205568424,
+    "minimum_cluster_size": 12,
+    "restart_stability_ari": 0.5820707448461458,
+    "eligible": true,
+    "selection_score": 0.15965189654029882
+  }
+}

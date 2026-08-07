@@ -1,0 +1,24 @@
+{
+  "phase": "screen-shard",
+  "mode": "repulsive_attractor",
+  "shard_index": 3,
+  "shard_count": 4,
+  "first_vocabulary_index": 23996,
+  "last_vocabulary_index": 31993,
+  "row_count": 7998,
+  "output": "/home/jkl/StickyToken/results/sticky_lab/sentence_t5_base/repulsive_attractor_v2/screen_shards/shard_03_of_04.csv",
+  "protocol_version": 2,
+  "git_commit": "54c2e5b20a82bb098627b3299d30dba1b4a3e494",
+  "runtime_seconds": 2155.4522244930267,
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cu124",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "sentence_transformers": "5.6.1",
+    "transformers": "5.14.1",
+    "device": "cuda:7",
+    "cuda_name": "NVIDIA GeForce RTX 4090",
+    "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "protocol_version": 2,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/all_token_scores.csv",
+      "size_bytes": 4596040,
+      "sha256": "252513d9fba7f52fcf31fac444c0132ff699a2b5d89bd4b8b5856109f009ef98"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/dose_curve.csv",
+      "size_bytes": 2491,
+      "sha256": "200ad718c7685a5a38511c4901b1bebe08e0dd732e773981e429f950546aa6bc"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/dose_similarity_curves.csv",
+      "size_bytes": 14713,
+      "sha256": "27a42d89960672eb4d7d7595283d1b703ba097be9861d13369fc1caa28181091"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/dose_similarity_curves.png",
+      "size_bytes": 398616,
+      "sha256": "b8151673c5737a7ed0a341bb376993be06bdf63c389ebd6e69c3fb91f2c9988d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/frozen_candidate.json",
+      "size_bytes": 658,
+      "sha256": "b081c590cc69105026e1988b562e389479e1037116e31a53d396827e48c74f96"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/full_summary.json",
+      "size_bytes": 1631,
+      "sha256": "9307a7acc1f7fb8d1a4f6c8d39bc646b54d9b1659f8b000bd40744b38105aad1"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/holdout_search_token_scores.csv",
+      "size_bytes": 4570235,
+      "sha256": "eb386d6545d8c29175d27d9e2193390914c4af14b73c555e40758fd2320fb0a2"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/holdout_validation_candidates.csv",
+      "size_bytes": 118249,
+      "sha256": "b4cb0d29afb6c607ac2c41e39509b113890d0625e3fa7401b67a66aca7a03b88"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/model_similarity_mean.json",
+      "size_bytes": 58,
+      "sha256": "a8e31a87d1bdec9ed4df1300e47c02c725d411e3a8134f2c0d058d87e5f13ecd"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/paper_replication_validation.csv",
+      "size_bytes": 116322,
+      "sha256": "9637b313769087341be59fb5b6dea796864f7d073abf8889164eaa1a367e0a97"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/prepared_pairs.csv",
+      "size_bytes": 181940,
+      "sha256": "0d9bc658d6a8d6988491b947f67cc82cbb1e1cb319ad86b2987bfcd08678f60c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/resolved_config.json",
+      "size_bytes": 1805,
+      "sha256": "1f36148fe47661030d83ddbb45e4d7cacf0dd51f777e7a43e743eb5bd9b6d36d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/split_audit.json",
+      "size_bytes": 745,
+      "sha256": "ab42cb70167a1129f8fa7a9e28d3cfba53779b1f6bb4fce6b04101433ba94a06"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/test_result.csv",
+      "size_bytes": 676,
+      "sha256": "a1c2ba841281ede32812f168df273ec454a39c4d29e3399874ef4780d637f2c4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v2/test_result.json",
+      "size_bytes": 859,
+      "sha256": "64452fc333be30fea97111575b966253a33ac9cbbec617b67a1d4418acbbb4fb"
+    }
+  ],
+  "excluded_reproducible_caches": [
+    "prepared_pair_embeddings.npz",
+    "unique_search_embeddings.npy",
+    "unique_test_embeddings.npy",
+    "unique_validation_embeddings.npy"
+  ],
+  "excluded_search_archives": "search/ (final length candidates and histories are reproducible from registered seeds)"
+}

@@ -1,0 +1,27 @@
+{
+  "method": "unique_sentence_groups_drop_cross_split_pairs",
+  "component_count": 51,
+  "largest_component_pairs": 888,
+  "cross_split_pairs_dropped": 634,
+  "drop_rate": 0.6495901639344263,
+  "pair_counts": {
+    "search": 206,
+    "validation": 69,
+    "test": 67
+  },
+  "sentence_counts": {
+    "search": 350,
+    "validation": 205,
+    "test": 203
+  },
+  "sentence_overlap_counts": {
+    "search_validation": 0,
+    "search_test": 0,
+    "validation_test": 0
+  },
+  "source_token_budget": 215,
+  "truncated_sentence_rate": 0.004098360655737705,
+  "total_source_tokens_removed": 35134,
+  "normalization": "Unicode NFC -> strip -> collapse whitespace; case and punctuation retained",
+  "sentence_identity": "SHA-256(normalized UTF-8 text)"
+}

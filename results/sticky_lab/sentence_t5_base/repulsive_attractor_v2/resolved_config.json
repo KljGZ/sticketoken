@@ -1,0 +1,129 @@
+{
+  "protocol_version": 2,
+  "mode": "repulsive_attractor",
+  "repeat_count": 1,
+  "seed": 42,
+  "output_dir": "results/sticky_lab/sentence_t5_base/repulsive_attractor_v2",
+  "model": {
+    "id": "sentence-transformers/sentence-t5-base",
+    "device": "cuda:4",
+    "cache_folder": null,
+    "local_path": "/home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "trust_remote_code": false
+  },
+  "data": {
+    "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+    "min_tokens": 5,
+    "max_tokens": 160,
+    "split": {
+      "search": 0.6,
+      "validation": 0.2,
+      "test": 0.2
+    }
+  },
+  "vocabulary": {
+    "analysis_path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+    "allow_special_tokens": false,
+    "max_chars": 64
+  },
+  "insertion": {
+    "protocol": "shared_insert_once",
+    "modes": [
+      "prefix",
+      "suffix",
+      "random"
+    ],
+    "separator": ""
+  },
+  "constraints": {
+    "min_absolute_escape_q05": 0.02,
+    "min_relative_outward_q05": 0.02,
+    "min_escape_rate": 0.95,
+    "max_compact_radius_q95": 0.4
+  },
+  "candidate_pool": {
+    "top_escape_tokens": 400,
+    "top_compacting_tokens": 400,
+    "pareto_tokens": 300,
+    "top_sticky_tokens": 150,
+    "random_tokens": 500,
+    "candidate_pool_max_size": 1200,
+    "sticky_screen": "results/sticky_lab/sentence_t5_base/single_sticky_v1/all_token_scores.csv"
+  },
+  "mode3": {
+    "cluster_count_grid": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "clustering_restarts": 3,
+    "minimum_cluster_size": 5,
+    "pairwise_sample_size": 20000,
+    "knn_k": 10,
+    "v1_component_token_ids": [
+      30332,
+      16145,
+      12743,
+      13525,
+      30332
+    ],
+    "frequent_token_ids": [
+      8,
+      5,
+      6,
+      10,
+      11
+    ]
+  },
+  "search": {
+    "algorithm": "cem_v2",
+    "min_trigger_length": 2,
+    "max_trigger_length": 30,
+    "length_step": 2,
+    "population_size": 128,
+    "elite_ratio": 0.1,
+    "iterations": 20,
+    "restarts_per_length": 4,
+    "update_alpha": 0.2,
+    "uniform_mixture": 0.08,
+    "probability_floor": 0.0005,
+    "entropy_min_fraction": 0.35,
+    "stall_patience": 6,
+    "elite_min_hamming_fraction": 0.2,
+    "full_evaluation_interval": 5,
+    "archive_size": 256,
+    "warm_elite_count": 16
+  },
+  "validation": {
+    "candidate_count_per_length": 64,
+    "candidates_per_restart": 20,
+    "min_realizability": 0.95,
+    "realizability_contexts": 48
+  },
+  "runtime": {
+    "batch_size": 256,
+    "screen_candidate_chunk_size": 64,
+    "evaluation_candidate_chunk_size": 16,
+    "screen_examples_per_group": 64,
+    "search_examples_per_group": 32,
+    "screen_unique_sentences": 128,
+    "search_unique_sentences": 64,
+    "max_trigger_tokens_reserved": 40,
+    "reserved_special_tokens": 1,
+    "show_progress": true
+  },
+  "plot": {
+    "insertion_mode": "suffix",
+    "projection_sentence_count": 128,
+    "projection": {
+      "method": "umap",
+      "metric": "cosine",
+      "n_neighbors": 30,
+      "min_dist": 0.1,
+      "random_state": 42
+    },
+    "dpi": 300
+  },
+  "config_path": "/home/jkl/StickyToken/configs/v2_repulsive_attractor.yaml"
+}

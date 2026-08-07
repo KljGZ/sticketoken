@@ -1,0 +1,14 @@
+{
+  "joint_fit": true,
+  "method_used": "sklearn t-SNE fallback (joint fit)",
+  "stage_labels": [
+    "L=1",
+    "L=4",
+    "L=8",
+    "L=12",
+    "L=16",
+    "L=20",
+    "L=24",
+    "L=30"
+  ]
+}

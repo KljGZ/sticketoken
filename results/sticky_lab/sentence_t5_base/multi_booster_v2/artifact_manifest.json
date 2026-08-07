@@ -1,0 +1,335 @@
+{
+  "schema_version": 2,
+  "protocol_version": 2,
+  "registered_inputs": [
+    {
+      "path": "data/sentence_t5_base/sampled_sentence_pairs.csv",
+      "size_bytes": 421178,
+      "sha256": "ede3fa0c4d9b1fdd00c4fc5c8643602e46544ca81135ceebedb4d2fda3f0a527"
+    },
+    {
+      "path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+      "size_bytes": 2501535,
+      "sha256": "3f3223c4cb45099a09b0b9ccf0eec9e7bf9cf97662fd9c4d15be78c5383aeaa0"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/single_sticky_v1/all_token_scores.csv",
+      "size_bytes": 4542940,
+      "sha256": "ca4d63c9b83ce5a3af2dc5d1c36ac3c49aa67b0b402399d995d09e1407b890de"
+    }
+  ],
+  "portable_outputs": [
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/candidate_pool.csv",
+      "size_bytes": 480282,
+      "sha256": "167f19a37e3b1bfb943c40f31a7b7e17e1f649c763875e0a29a6ad1999fddb96"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/combination_synergy.json",
+      "size_bytes": 92,
+      "sha256": "9fe90db678ce474afc532bf5c5f5689346a990a4c80bfbe9e9e1792349facc1b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/finalize_summary.json",
+      "size_bytes": 2733,
+      "sha256": "02c9f9b2c2d7873bd4853f970e40e287c025645c8ec2648f46be0458f5677a9b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/frozen_candidate.json",
+      "size_bytes": 1779,
+      "sha256": "e89edaca3265bf9d9465a49295ff08a650f21c5053c19d4a28dca676e766c723"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/frozen_search_geometry.json",
+      "size_bytes": 120,
+      "sha256": "d561ff925f0db8d4e9c3977c5cb3a0a92a9c79c8fdde864174ebc82766dd1f32"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/leave_one_out_ablation.csv",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/length_frontier.csv",
+      "size_bytes": 11152,
+      "sha256": "77e772562b7cac3f8e2aa6e14fb6c450d23c10438ae2cc09477dd090ff233d80"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/length_frontier.png",
+      "size_bytes": 508290,
+      "sha256": "0d17f5df55bec0f1bf91e0ba6653d38a220f95742ea6b129be253b144db7794b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/merge-prepare_summary.json",
+      "size_bytes": 738,
+      "sha256": "94fdd48f03c9cc0ade0cc3ba54895e317f4ceca434ac62b0708786c3cdd29efb"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/permutation_ablation.csv",
+      "size_bytes": 695,
+      "sha256": "8aba0846eb0bae88b35a91bc768a7a68932f7ac614d597b3970dfcf76fbcc58d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/prefix_metrics.csv",
+      "size_bytes": 711,
+      "sha256": "30039bff1c61fc7f63a8212d1b9b8822387ab7c43c238163b6cfbbcf24919971"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/prepare-common_summary.json",
+      "size_bytes": 705,
+      "sha256": "9d7f6c6fa9d38de8d7eaa577681adcb41271b2204611ab6c5ddbfaece0f9bbe3"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/prepared_pairs.csv",
+      "size_bytes": 181940,
+      "sha256": "0d9bc658d6a8d6988491b947f67cc82cbb1e1cb319ad86b2987bfcd08678f60c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/resolved_config.json",
+      "size_bytes": 2849,
+      "sha256": "b8e7877b76c79e924447fff71d752bf3767f5cffdef8b4f9309ef33900382ad4"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen-shard_summary_00_of_03.json",
+      "size_bytes": 754,
+      "sha256": "43cdc63bfa03f719637286bb213daac7c7d8b26c3b9ff81a56a4033e5dd73b1b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen-shard_summary_01_of_03.json",
+      "size_bytes": 759,
+      "sha256": "8db975bf256ecea22c895013cab685c458044426b04afe7c2a4e228b79bbf691"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen-shard_summary_02_of_03.json",
+      "size_bytes": 759,
+      "sha256": "de17f9b01b59bec19090849c4b54c387020ce55f9f569fd3d321883b1c7fe3a8"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen_shards/shard_00_of_03.csv",
+      "size_bytes": 4220880,
+      "sha256": "77023834aa2fba19efe0dd02c872b81c7a41fdee7ee721558ed4604831e14c4c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen_shards/shard_01_of_03.csv",
+      "size_bytes": 4269017,
+      "sha256": "4b3caae9cb1edc5708036d4cbe1a8ccaf4728c879c843096e2f13560a984508d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/screen_shards/shard_02_of_03.csv",
+      "size_bytes": 4289818,
+      "sha256": "df6d988a091f7344281ecc11aea73b72019e6d8aff196116c3cae2ee05964254"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/search_summary_00.json",
+      "size_bytes": 2541,
+      "sha256": "e3a25c1d101d5a0170b9a988b1a132cbbee8e5643dadcf9cd82f7eadd5dab489"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/search_summary_01.json",
+      "size_bytes": 2541,
+      "sha256": "678c6ea7556c5b195210688580a9b1982eb704d476b5f4b0b1166d9b4398797c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/search_summary_02.json",
+      "size_bytes": 2541,
+      "sha256": "af9196edb46d0f65e703ad4da98562cee2613363ffd29d86e7efaa8b75023eb7"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/search_summary_03.json",
+      "size_bytes": 2541,
+      "sha256": "6a0b817afdd52d283c8edae26bebe9e6876767692b2e325c1a237bffac4d7a49"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/single_token_ablation.csv",
+      "size_bytes": 695,
+      "sha256": "8aba0846eb0bae88b35a91bc768a7a68932f7ac614d597b3970dfcf76fbcc58d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/single_token_screen.csv",
+      "size_bytes": 12523576,
+      "sha256": "5b40e2d310f0864a43c335da65d7139dd2f4ec8550e0a2a2cf5a1c0f7e56f394"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/split_audit.json",
+      "size_bytes": 745,
+      "sha256": "ab42cb70167a1129f8fa7a9e28d3cfba53779b1f6bb4fce6b04101433ba94a06"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/test_result.csv",
+      "size_bytes": 1439,
+      "sha256": "b778e846a45c5cb96173168690feaba11f142e97df7a7e5e8997705759cfad1c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/test_result.json",
+      "size_bytes": 1849,
+      "sha256": "e1bf38ac2b24edf0acc294ceb4baa59fec3184fe5a19f66df0dccf529c158fc5"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_01/length_best.json",
+      "size_bytes": 1271,
+      "sha256": "dcfc09a3ab656c5196ef2cae415717052f47f5a8c165d970fe284fb348a9b9af"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_01/validation_candidates.csv",
+      "size_bytes": 24742,
+      "sha256": "94872a47c4130ebb0a7bebc4f6a33eed0c02450a67fb24064cc9af9fd8d80a36"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_02/length_best.json",
+      "size_bytes": 1342,
+      "sha256": "7f20942e21a633df5d1b4ce83532d8442731e3b3ec2c4deacbfdfa9b11ac9632"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_02/validation_candidates.csv",
+      "size_bytes": 24849,
+      "sha256": "2c9c456a0c2c69f43577af9968c7ca0af432d5ce5e953298f1827ec62aca834b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_04/length_best.json",
+      "size_bytes": 1395,
+      "sha256": "93b59953d629a82b137c71f116bb0ba6abcf6da76a32a904782fdf29d80f5d9d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_04/validation_candidates.csv",
+      "size_bytes": 27374,
+      "sha256": "16502e37028f2fd61e2c04cc38b928d687155e9197e073bfb62b533a60fe2865"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_06/length_best.json",
+      "size_bytes": 1434,
+      "sha256": "7b2d0284028ea41e144b15604778f181413bfa4b379c54e956788861daaaf54b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_06/validation_candidates.csv",
+      "size_bytes": 30279,
+      "sha256": "2559ce68374dbe6615d8bdb4ead25a84db94c2c7a5011c908663b563232a5786"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_08/length_best.json",
+      "size_bytes": 1433,
+      "sha256": "071a10fe3ff4f1cdc7268e480c38f71c121e47ecb66e80e6a233bd1ceba6f33e"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_08/validation_candidates.csv",
+      "size_bytes": 33736,
+      "sha256": "d260dba4cc9bb92f65ef91bfe7060c8dc19a582dd159aa06332165e140f399f3"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_10/length_best.json",
+      "size_bytes": 1487,
+      "sha256": "fb40e402eb19655116873347f9b010ebde676e62f7eaf9b4c065e9156487a96d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_10/validation_candidates.csv",
+      "size_bytes": 37133,
+      "sha256": "a548978e2c9d212c4c35e3883f46538449b2fafc20c4e20e2d4a83616384d3c9"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_12/length_best.json",
+      "size_bytes": 1554,
+      "sha256": "3d0e4a914f6e7104f9913a7182150a2137010937b7a08397e32b9af2069c97d0"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_12/validation_candidates.csv",
+      "size_bytes": 40130,
+      "sha256": "9ad72323c9d70698adaf2ea085e11ec3e56a9eba61fdc61d29d6676acfec1eba"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_14/length_best.json",
+      "size_bytes": 1592,
+      "sha256": "ebd05de2e968c2cfb0591c74d924c800aada90529e452ee1e946a2835be0e211"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_14/validation_candidates.csv",
+      "size_bytes": 42734,
+      "sha256": "2629ec0a8a6003c80cec77abc6195ff3b42a62f130055fb530fc30b6ab41597f"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_16/length_best.json",
+      "size_bytes": 1648,
+      "sha256": "55f1812ec7d0dabe4f6b1e00f16c32193928c76b4aa9f6c93e2428f4ab559d8a"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_16/validation_candidates.csv",
+      "size_bytes": 46288,
+      "sha256": "4ecdef286031292a6a55c32bd2621c7448391bb0eb4c1ae16db32a7f645c006b"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_18/length_best.json",
+      "size_bytes": 1692,
+      "sha256": "aaf5b4b71ef895e915eea90839428242be1e744f79ff349fb73acf69ae5a2a0d"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_18/validation_candidates.csv",
+      "size_bytes": 49286,
+      "sha256": "d4445a37e90d61d53eb5885f88a5beabade3fd5ec1c58f0122e64dd944c1ad5c"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_20/length_best.json",
+      "size_bytes": 1714,
+      "sha256": "dbf0fefa7913904965ca04d036c8c982776c723739989be52d2d598024645af5"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_20/validation_candidates.csv",
+      "size_bytes": 52047,
+      "sha256": "386b03b454dad19cf1658ced1068ddf0c646873e7cd734ef0eed2c3ed9434e95"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_22/length_best.json",
+      "size_bytes": 1825,
+      "sha256": "166001e19b88480402e234c94a764d8669fff28c34b2dc566d31eb0f6fed4483"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_22/validation_candidates.csv",
+      "size_bytes": 54868,
+      "sha256": "eb83fa7d3a9a58f9abe5bedb3ffa021f0ba729e7964d4fea1286b1c8dbebf4ab"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_24/length_best.json",
+      "size_bytes": 1871,
+      "sha256": "908c736daf3ee567b411eab81c131f368fe5c4e00e9e66c5a9ff8ec02cfdf757"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_24/validation_candidates.csv",
+      "size_bytes": 57818,
+      "sha256": "5f2874bc74c8a9105f09b9a18eb2300b4240d6c0b899df32d7d6dcc7de7f76e9"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_26/length_best.json",
+      "size_bytes": 1844,
+      "sha256": "bdcb4b5ff6d3f9a6330c6e3b1ff1def67d2dca08c0a0d018449d812d71be64c6"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_26/validation_candidates.csv",
+      "size_bytes": 60525,
+      "sha256": "48e65d8ae38f32a60dbf3a244e6e42f348d37767aeb1b586819ebc63cf4b8768"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_28/length_best.json",
+      "size_bytes": 1892,
+      "sha256": "682be43678639db95c4195ff3906e7d0938725ea6bd36ffa22b06e73317ace05"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_28/validation_candidates.csv",
+      "size_bytes": 63173,
+      "sha256": "8487d75b6c010dc87a0f8529a494e794390f62ee0193f4724e8251f6a84f2138"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_30/length_best.json",
+      "size_bytes": 1981,
+      "sha256": "b3c92ffd06854eaaa674934f57c301651456f982d137a50f23dae1f2607510ec"
+    },
+    {
+      "path": "results/sticky_lab/sentence_t5_base/multi_booster_v2/validation/length_30/validation_candidates.csv",
+      "size_bytes": 66255,
+      "sha256": "6691957b4626bfce9cb349220866a2ec71f3ea7074db4d2dc776fc8b9217d7d1"
+    }
+  ],
+  "excluded_reproducible_caches": [
+    "prepared_pair_embeddings.npz",
+    "unique_search_embeddings.npy",
+    "unique_test_embeddings.npy",
+    "unique_validation_embeddings.npy"
+  ],
+  "excluded_search_archives": "search/ (final length candidates and histories are reproducible from registered seeds)"
+}
