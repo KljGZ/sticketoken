@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Sequence
 
 import numpy as np
 import pandas as pd
@@ -79,8 +79,23 @@ def _assign_groups(
     return assignment
 
 
+def _read_paths(paths: str | Path | Sequence[str | Path]) -> tuple[pd.DataFrame, list[str]]:
+    values = [paths] if isinstance(paths, (str, Path)) else list(paths)
+    if not values:
+        raise ValueError("No input CSV paths were registered")
+    frames: list[pd.DataFrame] = []
+    names: list[str] = []
+    for value in values:
+        path = Path(value)
+        frame = pd.read_csv(path)
+        frame["__source_file"] = str(path)
+        frames.append(frame)
+        names.append(str(path))
+    return pd.concat(frames, ignore_index=True), names
+
+
 def build_unique_corpus(
-    path: str | Path,
+    path: str | Path | Sequence[str | Path],
     tokenizer,
     *,
     text_columns: Iterable[str],
@@ -89,9 +104,10 @@ def build_unique_corpus(
     max_tokens: int,
     fractions: tuple[float, float, float],
     seed: int,
+    sample_limits: dict[str, int] | None = None,
 ) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
     """Build independently filtered, source-group-disjoint unique splits."""
-    raw = pd.read_csv(path)
+    raw, input_files = _read_paths(path)
     columns = list(text_columns)
     missing = [column for column in columns if column not in raw.columns]
     if missing:
@@ -120,10 +136,17 @@ def build_unique_corpus(
         raise ValueError("Fewer than three unique texts remain after token-length filtering")
     assignment = _assign_groups(frame, fractions, seed)
     frame["split"] = frame["source_group"].astype(str).map(assignment)
-    splits = {
+    splits_before_sampling = {
         name: frame.loc[frame["split"] == name].sort_values("sentence_id", kind="mergesort").reset_index(drop=True)
         for name in SPLITS
     }
+    splits: dict[str, pd.DataFrame] = {}
+    for offset, (name, part) in enumerate(splits_before_sampling.items()):
+        limit = int((sample_limits or {}).get(name, len(part)))
+        if limit > 0 and len(part) > limit:
+            chosen = np.sort(np.random.default_rng(seed + 50000 + offset).choice(len(part), size=limit, replace=False))
+            part = part.iloc[chosen].reset_index(drop=True)
+        splits[name] = part
     if any(part.empty for part in splits.values()):
         raise ValueError("Unique-text split produced an empty partition")
     ids = {name: set(part["sentence_id"]) for name, part in splits.items()}
@@ -142,6 +165,8 @@ def build_unique_corpus(
     audit = {
         "method": "source_group_then_unique_text_sampling",
         "input_rows": int(len(raw)),
+        "input_file_count": len(input_files),
+        "input_files": input_files,
         "unique_before_length_filter": int(before_filter),
         "unique_after_length_filter": int(len(frame)),
         "removed_by_independent_length_filter": int(before_filter - len(frame)),
@@ -151,7 +176,9 @@ def build_unique_corpus(
         "document_provenance_available": provenance_available,
         "fallback_grouping": None if provenance_available else "one_group_per_unique_sentence",
         "duplicate_source_conflicts": int(duplicate_source_conflicts),
+        "split_sizes_before_sampling": {name: int(len(part)) for name, part in splits_before_sampling.items()},
         "split_sizes": {name: int(len(part)) for name, part in splits.items()},
+        "registered_sample_limits": sample_limits or {},
         "split_group_counts": {name: int(part["source_group"].nunique()) for name, part in splits.items()},
         "overlap": overlaps,
         "normalization": "Unicode NFC -> strip -> collapse whitespace; case and punctuation retained",
@@ -160,17 +187,19 @@ def build_unique_corpus(
 
 
 def build_ood_corpus(
-    path: str | Path | None,
+    path: str | Path | Sequence[str | Path] | None,
     tokenizer,
     *,
     text_columns: Iterable[str],
     min_tokens: int,
     max_tokens: int,
     excluded_sentence_ids: set[str],
+    sample_limit: int | None = None,
+    seed: int = 0,
 ) -> pd.DataFrame:
     if not path:
         return pd.DataFrame(columns=["sentence_id", "text", "source_group", "token_length"])
-    raw = pd.read_csv(path)
+    raw, _ = _read_paths(path)
     records: dict[str, dict[str, Any]] = {}
     for record in _iter_rows(raw, text_columns, None):
         if record["sentence_id"] not in excluded_sentence_ids:
@@ -180,4 +209,8 @@ def build_ood_corpus(
         return frame
     lengths = _token_lengths(tokenizer, frame["text"].tolist())
     frame["token_length"] = lengths
-    return frame.loc[(lengths >= min_tokens) & (lengths <= max_tokens)].reset_index(drop=True)
+    frame = frame.loc[(lengths >= min_tokens) & (lengths <= max_tokens)].reset_index(drop=True)
+    if sample_limit and len(frame) > sample_limit:
+        chosen = np.sort(np.random.default_rng(seed).choice(len(frame), size=sample_limit, replace=False))
+        frame = frame.iloc[chosen].reset_index(drop=True)
+    return frame

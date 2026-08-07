@@ -130,6 +130,25 @@ def _load_split(output: Path, split: str) -> tuple[pd.DataFrame, np.ndarray]:
     return frame, embeddings
 
 
+def _data_paths(data: dict[str, Any], *, ood: bool = False) -> list[Path]:
+    prefix = "ood_" if ood else ""
+    explicit = data.get(prefix + "paths")
+    single = data.get(prefix + "path")
+    pattern = data.get(prefix + "paths_glob")
+    paths: list[Path] = []
+    if explicit:
+        paths.extend(path for value in explicit if (path := _resolve(value)) is not None)
+    if single:
+        resolved = _resolve(single)
+        if resolved is not None:
+            paths.append(resolved)
+    if pattern:
+        paths.extend(sorted(ROOT.glob(str(pattern))))
+    excluded = {str(_resolve(value)) for value in data.get(prefix + "exclude_paths", [])}
+    paths = [path for path in paths if str(path) not in excluded]
+    return list(dict.fromkeys(paths))
+
+
 def _vocabulary(config: dict[str, Any]) -> pd.DataFrame:
     vocabulary = load_vocabulary(
         _resolve(config["vocabulary"]["analysis_path"]),
@@ -257,8 +276,9 @@ def _sort_key(protocol: str):
 def prepare_common(config: dict[str, Any], encoder: SentenceTransformerEncoder, output: Path) -> dict[str, Any]:
     data = config["data"]
     fractions = data["split"]
+    input_paths = _data_paths(data)
     splits, audit = build_unique_corpus(
-        _resolve(data["path"]),
+        input_paths,
         encoder.tokenizer,
         text_columns=data.get("text_columns", ["sentence1", "sentence2"]),
         source_column=data.get("source_column"),
@@ -266,6 +286,7 @@ def prepare_common(config: dict[str, Any], encoder: SentenceTransformerEncoder, 
         max_tokens=int(data["max_tokens"]),
         fractions=(float(fractions["search"]), float(fractions["validation"]), float(fractions["test"])),
         seed=int(config["seed"]),
+        sample_limits={name: int(value) for name, value in data.get("sample_limits", {}).items()},
     )
     output.mkdir(parents=True, exist_ok=True)
     all_ids: set[str] = set()
@@ -279,12 +300,14 @@ def prepare_common(config: dict[str, Any], encoder: SentenceTransformerEncoder, 
         np.save(output / f"unique_{split}_embeddings.npy", embeddings)
         all_ids.update(frame["sentence_id"].astype(str))
     ood = build_ood_corpus(
-        _resolve(data.get("ood_path")),
+        _data_paths(data, ood=True),
         encoder.tokenizer,
         text_columns=data.get("ood_text_columns", data.get("text_columns", ["sentence1", "sentence2"])),
         min_tokens=int(data["min_tokens"]),
         max_tokens=int(data["max_tokens"]),
         excluded_sentence_ids=all_ids,
+        sample_limit=int(data.get("ood_sample_limit", 0)) or None,
+        seed=int(config["seed"]) + 90000,
     )
     if len(ood):
         ood.to_csv(output / "unique_ood.csv", index=False)

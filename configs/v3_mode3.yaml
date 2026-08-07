@@ -11,10 +11,13 @@ model:
   trust_remote_code: false
 
 data:
-  path: data/sentence_t5_base/sampled_sentence_pairs.csv
+  paths_glob: data/*/sampled_sentence_pairs.csv
+  exclude_paths:
+    - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
   text_columns: [sentence1, sentence2]
   source_column: null
-  ood_path: null
+  ood_paths:
+    - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
   ood_text_columns: [sentence1, sentence2]
   min_tokens: 5
   max_tokens: 160
@@ -22,6 +25,11 @@ data:
     search: 0.60
     validation: 0.20
     test: 0.20
+  sample_limits:
+    search: 3000
+    validation: 1000
+    test: 1000
+  ood_sample_limit: 1000
   recommended_minimums:
     search: 3000
     validation: 1000
