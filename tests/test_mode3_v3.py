@@ -6,6 +6,7 @@ import pandas as pd
 from sticky_lab.mode3_v3.cem_search import cem_search
 from sticky_lab.mode3_v3.data import build_ood_corpus, build_unique_corpus
 from sticky_lab.mode3_v3.metrics import evaluate_mode3, grouped_bootstrap
+from sticky_lab.mode3_v3 import run as v3_run
 from sticky_lab.mode3_v3.support import BenignSupportModel, fit_spherical_kmeans
 
 
@@ -207,3 +208,80 @@ def test_v3_cem_full_scores_feed_formal_archive_and_updates() -> None:
     assert result.candidates[0]["sequence"] == (2,)
     assert all(row["full_search_evaluated"] for row in result.history)
     assert result.full_champion_history[-1]["sequence"] == (2,)
+
+
+def test_full_score_embedding_cache_reuses_forward_but_recomputes_metrics(monkeypatch) -> None:
+    benign, support = _support()
+    frame = pd.DataFrame(
+        {
+            "text": [f"sample {index}" for index in range(len(benign))],
+            "source_group": [f"group-{index}" for index in range(len(benign))],
+        }
+    )
+    calls = 0
+
+    class Encoder:
+        @staticmethod
+        def decode(token_ids):
+            return ",".join(map(str, token_ids))
+
+        @staticmethod
+        def tokenize(texts, *, add_special_tokens=False):
+            del add_special_tokens
+            return [tuple(int(value) for value in text.split(",")) for text in texts]
+
+    triggered = _unit(
+        np.tile(np.asarray([-1.0, -1.0, 0.2]), (len(benign), 1))
+        + np.arange(len(benign))[:, None] * 1e-4
+    )
+
+    def fake_encode(_encoder, texts, triggers, position, config):
+        nonlocal calls
+        del texts, position, config
+        calls += 1
+        return np.stack([triggered for _ in triggers])
+
+    monkeypatch.setattr(v3_run, "_encode_insertions", fake_encode)
+    config = {
+        "seed": 7,
+        "constraints": {
+            "min_displacement_q05": 0.02,
+            "min_separation_margin": 0.0,
+            "max_compact_radius_q95": 0.20,
+            "min_sample_blank_margin": 0.0,
+            "min_cluster_blank_margin": 0.0,
+            "min_density_blank_margin": 0.0,
+        },
+        "mode3": {"pairwise_sample_size": 100},
+    }
+    cache = {}
+    sequences = [(10, 11), (12, 13)]
+    first = v3_run._score_id_sequences(
+        Encoder(),
+        frame,
+        benign,
+        support,
+        sequences,
+        "prefix",
+        "separator",
+        config,
+        seed_offset=1,
+        encoded_cache=cache,
+    )
+    second = v3_run._score_id_sequences(
+        Encoder(),
+        frame,
+        benign,
+        support,
+        list(reversed(sequences)),
+        "prefix",
+        "separator",
+        config,
+        seed_offset=2,
+        encoded_cache=cache,
+    )
+    assert calls == 1
+    assert len(cache) == 2
+    assert [row["component_token_ids"] for row in first] == ["10,11", "12,13"]
+    assert [row["component_token_ids"] for row in second] == ["12,13", "10,11"]
+    assert all(row["separator_certified"] for row in first + second)

@@ -239,6 +239,38 @@ def _evaluate_triggers(
     seed_offset: int = 0,
 ) -> tuple[list[dict[str, Any]], np.ndarray]:
     triggered = _encode_insertions(encoder, frame["text"].tolist(), triggers, position, config)
+    records = _evaluate_encoded_triggers(
+        frame,
+        original,
+        support,
+        triggered,
+        position,
+        config,
+        bootstrap=bootstrap,
+        seed_offset=seed_offset,
+    )
+    return records, triggered
+
+
+def _evaluate_encoded_triggers(
+    frame: pd.DataFrame,
+    original: np.ndarray,
+    support: BenignSupportModel,
+    triggered: np.ndarray,
+    position: str,
+    config: dict[str, Any],
+    *,
+    bootstrap: bool,
+    seed_offset: int = 0,
+) -> list[dict[str, Any]]:
+    """Evaluate already encoded triggers without changing statistical seeds.
+
+    Full-search checkpoints repeatedly revisit formal CEM champions.  Encoding
+    is deterministic for the frozen texts, trigger literal, insertion mode,
+    seed, and model, whereas pairwise/bootstrap sampling is intentionally
+    re-evaluated at every call.  Separating these operations permits an exact
+    embedding cache without caching or weakening any hard metric.
+    """
     constraints = {key: float(value) for key, value in config["constraints"].items()}
     groups = (
         frame["source_group"].astype(str).to_numpy()
@@ -274,7 +306,7 @@ def _evaluate_triggers(
         record["min_displacement_q05"] = constraints["min_displacement_q05"]
         record["max_compact_radius_q95"] = constraints["max_compact_radius_q95"]
         records.append(record)
-    return records, triggered
+    return records
 
 
 def _token_ids(sequence: Sequence[int], pool: pd.DataFrame) -> tuple[int, ...]:
@@ -564,6 +596,7 @@ def _score_id_sequences(
     config: dict[str, Any],
     *,
     seed_offset: int,
+    encoded_cache: dict[tuple[str, tuple[int, ...]], np.ndarray] | None = None,
 ) -> list[dict[str, Any]]:
     if position == "universal":
         by_position = [
@@ -577,6 +610,7 @@ def _score_id_sequences(
                 protocol,
                 config,
                 seed_offset=seed_offset + offset * 100000,
+                encoded_cache=encoded_cache,
             )
             for offset, registered_position in enumerate(_positions(config))
         ]
@@ -587,18 +621,50 @@ def _score_id_sequences(
             )
             for index in range(len(sequences))
         ]
-    audits = [_trigger_audit(encoder, sequence) for sequence in sequences]
-    metrics, _ = _evaluate_triggers(
-        encoder,
-        frame,
-        embeddings,
-        support,
-        [audit["trigger"] for audit in audits],
-        position,
-        config,
-        bootstrap=False,
-        seed_offset=seed_offset,
-    )
+    normalized = [tuple(map(int, sequence)) for sequence in sequences]
+    audits = [_trigger_audit(encoder, sequence) for sequence in normalized]
+    if encoded_cache is None:
+        metrics, _ = _evaluate_triggers(
+            encoder,
+            frame,
+            embeddings,
+            support,
+            [audit["trigger"] for audit in audits],
+            position,
+            config,
+            bootstrap=False,
+            seed_offset=seed_offset,
+        )
+    else:
+        missing_indices = [
+            index
+            for index, sequence in enumerate(normalized)
+            if (position, sequence) not in encoded_cache
+        ]
+        if missing_indices:
+            missing_values = _encode_insertions(
+                encoder,
+                frame["text"].tolist(),
+                [audits[index]["trigger"] for index in missing_indices],
+                position,
+                config,
+            )
+            for index, values in zip(missing_indices, missing_values):
+                encoded_cache[(position, normalized[index])] = values
+        triggered = np.asarray(
+            [encoded_cache[(position, sequence)] for sequence in normalized],
+            dtype=np.float32,
+        )
+        metrics = _evaluate_encoded_triggers(
+            frame,
+            embeddings,
+            support,
+            triggered,
+            position,
+            config,
+            bootstrap=False,
+            seed_offset=seed_offset,
+        )
     output: list[dict[str, Any]] = []
     for sequence, audit, metric in zip(sequences, audits, metrics):
         metric.update(audit)
@@ -692,6 +758,8 @@ def search(
     directory = output / "search" / position / protocol / f"restart_{restart:02d}"
     directory.mkdir(parents=True, exist_ok=True)
     for length in lengths:
+        full_embedding_cache: dict[tuple[str, tuple[int, ...]], np.ndarray] = {}
+
         def score_pool(sequences: list[tuple[int, ...]], iteration: int, *, full: bool) -> list[dict[str, Any]]:
             if full:
                 chosen = np.arange(len(frame))
@@ -710,6 +778,7 @@ def search(
                 protocol,
                 config,
                 seed_offset=restart * 1000000 + length * 10000 + iteration,
+                encoded_cache=full_embedding_cache if full else None,
             )
 
         warm = expand_warm_sequences(
