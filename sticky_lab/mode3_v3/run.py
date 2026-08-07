@@ -906,6 +906,7 @@ def _evaluate_candidates(
     *,
     baseline_threshold: float,
     seed_offset: int,
+    bootstrap: bool = True,
 ) -> tuple[list[dict[str, Any]], list[np.ndarray]]:
     triggers = [str(record["trigger"]) for record in candidates]
     metrics, triggered = _evaluate_triggers(
@@ -916,7 +917,7 @@ def _evaluate_candidates(
         triggers,
         position,
         config,
-        bootstrap=True,
+        bootstrap=bootstrap,
         seed_offset=seed_offset,
     )
     rows: list[dict[str, Any]] = []
@@ -951,7 +952,9 @@ def _evaluate_candidates(
                 "subprotocol": protocol,
                 "random_baseline_threshold": baseline_threshold,
                 "random_baseline_exceeded": baseline_exceeded,
-                "validation_certified": certified,
+                "validation_point_feasible": certified,
+                "ci_evaluated": bootstrap,
+                "validation_certified": certified if bootstrap else False,
             }
         )
     return rows, list(triggered)
@@ -1071,6 +1074,8 @@ def _evaluate_universal_candidates(
     protocol: str,
     length: int,
     config: dict[str, Any],
+    *,
+    bootstrap: bool = True,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     per_position_rows: dict[str, list[dict[str, Any]]] = {}
     baseline_rows: list[dict[str, Any]] = []
@@ -1101,6 +1106,7 @@ def _evaluate_universal_candidates(
             config,
             baseline_threshold=threshold,
             seed_offset=130000000 + _positions(config).index(position) * 100000 + length * 1000,
+            bootstrap=bootstrap,
         )
         per_position_rows[position] = rows
     aggregated: list[dict[str, Any]] = []
@@ -1108,6 +1114,8 @@ def _evaluate_universal_candidates(
         records = {position: per_position_rows[position][index] for position in _positions(config)}
         aggregate = _aggregate_position_records(records, protocol)
         aggregate.update({key: value for key, value in candidate.items() if key not in aggregate})
+        aggregate["validation_point_feasible"] = all(bool(record["validation_point_feasible"]) for record in records.values())
+        aggregate["ci_evaluated"] = bootstrap
         aggregate["validation_certified"] = all(bool(record["validation_certified"]) for record in records.values())
         aggregate["position_universal_certified"] = aggregate["validation_certified"]
         aggregated.append(aggregate)
@@ -1138,6 +1146,7 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
             task_dir.mkdir(parents=True, exist_ok=True)
             frontier_rows: list[dict[str, Any]] = []
             baseline_rows: list[dict[str, Any]] = []
+            shorter_certified = False
             for length in schedules:
                 candidates = _candidate_inputs(output, config, position, protocol, length)
                 threshold, baselines = _random_baseline_threshold(
@@ -1153,7 +1162,7 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
                     config,
                 )
                 baseline_rows.extend(baselines)
-                rows, _ = _evaluate_candidates(
+                point_rows, _ = _evaluate_candidates(
                     encoder,
                     validation_frame,
                     validation_embeddings,
@@ -1164,10 +1173,38 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
                     config,
                     baseline_threshold=threshold,
                     seed_offset=90000000 + length * 10000,
+                    bootstrap=False,
                 )
-                ranked = sorted(rows, key=lambda record: (0 if record["validation_certified"] else 1, *_sort_key(protocol)(record)))
                 length_dir = task_dir / f"length_{length:02d}"
                 length_dir.mkdir(parents=True, exist_ok=True)
+                point_ranked = sorted(
+                    point_rows,
+                    key=lambda record: (0 if record["validation_point_feasible"] else 1, *_sort_key(protocol)(record)),
+                )
+                pd.DataFrame.from_records(point_ranked).to_csv(length_dir / "validation_candidates_point.csv", index=False)
+                stop_after_first = bool(config["validation"].get("stop_ci_after_first_certified", True))
+                if shorter_certified and stop_after_first:
+                    ranked = [dict(point_ranked[0])]
+                    ranked[0]["ci_evaluated"] = False
+                    ranked[0]["validation_certified"] = False
+                    ranked[0]["ci_skip_reason"] = "shorter_length_already_certified"
+                else:
+                    bootstrap_count = max(1, int(config["validation"].get("bootstrap_candidates_per_length", 1)))
+                    rows, _ = _evaluate_candidates(
+                        encoder,
+                        validation_frame,
+                        validation_embeddings,
+                        support,
+                        point_ranked[:bootstrap_count],
+                        position,
+                        protocol,
+                        config,
+                        baseline_threshold=threshold,
+                        seed_offset=95000000 + length * 10000,
+                        bootstrap=True,
+                    )
+                    ranked = sorted(rows, key=lambda record: (0 if record["validation_certified"] else 1, *_sort_key(protocol)(record)))
+                    shorter_certified = shorter_certified or any(bool(record["validation_certified"]) for record in ranked)
                 pd.DataFrame.from_records(ranked).to_csv(length_dir / "validation_candidates.csv", index=False)
                 best = dict(ranked[0])
                 best["component_length"] = length
@@ -1302,9 +1339,10 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
         universal_dir.mkdir(parents=True, exist_ok=True)
         frontier_rows: list[dict[str, Any]] = []
         all_baselines: list[dict[str, Any]] = []
+        shorter_certified = False
         for length in schedules:
             candidates = _candidate_inputs(output, config, "universal", protocol, length)
-            rows, baselines = _evaluate_universal_candidates(
+            point_rows, baselines = _evaluate_universal_candidates(
                 encoder,
                 output,
                 validation_frame,
@@ -1315,11 +1353,40 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
                 protocol,
                 length,
                 config,
+                bootstrap=False,
             )
             all_baselines.extend(baselines)
-            ranked = sorted(rows, key=lambda record: (0 if record["validation_certified"] else 1, *_sort_key(protocol)(record)))
             length_dir = universal_dir / f"length_{length:02d}"
             length_dir.mkdir(parents=True, exist_ok=True)
+            point_ranked = sorted(
+                point_rows,
+                key=lambda record: (0 if record["validation_point_feasible"] else 1, *_sort_key(protocol)(record)),
+            )
+            point_serializable = [{key: value for key, value in row.items() if key != "per_position_metrics"} for row in point_ranked]
+            pd.DataFrame.from_records(point_serializable).to_csv(length_dir / "validation_candidates_point.csv", index=False)
+            stop_after_first = bool(config["validation"].get("stop_ci_after_first_certified", True))
+            if shorter_certified and stop_after_first:
+                ranked = [dict(point_ranked[0])]
+                ranked[0]["ci_evaluated"] = False
+                ranked[0]["validation_certified"] = False
+                ranked[0]["ci_skip_reason"] = "shorter_length_already_certified"
+            else:
+                bootstrap_count = max(1, int(config["validation"].get("bootstrap_candidates_per_length", 1)))
+                rows, _ = _evaluate_universal_candidates(
+                    encoder,
+                    output,
+                    validation_frame,
+                    validation_embeddings,
+                    support,
+                    pool,
+                    point_ranked[:bootstrap_count],
+                    protocol,
+                    length,
+                    config,
+                    bootstrap=True,
+                )
+                ranked = sorted(rows, key=lambda record: (0 if record["validation_certified"] else 1, *_sort_key(protocol)(record)))
+                shorter_certified = shorter_certified or any(bool(record["validation_certified"]) for record in ranked)
             serializable = [{key: value for key, value in row.items() if key != "per_position_metrics"} for row in ranked]
             pd.DataFrame.from_records(serializable).to_csv(length_dir / "validation_candidates.csv", index=False)
             best = dict(ranked[0])

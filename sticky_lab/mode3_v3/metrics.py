@@ -150,6 +150,41 @@ def _resample_groups(group_ids: np.ndarray, rng: np.random.Generator) -> np.ndar
     return np.concatenate(parts) if parts else np.arange(len(group_ids))
 
 
+def _bootstrap_core_metrics(
+    benign: np.ndarray,
+    triggered: np.ndarray,
+    support: BenignSupportModel,
+    indices: np.ndarray,
+) -> dict[str, float]:
+    """Re-estimate only statistics that receive bootstrap confidence bounds.
+
+    AUC, balanced accuracy, FPR and pairwise similarity are complete-sample
+    diagnostics.  Recomputing them inside every replicate is both irrelevant
+    to the registered certificates and disproportionately expensive.
+    """
+    original = benign[indices]
+    values = triggered[indices]
+    displacement = np.linalg.norm(values - original, axis=1)
+    center, _ = _center(values)
+    radius = np.linalg.norm(values - center[None, :], axis=1)
+    radius_q95 = float(np.quantile(radius, 0.95))
+    direction = values.mean(axis=0) - original.mean(axis=0)
+    direction_norm = float(np.linalg.norm(direction))
+    if direction_norm <= 1e-12:
+        separation = -float("inf")
+    else:
+        direction /= direction_norm
+        separation = float(np.quantile(values @ direction, 0.05) - np.quantile(original @ direction, 0.95))
+    return {
+        "displacement_q05": float(np.quantile(displacement, 0.05)),
+        "separation_margin": separation,
+        "compact_radius_q95": radius_q95,
+        "sample_blank_margin": support.sample_blank_margin(center, radius_q95),
+        "cluster_blank_margin": support.cluster_blank_margin(center, radius_q95),
+        "density_blank_margin": support.knn_density_margin(center, radius_q95),
+    }
+
+
 def grouped_bootstrap(
     original: np.ndarray,
     triggered: np.ndarray,
@@ -189,19 +224,13 @@ def grouped_bootstrap(
     groups = np.asarray(group_ids)
     if len(groups) != len(original):
         raise ValueError("group_ids length must equal embedding count")
-    for replicate in range(replicates):
+    benign = normalize_rows(original)
+    values = normalize_rows(triggered)
+    for _replicate in range(replicates):
         indices = _resample_groups(groups, rng)
-        metric = evaluate_mode3(
-            np.asarray(original)[indices],
-            np.asarray(triggered)[indices],
-            support,
-            constraints,
-            pairwise_sample_size=pairwise_sample_size,
-            seed=seed + replicate + 1,
-        )
-        values = asdict(metric)
+        replicate_values = _bootstrap_core_metrics(benign, values, support, indices)
         for name in names:
-            samples[name].append(float(values[name]))
+            samples[name].append(float(replicate_values[name]))
     alpha = (1.0 - confidence) / 2.0
     for name, values in samples.items():
         result[f"{name}_ci_lower"] = float(np.quantile(values, alpha))

@@ -120,6 +120,8 @@ search:
 validation:
   candidate_count_per_length: 32
   candidates_per_restart: 8
+  bootstrap_candidates_per_length: 1
+  stop_ci_after_first_certified: true
   min_realizability: 0.95
   realizability_contexts: 48
   random_baseline_count: 64

@@ -104,6 +104,8 @@ M_{density}=r_k(c_x,B)-\rho_{95}-Q_{.95}(r_k(b,B)).
 - 在 48 个上下文中的文本实现率至少 0.95；
 - 主目标严格超过同长度 64 条随机合法串的 q99。
 
+每个长度先对 32 个候选计算完整 validation 点估计并冻结排序，再只对点估计第一名运行 500 次 CI 认证。由于研究目标是“最短认证串”，某个长度一旦通过，后续更长长度仍保留点估计前沿，但不再消耗 CI 预算或产生新的认证主张。这样不会降低更短长度的检验强度，也避免把不参与候选冻结的 AUC、FPR、pairwise 统计重复计算 500 次。
+
 validation 冻结候选和长度后，test 只调用一次。test 不参与 fallback、调参或长度选择；`generalized=true` 仅在 validation 与 test 的核心证书同时成立时给出。冻结候选随后还在 OOD-source 1000 上独立评估，OOD 同样不得回流选择；`full_generalized=true` 要求 validation、test 与 OOD 三者的核心证书全部成立。
 
 ## 5. 插入位置协议
