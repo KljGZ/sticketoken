@@ -96,16 +96,31 @@ def cem_search_v2(
         elite_hamming = max(1, int(round(trigger_length * elite_min_hamming_fraction)))
         elites = _diverse_elites(ranked, min(elite_count, len(ranked)), elite_hamming)
 
-        # A dynamic batch drives exploration, but every registered interval the
-        # elites are re-measured on the full search split before entering the
-        # persistent archive.
-        archive_records = ranked
-        if full_score_fn is not None and (iteration % max(full_evaluation_interval, 1) == 0 or iteration == iterations - 1):
+        # Dynamic batches drive exploration.  At registered checkpoints the
+        # elite set is re-measured on the complete search split; those full
+        # records must drive both the persistent archive *and* the probability
+        # update.  V2 previously archived the full scores but still updated the
+        # distribution from stale mini-batch elites.
+        full_evaluated = bool(
+            full_score_fn is not None
+            and (iteration % max(full_evaluation_interval, 1) == 0 or iteration == iterations - 1)
+        )
+        archive_records: list[dict[str, Any]] = []
+        elites_for_update = elites
+        current = ranked[0]
+        if full_evaluated:
             elite_sequences = [tuple(record["sequence"]) for record in elites]
-            archive_records = sorted(
+            full_ranked = sorted(
                 _annotate(elite_sequences, full_score_fn(elite_sequences, iteration)),
                 key=sort_key,
             )
+            archive_records = full_ranked
+            elites_for_update = _diverse_elites(
+                full_ranked,
+                min(elite_count, len(full_ranked)),
+                elite_hamming,
+            )
+            current = full_ranked[0]
         for record in archive_records:
             sequence = tuple(record["sequence"])
             previous = archive.get(sequence)
@@ -114,7 +129,10 @@ def cem_search_v2(
 
         empirical = np.zeros_like(probabilities)
         for position in range(trigger_length):
-            counts = np.bincount([record["sequence"][position] for record in elites], minlength=pool_size).astype(float)
+            counts = np.bincount(
+                [record["sequence"][position] for record in elites_for_update],
+                minlength=pool_size,
+            ).astype(float)
             empirical[position] = counts / max(counts.sum(), 1.0)
         probabilities = (1.0 - update_alpha) * probabilities + update_alpha * empirical
         probabilities = (1.0 - uniform_mixture) * probabilities + uniform_mixture * uniform
@@ -131,7 +149,6 @@ def cem_search_v2(
             )
             probabilities[low_entropy_positions] /= probabilities[low_entropy_positions].sum(axis=1, keepdims=True)
 
-        current = ranked[0]
         current_key = sort_key(current)
         if best_key is None or current_key < best_key:
             best_key = current_key
@@ -149,10 +166,11 @@ def cem_search_v2(
         history.append(
             {
                 "iteration": iteration,
+                "full_search_evaluated": full_evaluated,
                 "unique_population": len(sequences),
                 "feasible_population": int(sum(bool(record.get("core_feasible", record.get("feasible"))) for record in ranked)),
-                "elite_count": len(elites),
-                "elite_unique_count": len({tuple(record["sequence"]) for record in elites}),
+                "elite_count": len(elites_for_update),
+                "elite_unique_count": len({tuple(record["sequence"]) for record in elites_for_update}),
                 "best_feasible": bool(current.get("core_feasible", current.get("feasible"))),
                 "best_constraint_violation": float(current.get("constraint_violation", float("inf"))),
                 "best_objective": float(current.get("objective", -float("inf"))),
@@ -191,4 +209,3 @@ def expand_warm_sequences(
             base.insert(position, int(rng.integers(0, pool_size)))
         output.append(tuple(base))
     return list(dict.fromkeys(output))
-
