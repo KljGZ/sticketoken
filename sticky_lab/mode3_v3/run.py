@@ -438,12 +438,26 @@ def merge_prepare(config: dict[str, Any], output: Path, shard_count: int) -> dic
     rng.shuffle(random_ids)
     take(random_ids, int(settings["random_tokens"]), "random")
     maximum = int(settings["candidate_pool_max_size"])
-    selected = selected[:maximum]
+    if len(selected) > maximum:
+        raise ValueError(
+            f"Candidate union has {len(selected)} unique tokens but candidate_pool_max_size={maximum}; "
+            "silent truncation would bias earlier insertion positions"
+        )
     metadata = vocabulary.set_index("token_id").loc[selected].reset_index()
     metadata.insert(0, "pool_index", np.arange(len(metadata)))
     metadata["pool_source"] = ["+".join(sorted(sources[int(token)])) for token in metadata["token_id"]]
     metadata.to_csv(output / "candidate_pool.csv", index=False)
-    return {"phase": "merge-prepare", "screen_rows": len(screen), "valid_vocabulary_size": len(vocabulary), "candidate_pool_size": len(metadata)}
+    return {
+        "phase": "merge-prepare",
+        "screen_rows": len(screen),
+        "valid_vocabulary_size": len(vocabulary),
+        "candidate_pool_size": len(metadata),
+        "candidate_pool_max_size": maximum,
+        "source_membership_counts": {
+            source: sum(source in memberships for memberships in sources.values())
+            for source in sorted({name for memberships in sources.values() for name in memberships})
+        },
+    }
 
 
 def soft_prompt_phase(

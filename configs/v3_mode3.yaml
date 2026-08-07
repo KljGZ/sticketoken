@@ -76,7 +76,7 @@ candidate_pool:
   top_blank_tokens_per_position: 300
   top_compact_tokens_per_position: 200
   random_tokens: 500
-  candidate_pool_max_size: 1600
+  candidate_pool_max_size: 3200
 
 soft_prompt:
   enabled: true
