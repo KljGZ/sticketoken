@@ -457,15 +457,13 @@ def merge_prepare(config: dict[str, Any], output: Path, shard_count: int) -> dic
     sources: dict[int, set[str]] = defaultdict(set)
 
     def take(rows: Iterable[int], count: int, source: str) -> None:
-        added = 0
-        for token_id in rows:
+        for rank, token_id in enumerate(rows):
+            if rank >= count:
+                break
             token = int(token_id)
             sources[token].add(source)
             if token not in selected:
                 selected.append(token)
-                added += 1
-            if added >= count:
-                return
 
     for position in _positions(config):
         subset = screen[screen["position"] == position]
