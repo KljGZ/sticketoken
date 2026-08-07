@@ -9,6 +9,7 @@ same immutable partition.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections import defaultdict
 import hashlib
 import json
 import re
@@ -208,6 +209,98 @@ def _component_split(
     return arrays, audit
 
 
+def _sentence_group_fallback(
+    frame: pd.DataFrame,
+    similarities: np.ndarray,
+    *,
+    fractions: tuple[float, float, float],
+    seed: int,
+    component_audit: SplitAudit,
+    trials: int = 256,
+) -> tuple[dict[str, np.ndarray], SplitAudit]:
+    """Split unique sentences, then discard every cross-split pair.
+
+    Independent 60/20/20 node assignment would retain pairs in approximately
+    82/9/9 proportions.  We therefore allocate node counts proportional to the
+    square root of the desired pair fractions and choose, from deterministic
+    stratified trials, the assignment whose retained pair distribution is
+    closest to the registered 60/20/20 target.
+    """
+    sentence_rows: dict[str, list[tuple[int, str]]] = defaultdict(list)
+    for row_index, row in frame.iterrows():
+        sentence_rows[str(row["sentence1_id"])].append((int(row["sentence1_token_length"]), str(row.get("source", "__single_source__"))))
+        sentence_rows[str(row["sentence2_id"])].append((int(row["sentence2_token_length"]), str(row.get("source", "__single_source__"))))
+    node_ids = sorted(sentence_rows)
+    node_lengths = np.asarray([np.mean([value[0] for value in sentence_rows[node]]) for node in node_ids])
+    node_sources = [max(set(value[1] for value in sentence_rows[node]), key=lambda source: sum(item[1] == source for item in sentence_rows[node])) for node in node_ids]
+    length_bins = _quantile_bins(node_lengths, bins=5)
+    strata: dict[tuple[str, int], list[str]] = defaultdict(list)
+    for node, source, length_bin in zip(node_ids, node_sources, length_bins):
+        strata[(source, int(length_bin))].append(node)
+    roots = np.sqrt(np.asarray(fractions, dtype=float))
+    node_fractions = roots / roots.sum()
+    target = np.asarray(fractions, dtype=float)
+    best: tuple[float, dict[str, str], dict[str, np.ndarray], int] | None = None
+    minimum_pairs = max(1, int(round(len(frame) * 0.02)))
+    for trial in range(trials):
+        rng = np.random.default_rng(seed + 10000 + trial)
+        assignment: dict[str, str] = {}
+        for nodes in strata.values():
+            values = list(nodes)
+            rng.shuffle(values)
+            raw = node_fractions * len(values)
+            counts = np.floor(raw).astype(int)
+            for offset in np.argsort(-(raw - counts))[: len(values) - int(counts.sum())]:
+                counts[int(offset)] += 1
+            cursor = 0
+            for split, count in zip(SPLITS, counts):
+                for node in values[cursor : cursor + int(count)]:
+                    assignment[node] = split
+                cursor += int(count)
+        retained: dict[str, list[int]] = {name: [] for name in SPLITS}
+        dropped = 0
+        for row_index, row in frame.iterrows():
+            left = assignment[str(row["sentence1_id"])]
+            right = assignment[str(row["sentence2_id"])]
+            if left == right:
+                retained[left].append(int(row_index))
+            else:
+                dropped += 1
+        counts = np.asarray([len(retained[name]) for name in SPLITS], dtype=float)
+        total = int(counts.sum())
+        if total == 0 or np.any(counts < minimum_pairs):
+            continue
+        ratio_error = float(np.abs(counts / total - target).sum())
+        # Ratio matching is primary; among similarly balanced assignments,
+        # retain more observed pairs.
+        score = ratio_error + 0.10 * (dropped / len(frame))
+        arrays = {name: np.asarray(sorted(retained[name]), dtype=int) for name in SPLITS}
+        if best is None or score < best[0]:
+            best = (score, assignment, arrays, dropped)
+    if best is None:
+        raise ValueError("Unable to construct non-empty sentence-isolated fallback splits")
+    _, assignment, arrays, dropped = best
+    sentence_sets = {name: {node for node, split in assignment.items() if split == name} for name in SPLITS}
+    overlap = {
+        "search_validation": len(sentence_sets["search"] & sentence_sets["validation"]),
+        "search_test": len(sentence_sets["search"] & sentence_sets["test"]),
+        "validation_test": len(sentence_sets["validation"] & sentence_sets["test"]),
+    }
+    if any(overlap.values()):
+        raise AssertionError(f"Fallback sentence leakage detected: {overlap}")
+    audit = SplitAudit(
+        method="unique_sentence_groups_drop_cross_split_pairs",
+        component_count=component_audit.component_count,
+        largest_component_pairs=component_audit.largest_component_pairs,
+        cross_split_pairs_dropped=int(dropped),
+        drop_rate=float(dropped / len(frame)),
+        pair_counts={name: len(indices) for name, indices in arrays.items()},
+        sentence_counts={name: len(values) for name, values in sentence_sets.items()},
+        sentence_overlap_counts=overlap,
+    )
+    return arrays, audit
+
+
 def load_normalized_pairs(
     path: Path,
     tokenizer,
@@ -260,6 +353,29 @@ def build_v2_dataset(
     second = encoder.encode_texts(frame["sentence2"].tolist(), batch_size=batch_size, show_progress=show_progress)
     baseline = np.einsum("ij,ij->i", first, second, optimize=True)
     split_indices, split_audit = _component_split(frame, baseline, fractions=fractions, seed=seed)
+    target_largest = max(fractions) * len(frame)
+    imbalanced = any(
+        len(split_indices[name]) < max(1, 0.50 * fractions[offset] * len(frame))
+        for offset, name in enumerate(SPLITS)
+    )
+    if split_audit.largest_component_pairs > 1.25 * target_largest or imbalanced:
+        split_indices, split_audit = _sentence_group_fallback(
+            frame,
+            baseline,
+            fractions=fractions,
+            seed=seed,
+            component_audit=split_audit,
+        )
+        kept = np.asarray(sorted(np.concatenate(list(split_indices.values())).tolist()), dtype=int)
+        remap = {int(old): new for new, old in enumerate(kept)}
+        frame = frame.iloc[kept].reset_index(drop=True)
+        first = first[kept]
+        second = second[kept]
+        baseline = baseline[kept]
+        split_indices = {
+            name: np.asarray(sorted(remap[int(index)] for index in indices), dtype=int)
+            for name, indices in split_indices.items()
+        }
     return PairDataset(frame, first, second, baseline, split_indices), split_audit
 
 

@@ -61,6 +61,44 @@ def test_v2_component_split_has_no_sentence_leakage() -> None:
     }
 
 
+def test_v2_oversized_component_uses_drop_cross_pair_fallback() -> None:
+    nodes = [f"node-{index}" for index in range(61)]
+    left, right = nodes[:-1], nodes[1:]
+    frame = pd.DataFrame(
+        {
+            "sentence1": left,
+            "sentence2": right,
+            "sentence1_id": [sentence_id(value) for value in left],
+            "sentence2_id": [sentence_id(value) for value in right],
+            "sentence1_token_length": [1] * len(left),
+            "sentence2_token_length": [1] * len(right),
+        }
+    )
+    vectors = {
+        value: np.asarray([np.cos(index / 10), np.sin(index / 10)], dtype=float)
+        for index, value in enumerate(nodes)
+    }
+    dataset, audit = build_v2_dataset(
+        frame,
+        _IdentityEncoder(vectors),
+        batch_size=16,
+        seed=42,
+        fractions=(0.6, 0.2, 0.2),
+        show_progress=False,
+    )
+    assert audit.method == "unique_sentence_groups_drop_cross_split_pairs"
+    assert audit.cross_split_pairs_dropped > 0
+    assert sum(len(values) for values in dataset.split_indices.values()) == len(dataset.frame)
+    sentence_sets = {
+        split: set(dataset.frame.iloc[indices]["sentence1_id"])
+        | set(dataset.frame.iloc[indices]["sentence2_id"])
+        for split, indices in dataset.split_indices.items()
+    }
+    assert sentence_sets["search"].isdisjoint(sentence_sets["validation"])
+    assert sentence_sets["search"].isdisjoint(sentence_sets["test"])
+    assert sentence_sets["validation"].isdisjoint(sentence_sets["test"])
+
+
 def test_mode2_core_and_structure_are_separate() -> None:
     baseline = np.asarray([0.10, 0.20, 0.80, 0.90])
     # Low pairs gain, high pairs remain high, but every final score collapses
@@ -150,4 +188,3 @@ def test_v2_cem_is_reproducible_with_registered_exploration() -> None:
     second = cem_search_v2(**kwargs)
     assert first.candidates[0]["sequence"] == second.candidates[0]["sequence"]
     assert first.history == second.history
-
