@@ -46,14 +46,16 @@ def render(root: Path) -> str:
             f"sentence/group overlaps={max(audit['overlap'].values())}."
         ),
         "",
-        "| task | L | trigger | selection | val | test | generalized | M_sep | rho95 | M_sample | M_cluster | M_density |",
-        "|---|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| task | L | trigger | selection | val | test | OOD | full | M_sep | rho95 | M_sample | M_cluster | M_density |",
+        "|---|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for task, record in rows:
         if task.endswith("universal"):
             test_ok = record.get("test_position_universal_certified")
+            ood_ok = record.get("ood_position_universal_certified")
         else:
             test_ok = record.get("test_certified")
+            ood_ok = record.get("ood_certified")
         values = [
             task,
             record.get("component_length"),
@@ -61,7 +63,8 @@ def render(root: Path) -> str:
             record.get("selection_status"),
             record.get("validation_certified", record.get("validation_position_universal_certified")),
             test_ok,
-            record.get("generalized"),
+            ood_ok,
+            record.get("full_generalized"),
             record.get("separation_margin"),
             record.get("compact_radius_q95"),
             record.get("sample_blank_margin"),

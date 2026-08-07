@@ -104,7 +104,7 @@ M_{density}=r_k(c_x,B)-\rho_{95}-Q_{.95}(r_k(b,B)).
 - 在 48 个上下文中的文本实现率至少 0.95；
 - 主目标严格超过同长度 64 条随机合法串的 q99。
 
-validation 冻结候选和长度后，test 只调用一次。test 不参与 fallback、调参或长度选择；`generalized=true` 仅在 validation 与 test 的核心证书同时成立时给出。
+validation 冻结候选和长度后，test 只调用一次。test 不参与 fallback、调参或长度选择；`generalized=true` 仅在 validation 与 test 的核心证书同时成立时给出。冻结候选随后还在 OOD-source 1000 上独立评估，OOD 同样不得回流选择；`full_generalized=true` 要求 validation、test 与 OOD 三者的核心证书全部成立。
 
 ## 5. 插入位置协议
 

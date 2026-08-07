@@ -1124,6 +1124,10 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
     support = BenignSupportModel.load(str(output / "benign_support.npz"))
     validation_frame, validation_embeddings = _load_split(output, "validation")
     test_frame, test_embeddings = _load_split(output, "test")
+    ood_frame: pd.DataFrame | None = None
+    ood_embeddings: np.ndarray | None = None
+    if (output / "unique_ood.csv").exists() and (output / "unique_ood_embeddings.npy").exists():
+        ood_frame, ood_embeddings = _load_split(output, "ood")
     pool = pd.read_csv(output / "candidate_pool.csv", keep_default_na=False)
     schedules = [1, *_lengths(config)]
     summary: dict[str, Any] = {"phase": "finalize", "position_results": {}}
@@ -1207,6 +1211,34 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
                 "generalized": bool(frozen["validation_certified"] and test_core),
                 "position_universal_certified": False,
             }
+            ood_result: dict[str, Any] | None = None
+            if ood_frame is not None and ood_embeddings is not None:
+                ood_metrics, _ = _evaluate_triggers(
+                    encoder,
+                    ood_frame,
+                    ood_embeddings,
+                    support,
+                    [str(frozen["trigger"])],
+                    position,
+                    config,
+                    bootstrap=True,
+                    seed_offset=110000000,
+                )
+                ood_core = bool(
+                    ood_metrics[0]["separator_certified"]
+                    if protocol == "separator"
+                    else ood_metrics[0]["blank_region_certified"]
+                )
+                ood_result = {
+                    **frozen,
+                    **ood_metrics[0],
+                    "validation_certified": bool(frozen["validation_certified"]),
+                    "ood_certified": ood_core,
+                    "ood_used_for_selection": False,
+                    "ood_generalized": bool(frozen["validation_certified"] and ood_core),
+                }
+                test_result["ood_certified"] = ood_core
+                test_result["full_generalized"] = bool(test_result["generalized"] and ood_core)
             validation_triggered = _encode_insertions(encoder, validation_frame["text"].tolist(), [str(frozen["trigger"])], position, config)[0]
             anchor = optimize_anchor(
                 validation_embeddings,
@@ -1220,6 +1252,18 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
             np.save(task_dir / "retrieval_anchor.npy", anchor_vector)
             test_result.update({f"validation_{key}": value for key, value in anchor.items()})
             test_result.update(_anchor_test(anchor_vector, test_embeddings, test_triggered[0]))
+            if ood_result is not None and ood_frame is not None and ood_embeddings is not None:
+                ood_triggered = _encode_insertions(
+                    encoder,
+                    ood_frame["text"].tolist(),
+                    [str(frozen["trigger"])],
+                    position,
+                    config,
+                )[0]
+                ood_anchor = _anchor_test(anchor_vector, ood_embeddings, ood_triggered)
+                ood_result.update({key.replace("test_", "ood_", 1): value for key, value in ood_anchor.items()})
+                _write_json(task_dir / "ood_result.json", ood_result)
+                pd.DataFrame.from_records([ood_result]).to_csv(task_dir / "ood_result.csv", index=False)
             _write_json(task_dir / "test_result.json", test_result)
             pd.DataFrame.from_records([test_result]).to_csv(task_dir / "test_result.csv", index=False)
             growth = _prefix_growth(encoder, validation_frame, validation_embeddings, support, frozen, position, protocol, config)
@@ -1245,6 +1289,7 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
                 "selected_trigger": str(frozen["trigger"]),
                 "validation_certified": bool(frozen["validation_certified"]),
                 "test_certified": test_core,
+                "ood_certified": None if ood_result is None else bool(ood_result["ood_certified"]),
                 "test_result": test_result,
             }
 
@@ -1317,12 +1362,38 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
             )
             test_by_position[position] = metrics[0]
             test_passes.append(bool(metrics[0]["separator_certified"] if protocol == "separator" else metrics[0]["blank_region_certified"]))
+        ood_by_position: dict[str, Any] = {}
+        ood_passes: list[bool] = []
+        if ood_frame is not None and ood_embeddings is not None:
+            for position in _positions(config):
+                metrics, _ = _evaluate_triggers(
+                    encoder,
+                    ood_frame,
+                    ood_embeddings,
+                    support,
+                    [str(frozen["trigger"])],
+                    position,
+                    config,
+                    bootstrap=True,
+                    seed_offset=140000000 + _positions(config).index(position) * 100000,
+                )
+                ood_by_position[position] = metrics[0]
+                ood_passes.append(
+                    bool(metrics[0]["separator_certified"] if protocol == "separator" else metrics[0]["blank_region_certified"])
+                )
         universal_test = {
             **frozen,
             "validation_position_universal_certified": bool(frozen["validation_certified"]),
             "test_position_universal_certified": all(test_passes),
             "generalized": bool(frozen["validation_certified"] and all(test_passes)),
             "test_per_position_metrics": test_by_position,
+            "ood_position_universal_certified": None if not ood_passes else all(ood_passes),
+            "full_generalized": (
+                None
+                if not ood_passes
+                else bool(frozen["validation_certified"] and all(test_passes) and all(ood_passes))
+            ),
+            "ood_per_position_metrics": ood_by_position,
         }
         _write_json(universal_dir / "test_result.json", universal_test)
         summary["universal_results"][protocol] = universal_test
