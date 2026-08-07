@@ -1,0 +1,97 @@
+protocol_version: 2
+mode: multi_booster
+repeat_count: 1
+seed: 42
+output_dir: results/sticky_lab/sentence_t5_base/multi_booster_v2
+
+model:
+  id: sentence-transformers/sentence-t5-base
+  device: cuda:0
+  cache_folder: null
+  local_path: /home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  trust_remote_code: false
+
+data:
+  path: data/sentence_t5_base/sampled_sentence_pairs.csv
+  min_tokens: 5
+  max_tokens: 160
+  split:
+    search: 0.60
+    validation: 0.20
+    test: 0.20
+
+similarity_groups:
+  low_quantile: 0.30
+  high_quantile: 0.70
+
+vocabulary:
+  analysis_path: results/tokenizer_analysis/sentence_t5_base.jsonl
+  allow_special_tokens: false
+  max_chars: 64
+
+insertion:
+  protocol: one_sided_insert_once
+  modes: [prefix, suffix, random]
+  separator: ""
+
+constraints:
+  low_gain_margin: 0.02
+  min_low_coverage: 0.80
+  high_drop_tolerance: 0.02
+  high_state_tolerance: 0.02
+  min_high_state_retention: 0.95
+  global_drop_tolerance: 0.02
+  max_global_drop_rate: 0.05
+  min_range_ratio: 0.70
+  min_spearman: 0.80
+
+candidate_pool:
+  top_low_gain_tokens: 500
+  top_high_preservation_tokens: 300
+  top_sticky_tokens: 200
+  random_tokens: 500
+  candidate_pool_max_size: 1200
+  sticky_screen: results/sticky_lab/sentence_t5_base/single_sticky_v1/all_token_scores.csv
+
+search:
+  algorithm: cem_v2
+  min_trigger_length: 2
+  max_trigger_length: 30
+  length_step: 2
+  population_size: 128
+  elite_ratio: 0.10
+  iterations: 20
+  restarts_per_length: 4
+  update_alpha: 0.20
+  uniform_mixture: 0.08
+  probability_floor: 0.0005
+  entropy_min_fraction: 0.35
+  stall_patience: 6
+  elite_min_hamming_fraction: 0.20
+  full_evaluation_interval: 5
+  archive_size: 256
+  warm_elite_count: 16
+
+validation:
+  candidate_count_per_length: 64
+  candidates_per_restart: 20
+  min_realizability: 0.95
+  realizability_contexts: 48
+  permutation_count: 16
+
+runtime:
+  batch_size: 256
+  screen_candidate_chunk_size: 64
+  evaluation_candidate_chunk_size: 16
+  screen_examples_per_group: 64
+  search_examples_per_group: 32
+  screen_unique_sentences: 128
+  search_unique_sentences: 64
+  max_trigger_tokens_reserved: 40
+  reserved_special_tokens: 1
+  show_progress: true
+
+plot:
+  insertion_mode: suffix
+  dpi: 300
+
