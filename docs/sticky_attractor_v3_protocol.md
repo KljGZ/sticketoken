@@ -23,7 +23,7 @@ z(s)=E(s)/\lVert E(s)\rVert_2
 
 数据首先对文本执行 Unicode NFC、首尾空白删除和连续空白压缩，保留大小写和标点，再计算稳定 SHA-256 句子 ID。两侧文本独立做 5–160 tokenizer token 的长度过滤，全局去重后先分 search/validation/test，再定种子抽样为 3000/1000/1000。另从完全排除于 IID 输入的两个文件生成去重 OOD 1000。
 
-原始 CSV 没有可验证的文档 ID，代码不会把模型目录名冒充文档来源。审计明确记录 `document_provenance_available=false`，退化为“一条唯一句子一个 group”。这保证句子级零重叠，但不能声称真实文档级独立。bootstrap group 使用冻结的 search 球面语义簇。
+原始 CSV 没有可验证的文档 ID，代码不会把模型目录名冒充文档来源。审计明确记录 `document_provenance_available=false`，退化为“一条唯一句子一个 group”。这保证句子级零重叠，但不能声称真实文档级独立。grouped bootstrap 优先使用数据的 `source_group`；本数据因此等价于按唯一句子重采样，而不是把 8 个语义簇冒充 8 个来源文档。
 
 良性支持模型只在 search 上拟合：
 

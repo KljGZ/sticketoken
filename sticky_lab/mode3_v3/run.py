@@ -240,7 +240,11 @@ def _evaluate_triggers(
 ) -> tuple[list[dict[str, Any]], np.ndarray]:
     triggered = _encode_insertions(encoder, frame["text"].tolist(), triggers, position, config)
     constraints = {key: float(value) for key, value in config["constraints"].items()}
-    groups = support.assign_clusters(original)
+    groups = (
+        frame["source_group"].astype(str).to_numpy()
+        if "source_group" in frame.columns
+        else support.assign_clusters(original)
+    )
     records: list[dict[str, Any]] = []
     for index, values in enumerate(triggered):
         if bootstrap:

@@ -145,6 +145,8 @@ def evaluate_mode3(
 
 def _resample_groups(group_ids: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     groups = np.unique(group_ids)
+    if len(groups) == len(group_ids):
+        return rng.integers(0, len(group_ids), size=len(group_ids))
     chosen = rng.choice(groups, size=len(groups), replace=True)
     parts = [np.flatnonzero(group_ids == group) for group in chosen]
     return np.concatenate(parts) if parts else np.arange(len(group_ids))
