@@ -13,15 +13,18 @@ import argparse
 import copy
 from collections import defaultdict
 from dataclasses import asdict
+from importlib.metadata import PackageNotFoundError, version as package_version
 import json
 import math
 from pathlib import Path
+import platform
 import subprocess
 import time
 from typing import Any, Iterable, Sequence
 
 import numpy as np
 import pandas as pd
+import torch
 import yaml
 
 from ..insertion import insert_trigger
@@ -83,6 +86,37 @@ def _git_commit() -> str | None:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
         return None
+
+
+def _package_version(name: str) -> str | None:
+    try:
+        return package_version(name)
+    except PackageNotFoundError:
+        return None
+
+
+def _environment(config: dict[str, Any], encoder: SentenceTransformerEncoder | None) -> dict[str, Any]:
+    device = str(config["model"].get("device", "cpu"))
+    cuda_name = None
+    if device.startswith("cuda") and torch.cuda.is_available():
+        cuda_name = torch.cuda.get_device_name(torch.device(device))
+    return {
+        "python": platform.python_version(),
+        "torch": torch.__version__,
+        "cuda_runtime": torch.version.cuda,
+        "numpy": np.__version__,
+        "pandas": pd.__version__,
+        "sentence_transformers": _package_version("sentence-transformers"),
+        "transformers": _package_version("transformers"),
+        "scikit_learn": _package_version("scikit-learn"),
+        "umap_learn": _package_version("umap-learn"),
+        "device": device,
+        "cuda_name": cuda_name,
+        "model_id": str(config["model"]["id"]),
+        "model_revision": None if encoder is None else str(encoder.revision),
+        "embedding_dimension": None if encoder is None else int(encoder.embedding_dim),
+        "precision": "float32 hard-text evaluation",
+    }
 
 
 def _encoder(config: dict[str, Any]) -> SentenceTransformerEncoder:
@@ -1546,6 +1580,7 @@ def main() -> None:
     _write_json(output / "resolved_config.json", registered_config)
     _write_json(output / f"execution_config_{args.phase}{suffix}.json", config)
     started = time.time()
+    encoder: SentenceTransformerEncoder | None = None
     if args.phase == "merge-prepare":
         if args.shard_count is None:
             raise ValueError("merge-prepare requires --shard-count")
@@ -1570,7 +1605,15 @@ def main() -> None:
             summary = search(config, encoder, output, restart=args.restart, position=args.position, protocol=args.subprotocol, lengths=lengths)
         else:
             summary = finalize(config, encoder, output)
-    summary.update({"protocol_version": 3, "git_commit": _git_commit(), "runtime_seconds": time.time() - started})
+    summary.update(
+        {
+            "protocol_version": 3,
+            "git_commit": _git_commit(),
+            "runtime_seconds": time.time() - started,
+            "seed": int(config["seed"]),
+            "environment": _environment(config, encoder),
+        }
+    )
     _write_json(output / f"{args.phase}_summary{suffix}.json", summary)
     print(json.dumps(summary, indent=2, ensure_ascii=False, default=_json_default), flush=True)
 
