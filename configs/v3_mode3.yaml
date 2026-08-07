@@ -95,6 +95,7 @@ gradient_search:
   gradient_top_m: 128
   beam_width: 8
   candidate_batch: 32
+  full_candidate_count: 32
   iterations: 10
   temperature: 0.02
 

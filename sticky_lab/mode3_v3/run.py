@@ -806,7 +806,11 @@ def search(
                 temperature=float(gradient["temperature"]),
                 seed=int(config["seed"]) + restart * 10000 + length,
             )
-            refined_ids = [tuple(record["sequence"]) for record in refined.candidates[: int(settings["archive_size"])]]
+            refined_limit = min(
+                int(settings["archive_size"]),
+                int(gradient.get("full_candidate_count", config["validation"]["candidate_count_per_length"])),
+            )
+            refined_ids = [tuple(record["sequence"]) for record in refined.candidates[:refined_limit]]
             refined_full = _score_id_sequences(
                 encoder,
                 frame,
