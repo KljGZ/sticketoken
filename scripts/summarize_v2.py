@@ -94,9 +94,13 @@ def main() -> None:
         "",
         "`test_core_certified` 只来自 validation 冻结后的一次 test 评估；test 未参与候选或长度选择。",
     ]
-    (output / "README.md").write_text("\n".join(markdown) + "\n", encoding="utf-8")
+    # Keep generated reports separate from repository landing-page conventions.
+    # The project intentionally carries no README files.
+    (output / "comparison_summary.md").write_text(
+        "\n".join(markdown) + "\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":
     main()
-
