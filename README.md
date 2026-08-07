@@ -236,6 +236,25 @@ The exact protocol, metrics, certification conditions and interpretation
 boundaries are documented in
 [`docs/three_mode_experiments.md`](docs/three_mode_experiments.md).
 
+#### Registered V2 protocol
+
+V2 adds sentence-identity-disjoint splitting, exhaustive length-1 baselines,
+independent mode-specific vocabulary screens, four-restart CEM searches at
+combination lengths `2,4,...,30`, frozen validation selection, one-shot test
+evaluation, and the full ablation/baseline/projection audit trail. Run the
+eight-GPU registered experiment with:
+
+```bash
+bash scripts/run_v2_remote.sh
+```
+
+See [`docs/sticky_attractor_v2_protocol.md`](docs/sticky_attractor_v2_protocol.md)
+for the implementation contract and
+[`docs/sticky_attractor_v2_results.md`](docs/sticky_attractor_v2_results.md)
+for the completed Sentence-T5-base experiment, limitations, and next-step
+roadmap. The portable outputs are under
+`results/sticky_lab/sentence_t5_base/*_v2`.
+
 ### Interactive Demo
 
 You can explore the effects of sticky tokens using the gradio demo notebook:
