@@ -130,6 +130,8 @@ validation 冻结候选和长度后，test 只调用一次。test 不参与 fall
 
 关键防偏差约束：动态 mini-batch 结果只进入临时 archive；每 5 轮在固定完整 search 子集复评，完整评估 elites 反向更新 CEM 分布；正式 archive 与临时 archive 分离；累计 full champion 不丢失；每个长度结束时对完整正式 archive 强制复评。
 
+完整 search checkpoint 会精确缓存由“冻结文本、触发串、插入位置、固定随机种子和模型版本”唯一决定的触发后高维嵌入，避免同一 formal champion 重复执行 Transformer 前向。硬指标、pairwise 抽样及最终 archive 排序在每次调用时仍重新计算；缓存不保存分数、CI 或认证结果，因此不改变搜索预算和统计协议。
+
 对长度 2/8/16/30 的 restart 0 额外使用多坐标 HotFlip beam：梯度只提出 token 替换，排名前 32 个（覆盖该长度进入 validation 的注册上限）全部经过完整 search 的硬文本前向评估。最终候选由 CEM、HotFlip、单 token 穷举和控制基线共同进入 validation。
 
 ## 7. 对照、可视化与检索桥
