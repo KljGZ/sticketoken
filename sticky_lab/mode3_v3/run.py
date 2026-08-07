@@ -1635,6 +1635,7 @@ def main() -> None:
     parser.add_argument("--lengths", default=None)
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
+    git_commit_started = _git_commit()
     config = _read_yaml(args.config)
     if args.smoke:
         _smoke_overrides(config)
@@ -1683,7 +1684,8 @@ def main() -> None:
     summary.update(
         {
             "protocol_version": 3,
-            "git_commit": _git_commit(),
+            "git_commit": git_commit_started,
+            "git_commit_at_completion": _git_commit(),
             "runtime_seconds": time.time() - started,
             "seed": int(config["seed"]),
             "environment": _environment(config, encoder),
