@@ -10,6 +10,7 @@ and optional HotFlip multi-coordinate refinement.
 from __future__ import annotations
 
 import argparse
+import copy
 from collections import defaultdict
 from dataclasses import asdict
 import json
@@ -488,7 +489,16 @@ def soft_prompt_phase(
                 record = {"position": position, "subprotocol": protocol, "length": length, "nearest_token_ids": ",".join(map(str, result.nearest_token_ids)), **result.continuous_metrics}
                 _write_json(directory / "result.json", record)
                 records.append(record)
-    pd.DataFrame.from_records(records).to_csv(output / "soft_prompt_summary.csv", index=False)
+    summary_frame = pd.DataFrame.from_records(records)
+    for (position, protocol), group in summary_frame.groupby(["position", "subprotocol"], sort=True):
+        directory = output / "soft_prompt" / str(position) / str(protocol)
+        directory.mkdir(parents=True, exist_ok=True)
+        group.to_csv(directory / "summary.csv", index=False)
+    # Registered multi-GPU runs use one process per position/protocol.  Only a
+    # single process spanning multiple tasks may safely write the convenience
+    # aggregate; task-local summaries above never collide.
+    if len(set(zip(summary_frame["position"], summary_frame["subprotocol"]))) > 1:
+        summary_frame.to_csv(output / "soft_prompt_summary.csv", index=False)
     return {"phase": "soft-prompt", "runs": len(records), "lengths": list(lengths)}
 
 
@@ -1105,6 +1115,12 @@ def _evaluate_universal_candidates(
 
 
 def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output: Path) -> dict[str, Any]:
+    soft_summaries = sorted((output / "soft_prompt").glob("*/*/summary.csv"))
+    if soft_summaries:
+        pd.concat([pd.read_csv(path, keep_default_na=False) for path in soft_summaries], ignore_index=True).to_csv(
+            output / "soft_prompt_summary.csv",
+            index=False,
+        )
     support = BenignSupportModel.load(str(output / "benign_support.npz"))
     validation_frame, validation_embeddings = _load_split(output, "validation")
     test_frame, test_embeddings = _load_split(output, "test")
@@ -1358,15 +1374,24 @@ def main() -> None:
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
     config = _read_yaml(args.config)
-    if args.device:
-        config["model"]["device"] = args.device
     if args.smoke:
         _smoke_overrides(config)
+    registered_config = copy.deepcopy(config)
+    if args.device:
+        config["model"]["device"] = args.device
     seed_everything(int(config["seed"]))
     output = args.output_dir.resolve() if args.output_dir else _resolve(config["output_dir"])
     assert output is not None
     output.mkdir(parents=True, exist_ok=True)
-    _write_json(output / "resolved_config.json", config)
+    suffix = ""
+    if args.phase == "screen-shard":
+        suffix = f"_{args.shard_index:02d}_of_{args.shard_count:02d}"
+    elif args.phase == "search":
+        suffix = f"_{args.position}_{args.subprotocol}_{args.restart:02d}"
+    elif args.phase == "soft-prompt" and args.position and args.subprotocol:
+        suffix = f"_{args.position}_{args.subprotocol}"
+    _write_json(output / "resolved_config.json", registered_config)
+    _write_json(output / f"execution_config_{args.phase}{suffix}.json", config)
     started = time.time()
     if args.phase == "merge-prepare":
         if args.shard_count is None:
@@ -1393,13 +1418,6 @@ def main() -> None:
         else:
             summary = finalize(config, encoder, output)
     summary.update({"protocol_version": 3, "git_commit": _git_commit(), "runtime_seconds": time.time() - started})
-    suffix = ""
-    if args.phase == "screen-shard":
-        suffix = f"_{args.shard_index:02d}_of_{args.shard_count:02d}"
-    elif args.phase == "search":
-        suffix = f"_{args.position}_{args.subprotocol}_{args.restart:02d}"
-    elif args.phase == "soft-prompt" and args.position and args.subprotocol:
-        suffix = f"_{args.position}_{args.subprotocol}"
     _write_json(output / f"{args.phase}_summary{suffix}.json", summary)
     print(json.dumps(summary, indent=2, ensure_ascii=False, default=_json_default), flush=True)
 
