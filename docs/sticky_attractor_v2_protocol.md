@@ -64,8 +64,9 @@ IQR 自适应 epsilon 和同一 `P_f` 做论文式验证，输出：
 - GE 的 95% 分位不超过 epsilon；
 - GE 最大值不超过 epsilon。
 
-剂量曲线运行 `n=0..30`，输出覆盖率、GE q95、GE max 和
-`minimum_effective_repeat_count`。只有模式 1 生成重复次数曲线。
+剂量曲线在 validation 上运行 `n=0..30`，输出覆盖率、GE q95、GE max 和
+`minimum_effective_repeat_count`；test 仍只评估冻结的 `n=8` 候选一次。只有模式 1
+生成重复次数曲线。
 
 ## 4. 模式 2
 
@@ -173,4 +174,3 @@ python -m sticky_lab.v2 --config configs/v2_multi_booster.yaml --phase finalize
 
 所有 scientific run 必须保存 resolved config、Git commit、模型 revision、依赖版本、CUDA
 设备、运行时和各 phase summary。`--smoke` 只用于管线检查，不能进入论文结果。
-

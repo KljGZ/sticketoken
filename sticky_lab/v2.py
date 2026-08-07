@@ -1347,24 +1347,25 @@ def run_mode1(config: dict[str, Any], encoder: SentenceTransformerEncoder, outpu
     dose_rows: list[dict[str, Any]] = []
     for count in range(0, int(config["single_sticky"]["dose_curve"]["max_repeat_count"]) + 1):
         if count == 0:
-            gaps = np.abs(dataset.baseline[test_indices] - mean_similarity)[None, None, :]
+            gaps = np.abs(dataset.baseline[validation_indices] - mean_similarity)[None, None, :]
         else:
             gaps = _single_sticky_gaps(
                 encoder,
                 dataset,
-                test_indices,
+                validation_indices,
                 [repeat_literal(str(frozen["literal"]), count)],
                 config,
                 mean_similarity,
             )[0]
         dose_rows.append({"repeat_count": count, **dose_certification(gaps, epsilon, float(holdout["coverage_target"]))})
     dose_frame = pd.DataFrame.from_records(dose_rows)
+    dose_frame.insert(0, "evaluation_split", "validation")
     dose_frame.to_csv(output / "dose_curve.csv", index=False)
     effective = dose_frame[dose_frame["coverage_certified"].astype(bool)]
     minimum_effective = int(effective.iloc[0]["repeat_count"]) if len(effective) else None
-    plot_count = min(int(config["plot"]["pair_count"]), len(test_indices))
+    plot_count = min(int(config["plot"]["pair_count"]), len(validation_indices))
     plot_indices = select_balanced(
-        test_indices,
+        validation_indices,
         dataset.baseline,
         plot_count,
         int(config["seed"]) + 400,
