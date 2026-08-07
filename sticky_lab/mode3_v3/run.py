@@ -410,7 +410,7 @@ def merge_prepare(config: dict[str, Any], output: Path, shard_count: int) -> dic
         take(subset.sort_values("sample_blank_margin", ascending=False)["token_id"], int(settings["top_blank_tokens_per_position"]), f"{position}_blank")
         take(subset.sort_values("compact_radius_q95", ascending=True)["token_id"], int(settings["top_compact_tokens_per_position"]), f"{position}_compact")
     rng = np.random.default_rng(int(config["seed"]))
-    random_ids = vocabulary["token_id"].astype(int).to_numpy()
+    random_ids = vocabulary["token_id"].astype(int).to_numpy(copy=True)
     rng.shuffle(random_ids)
     take(random_ids, int(settings["random_tokens"]), "random")
     maximum = int(settings["candidate_pool_max_size"])
