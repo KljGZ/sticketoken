@@ -201,7 +201,7 @@ validation 上相对外移和逃逸覆盖率通过，但绝对逃逸和紧致半
 
 ## 8. 可核查产物
 
-- 总览：`results/sticky_lab/sentence_t5_base/comparison_v2/README.md`。
+- 总览：`results/sticky_lab/sentence_t5_base/comparison_v2/comparison_summary.md`。
 - 三模式汇总：`comparison_v2/three_mode_summary.csv`。
 - 模式 1：`single_sticky_v2/full_summary.json`、`dose_curve.csv`、`dose_similarity_curves.png`。
 - 模式 2：`multi_booster_v2/frozen_candidate.json`、`test_result.json`、`length_frontier.csv/.png` 和消融文件。

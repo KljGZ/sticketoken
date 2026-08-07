@@ -66,7 +66,10 @@ def main() -> None:
         "",
         "详细条件见 `docs/three_mode_experiments.md`，逐候选证据见各模式目录中的 CSV 和 `run_summary.json`。",
     ]
-    (output / "README.md").write_text("\n".join(markdown) + "\n", encoding="utf-8")
+    (output / "comparison_summary.md").write_text(
+        "\n".join(markdown) + "\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":
