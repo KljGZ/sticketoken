@@ -74,7 +74,7 @@ def _joint_projection(values: np.ndarray, config: dict[str, object]) -> tuple[np
             )
             return np.asarray(reducer.fit_transform(values), dtype=float), "UMAP (joint fit)"
         except ImportError:
-            method = "pca"
+            method = "sklearn_tsne"
     if method == "open_tsne":
         try:
             from openTSNE import TSNE
@@ -82,7 +82,20 @@ def _joint_projection(values: np.ndarray, config: dict[str, object]) -> tuple[np
             reducer = TSNE(metric="cosine", random_state=int(config.get("random_state", 42)))
             return np.asarray(reducer.fit(values), dtype=float), "openTSNE (joint fit)"
         except ImportError:
-            method = "pca"
+            method = "sklearn_tsne"
+    if method in {"umap", "open_tsne", "sklearn_tsne"}:
+        from sklearn.manifold import TSNE
+
+        perplexity = min(30.0, max(5.0, (len(values) - 1) / 3.0))
+        reducer = TSNE(
+            n_components=2,
+            metric="cosine",
+            perplexity=perplexity,
+            init="random",
+            learning_rate="auto",
+            random_state=int(config.get("random_state", 42)),
+        )
+        return reducer.fit_transform(values), "sklearn t-SNE fallback (joint fit)"
     from sklearn.decomposition import PCA
 
     return PCA(n_components=2, random_state=int(config.get("random_state", 42))).fit_transform(values), "PCA fallback (joint fit)"
@@ -141,4 +154,3 @@ def plot_embedding_progression(
     figure.savefig(path, dpi=dpi, bbox_inches="tight")
     plt.close(figure)
     return method_label
-

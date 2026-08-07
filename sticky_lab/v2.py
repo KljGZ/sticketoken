@@ -65,7 +65,19 @@ def _json_default(value: Any) -> Any:
 
 def _write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, default=_json_default), encoding="utf-8")
+    def clean(item: Any) -> Any:
+        if isinstance(item, dict):
+            return {key: clean(current) for key, current in item.items()}
+        if isinstance(item, (list, tuple)):
+            return [clean(current) for current in item]
+        if isinstance(item, (float, np.floating)) and not np.isfinite(item):
+            return None
+        return item
+
+    path.write_text(
+        json.dumps(clean(value), indent=2, ensure_ascii=False, default=_json_default, allow_nan=False),
+        encoding="utf-8",
+    )
 
 
 def _read_json(path: Path) -> Any:
@@ -463,9 +475,27 @@ def _candidate_pool(
     rng = np.random.default_rng(seed)
     random_indices = np.arange(len(screen))
     rng.shuffle(random_indices)
-    take(random_indices, int(settings["random_tokens"]), "random")
+    random_added: list[int] = []
+    for index in random_indices:
+        index = int(index)
+        if index in selected:
+            continue
+        selected.append(index)
+        random_added.append(index)
+        sources[index].add("random")
+        if len(random_added) >= int(settings["random_tokens"]):
+            break
     maximum = int(settings["candidate_pool_max_size"])
-    selected = selected[:maximum]
+    if len(selected) > maximum:
+        # Preserve an independent exploration reservoir even when the union of
+        # targeted lists exceeds the configured pool cap.
+        random_quota = min(len(random_added), int(settings["random_tokens"]), maximum // 3)
+        targeted = [index for index in selected if index not in set(random_added)]
+        selected = targeted[: maximum - random_quota] + random_added[:random_quota]
+        if len(selected) < maximum:
+            used = set(selected)
+            selected.extend(index for index in targeted[maximum - random_quota :] if index not in used)
+            selected = selected[:maximum]
     result = screen.loc[selected].copy().reset_index(drop=True)
     result.insert(0, "pool_index", np.arange(len(result)))
     result["pool_source"] = ["+".join(sorted(sources[int(index)])) for index in selected]
@@ -1025,8 +1055,14 @@ def _mode3_baselines_and_projection(
         dpi=int(config["plot"]["dpi"]),
     )
     _write_json(output / "projection_metadata.json", {"joint_fit": True, "method_used": projection_method, "stage_labels": stage_labels})
-    selected_length = int(frozen["component_length"])
-    selected_restart = int(frozen.get("source_restart", -1))
+    diagnostic = frozen
+    if int(frozen["component_length"]) == 1 and np.any(frontier["component_length"].to_numpy(dtype=int) > 1):
+        diagnostic = _rank_records(
+            frontier[frontier["component_length"].astype(int) > 1].to_dict("records"),
+            "repulsive_attractor",
+        )[0]
+    selected_length = int(diagnostic["component_length"])
+    selected_restart = int(diagnostic.get("source_restart", -1))
     if selected_length > 1 and selected_restart >= 0:
         history_path = output / "search" / f"restart_{selected_restart:02d}" / f"length_{selected_length:02d}_history.csv"
         if history_path.exists():
@@ -1056,14 +1092,14 @@ def _mode3_baselines_and_projection(
             final_values = _shared_embeddings(
                 encoder,
                 unique_frame.iloc[sample]["text"].tolist(),
-                [str(frozen["trigger"])],
+                [str(diagnostic["trigger"])],
                 [str(config["plot"]["insertion_mode"])],
                 seed=int(config["seed"]),
                 separator=str(config["insertion"].get("separator", "")),
                 batch_size=int(config["runtime"]["batch_size"]),
             )[0, 0]
             iteration_embeddings.append(final_values)
-            iteration_labels.append("validation-frozen final")
+            iteration_labels.append("validation-selected diagnostic")
             plot_embedding_progression(
                 embeddings[sample],
                 iteration_embeddings,
