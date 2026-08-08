@@ -8,6 +8,7 @@ from typing import Any, Sequence
 import numpy as np
 import torch
 
+from ..insertion import random_insertion_character_index
 from .metrics import evaluate_mode3
 from .support import BenignSupportModel
 
@@ -19,7 +20,16 @@ def _modules(encoder):
     return modules[0].auto_model, modules[1:]
 
 
-def _insertion_index(ids: list[int], tokenizer, position: str) -> int:
+def _insertion_index(
+    ids: list[int],
+    tokenizer,
+    position: str,
+    *,
+    text: str | None = None,
+    trigger: str | None = None,
+    seed: int = 0,
+    offsets: Sequence[Sequence[int]] | None = None,
+) -> int:
     if position == "prefix":
         leading = {value for value in (getattr(tokenizer, "cls_token_id", None), getattr(tokenizer, "bos_token_id", None)) if value is not None}
         return 1 if ids and ids[0] in leading else 0
@@ -33,7 +43,19 @@ def _insertion_index(ids: list[int], tokenizer, position: str) -> int:
             if value is not None
         }
         return len(ids) - 1 if ids and ids[-1] in trailing else len(ids)
-    raise ValueError("Continuous prompts support prefix or suffix positions")
+    if position != "random":
+        raise ValueError("Continuous prompts support prefix, suffix, or random positions")
+    if text is None or trigger is None or offsets is None:
+        raise ValueError("Random continuous-prompt insertion requires text, trigger, and token offsets")
+    character_index = random_insertion_character_index(text, trigger, seed)
+    for token_index, pair in enumerate(offsets):
+        start, end = map(int, pair)
+        # Special tokens have an empty (0, 0) span.  The first content token
+        # whose span extends beyond the boundary is the token before which the
+        # prompt is inserted.
+        if end > start and end > character_index:
+            return token_index
+    return _insertion_index(ids, tokenizer, "suffix")
 
 
 def encode_with_prompt_embeddings(
@@ -42,16 +64,34 @@ def encode_with_prompt_embeddings(
     prompt_embeddings: torch.Tensor,
     *,
     position: str,
+    random_trigger: str | None = None,
+    insertion_seed: int = 0,
 ) -> torch.Tensor:
     """Run the registered transformer, pooling tail, and final normalization."""
     auto_model, tail = _modules(encoder)
-    tokenized = encoder.tokenizer(list(texts), add_special_tokens=True, padding=False, truncation=False)["input_ids"]
+    encoded = encoder.tokenizer(
+        list(texts),
+        add_special_tokens=True,
+        padding=False,
+        truncation=False,
+        return_offsets_mapping=position == "random",
+    )
+    tokenized = encoded["input_ids"]
+    offset_rows = encoded.get("offset_mapping", [None] * len(tokenized))
     embedding_layer = auto_model.get_input_embeddings()
     rows: list[torch.Tensor] = []
-    for ids in tokenized:
+    for text, ids, offsets in zip(texts, tokenized, offset_rows):
         token_ids = torch.tensor(ids, dtype=torch.long, device=prompt_embeddings.device)
         base = embedding_layer(token_ids)
-        index = _insertion_index(list(map(int, ids)), encoder.tokenizer, position)
+        index = _insertion_index(
+            list(map(int, ids)),
+            encoder.tokenizer,
+            position,
+            text=str(text),
+            trigger=random_trigger,
+            seed=insertion_seed,
+            offsets=offsets,
+        )
         rows.append(torch.cat([base[:index], prompt_embeddings, base[index:]], dim=0))
     maximum = max(len(row) for row in rows)
     dimension = rows[0].shape[1]

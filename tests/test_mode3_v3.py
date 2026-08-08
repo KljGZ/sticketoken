@@ -3,16 +3,49 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from sticky_lab.insertion import insert_trigger, random_insertion_character_index
 from sticky_lab.mode3_v3.cem_search import cem_search
 from sticky_lab.mode3_v3.data import build_ood_corpus, build_unique_corpus
 from sticky_lab.mode3_v3.metrics import evaluate_mode3, grouped_bootstrap
 from sticky_lab.mode3_v3 import run as v3_run
 from sticky_lab.mode3_v3.support import BenignSupportModel, fit_spherical_kmeans
+from sticky_lab.mode3_v3.soft_prompt import _insertion_index
 
 
 class _WhitespaceTokenizer:
     def __call__(self, texts, **_):
         return {"input_ids": [[index + 1 for index, _ in enumerate(str(text).split())] for text in texts]}
+
+
+def test_random_soft_prompt_uses_the_registered_hard_text_boundary() -> None:
+    text = "alpha beta gamma"
+    trigger = "TRIGGER"
+    seed = 17
+    offsets = [(0, 0), (0, 5), (6, 10), (11, 16), (0, 0)]
+
+    class Tokenizer:
+        cls_token_id = 101
+        bos_token_id = None
+        eos_token_id = 102
+        sep_token_id = None
+
+    character_index = random_insertion_character_index(text, trigger, seed)
+    expected = next(
+        (index for index, (start, end) in enumerate(offsets) if end > start and end > character_index),
+        4,
+    )
+    actual = _insertion_index(
+        [101, 11, 12, 13, 102],
+        Tokenizer(),
+        "random",
+        text=text,
+        trigger=trigger,
+        seed=seed,
+        offsets=offsets,
+    )
+    assert actual == expected
+    hard = insert_trigger(text, trigger, "random", seed=seed)
+    assert hard == text[:character_index] + trigger + text[character_index:]
 
 
 def _unit(values: np.ndarray) -> np.ndarray:

@@ -874,6 +874,7 @@ def search(
                 iterations=int(gradient["iterations"]),
                 temperature=float(gradient["temperature"]),
                 seed=int(config["seed"]) + restart * 10000 + length,
+                insertion_seed=int(config["seed"]),
             )
             refined_limit = min(
                 int(settings["archive_size"]),

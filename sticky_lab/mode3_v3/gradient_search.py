@@ -34,12 +34,20 @@ def hotflip_candidates(
     subprotocol: str,
     temperature: float,
     top_m: int,
+    insertion_seed: int,
 ) -> list[np.ndarray]:
     auto_model, _ = _modules(encoder)
     weight = auto_model.get_input_embeddings().weight
     ids = torch.tensor(sequence, dtype=torch.long, device=weight.device)
     prompt = weight[ids].detach().clone().requires_grad_(True)
-    triggered = encode_with_prompt_embeddings(encoder, texts, prompt, position=position)
+    triggered = encode_with_prompt_embeddings(
+        encoder,
+        texts,
+        prompt,
+        position=position,
+        random_trigger=encoder.decode(sequence) if position == "random" else None,
+        insertion_seed=insertion_seed,
+    )
     objective, _ = differentiable_objective(
         torch.tensor(original, dtype=torch.float32, device=weight.device),
         triggered,
@@ -79,6 +87,7 @@ def gradient_beam_search(
     iterations: int,
     temperature: float,
     seed: int,
+    insertion_seed: int,
 ) -> GradientSearchResult:
     rng = np.random.default_rng(seed)
     sequences = list(dict.fromkeys(tuple(map(int, row)) for row in initial_sequences))
@@ -104,6 +113,7 @@ def gradient_beam_search(
             subprotocol=subprotocol,
             temperature=temperature,
             top_m=gradient_top_m,
+            insertion_seed=insertion_seed,
         )
         if iteration < iterations / 3:
             coordinate_count = min(4, len(anchor))
