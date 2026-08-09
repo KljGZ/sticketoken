@@ -35,3 +35,7 @@ results/sticky_lab/**/unique_*_embeddings.npy
 results/sticky_lab/**/search/
 results/sticky_lab/logs/
 results/sticky_lab/smoke/
+results/sticky_lab/**/screen_shards/
+results/sticky_lab/**/single_token_screen.csv
+results/sticky_lab/**/validation_candidates_point.csv
+results/sticky_lab/**/mode3_v3_smoke_*/

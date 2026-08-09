@@ -1,0 +1,127 @@
+{
+  "protocol_version": 3,
+  "complete": true,
+  "errors": [],
+  "warnings": [
+    "source files have no verifiable document IDs; grouping falls back to one group per unique sentence",
+    "8 search summaries predate completion-commit instrumentation; their source commits and candidate-file manifest hashes remain registered"
+  ],
+  "registered_lengths": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30
+  ],
+  "search_candidate_file_count": 480,
+  "search_candidate_manifest_sha256": "11913f61dfd0c479784a2fa0afc57d56cbdb0bb317e8a1199fcbbda00e63b4f1",
+  "search_summary_count": 32,
+  "search_source_commits": {
+    "591617a23b6e6b0df0864b4effc743acbc669505": 10,
+    "bf7de677bf364ae01a8b2298185f4cde3c1780e4": 22
+  },
+  "search_completion_commits": {
+    "591617a23b6e6b0df0864b4effc743acbc669505": 16,
+    "None": 8,
+    "bf7de677bf364ae01a8b2298185f4cde3c1780e4": 8
+  },
+  "registered_input_sha256": {
+    "resolved_config.json": "a9f595287729f627e51d92eb88f61822a70ac0f2a6bc6fbbe1014d7175a8554d",
+    "data_audit.json": "86d1ba703ef197c5040655394574f6309c2dad3113a2660c85325a0731e08a6b",
+    "support_audit.json": "a0c585f218b53a684e5cd93fd0b9f80f211e28f93b94439e84d9367aafd230a6",
+    "spherical_kmeans_audit.json": "84043645853f3fa3342557d8bbc6dc3a69d9819a09fe5ea93c41be9c5b965889",
+    "benign_support.npz": "2979870ec04874d04023bcb11f79cdbbf2809ef2797496a8e712bccefd787ef2",
+    "candidate_pool.csv": "37e8780282cd95a86600ad0120e5b39bc7d4039f7eeed7bcb98df8e1765d95dd",
+    "soft_prompt_summary.csv": "9c6674883cea0b16939ba21a6c4f07afb91d7e3f8989fdd17b3868ff6428ddd5",
+    "merge-prepare_summary.json": "ee2d2618ca33947a2bd9323f68c7b395be062f44eea9bf393bf3859f56f41ce7",
+    "unique_search.csv": "2662ef4f954ca5f61b3c84db5e63ec1c8203089f726bc2474d8f31dee0e38cd6",
+    "unique_validation.csv": "3ee84a0924759c399832a00488f43ed80cd8a17abfa7315258c29878ad1126af",
+    "unique_test.csv": "e32ea1873d1a24521459d68ee85abe5fee8d93afc120bffb339d9f16b3594e17",
+    "unique_ood.csv": "a5a2ab509cdcce9cf875f07260b39d5fce960d0a1997c166d612da65026f4dbf"
+  },
+  "tasks": {
+    "separator/prefix": {
+      "component_length": 1,
+      "trigger": "LGBTQ",
+      "selection_status": "validation_certified",
+      "validation_certified": true,
+      "test_certified": true,
+      "ood_certified": true,
+      "full_generalized": true
+    },
+    "blank/prefix": {
+      "component_length": 30,
+      "trigger": "MORE celebrities useless TexasMostly Trump Muslim boycott Ballet concerts:// Constanța besuchen Alberta dimineata Reynolds lunette (30stream $10 Suceava Constanța chose humorousetapa Rit Timișoara („ Direktnam",
+      "selection_status": "no_validation_feasible_registered_fallback",
+      "validation_certified": false,
+      "test_certified": false,
+      "ood_certified": false,
+      "full_generalized": false
+    },
+    "separator/suffix": {
+      "component_length": 1,
+      "trigger": "Diabetes",
+      "selection_status": "validation_certified",
+      "validation_certified": true,
+      "test_certified": true,
+      "ood_certified": true,
+      "full_generalized": true
+    },
+    "blank/suffix": {
+      "component_length": 30,
+      "trigger": "București strawberries rapper abortion reușit JoomlaAsociația Minecraftlucrarea tent autism crowdfunding feedinglucrarea Minecraftconsists rude Cause uniquely $5,000 placebo Scientist celebrities100 impossible Strawberry cars Aucklandputeti Diabetes",
+      "selection_status": "no_validation_feasible_registered_fallback",
+      "validation_certified": false,
+      "test_certified": false,
+      "ood_certified": false,
+      "full_generalized": false
+    },
+    "separator/random": {
+      "component_length": 1,
+      "trigger": "Minecraft",
+      "selection_status": "validation_certified",
+      "validation_certified": true,
+      "test_certified": true,
+      "ood_certified": true,
+      "full_generalized": true
+    },
+    "blank/random": {
+      "component_length": 30,
+      "trigger": "Punjab hormone asleep breastfeeding scientists facutlucrarea cineva Romaniei chiropractor laugh Sony autism outrageous Weitere toothpaste Stay Beijing cookiesDatorita20around incercat celebrities roastsait (\" Bruno ignored Minecraft",
+      "selection_status": "no_validation_feasible_registered_fallback",
+      "validation_certified": false,
+      "test_certified": false,
+      "ood_certified": false,
+      "full_generalized": false
+    },
+    "separator/universal": {
+      "component_length": 1,
+      "trigger": "Minecraft",
+      "selection_status": "validation_position_universal_certified",
+      "validation_certified": true,
+      "test_certified": true,
+      "ood_certified": true,
+      "full_generalized": true
+    },
+    "blank/universal": {
+      "component_length": 30,
+      "trigger": "chiropractic Christmas României rudelucrareaterrorism Comedy YouTube Vatican harmless cineva Biblical thieves Spotify PHP toothpaste smoothie cineva prevalent broccolilucrarea Massachusetts humorous limbi poultry University Minecraft Pirate Vietnam Chicken",
+      "selection_status": "no_universal_validation_feasible_registered_fallback",
+      "validation_certified": false,
+      "test_certified": false,
+      "ood_certified": false,
+      "full_generalized": false
+    }
+  }
+}
