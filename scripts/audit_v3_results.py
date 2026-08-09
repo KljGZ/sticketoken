@@ -17,6 +17,7 @@ PROTOCOLS = ("separator", "blank")
 RESTARTS = range(4)
 SEARCH_LENGTHS = tuple(range(2, 31, 2))
 REGISTERED_LENGTHS = (1, *SEARCH_LENGTHS)
+CSV_FIELD_LIMIT = 16 * 1024 * 1024
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -24,6 +25,9 @@ def _load(path: Path) -> dict[str, Any]:
 
 
 def _frontier_lengths(path: Path) -> list[int]:
+    # Universal frontiers retain serialized per-position CI evidence.  Those
+    # audit fields legitimately exceed the csv module's 128 KiB default.
+    csv.field_size_limit(CSV_FIELD_LIMIT)
     with path.open(newline="", encoding="utf-8") as handle:
         return [int(row["component_length"]) for row in csv.DictReader(handle)]
 
@@ -90,6 +94,13 @@ def audit(root: Path) -> dict[str, Any]:
         completion_commits[str(record.get("git_commit_at_completion"))] += 1
     if len(search_summaries) != 32:
         errors.append(f"expected 32 search summaries, found {len(search_summaries)}")
+    if source_commits.get("None", 0):
+        errors.append(f"{source_commits['None']} search summaries lack a source commit")
+    if completion_commits.get("None", 0):
+        warnings.append(
+            f"{completion_commits['None']} search summaries predate completion-commit instrumentation; "
+            "their source commits and candidate-file manifest hashes remain registered"
+        )
 
     task_records: dict[str, Any] = {}
     for position in POSITIONS:
