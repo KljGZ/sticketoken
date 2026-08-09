@@ -1,0 +1,200 @@
+{
+  "protocol_version": 3,
+  "mode": "trigger_induced_representation_region",
+  "seed": 42,
+  "output_dir": "results/sticky_lab/sentence_t5_base/mode3_v3",
+  "model": {
+    "id": "sentence-transformers/sentence-t5-base",
+    "device": "cuda:0",
+    "cache_folder": null,
+    "local_path": "/home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "trust_remote_code": false
+  },
+  "data": {
+    "paths_glob": "data/*/sampled_sentence_pairs.csv",
+    "exclude_paths": [
+      "data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv",
+      "data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv"
+    ],
+    "text_columns": [
+      "sentence1",
+      "sentence2"
+    ],
+    "source_column": null,
+    "ood_paths": [
+      "data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv",
+      "data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv"
+    ],
+    "ood_text_columns": [
+      "sentence1",
+      "sentence2"
+    ],
+    "min_tokens": 5,
+    "max_tokens": 160,
+    "split": {
+      "search": 0.6,
+      "validation": 0.2,
+      "test": 0.2
+    },
+    "sample_limits": {
+      "search": 3000,
+      "validation": 1000,
+      "test": 1000
+    },
+    "ood_sample_limit": 1000,
+    "recommended_minimums": {
+      "search": 3000,
+      "validation": 1000,
+      "test": 1000,
+      "ood": 1000
+    }
+  },
+  "vocabulary": {
+    "analysis_path": "results/tokenizer_analysis/sentence_t5_base.jsonl",
+    "allow_special_tokens": false,
+    "max_chars": 64
+  },
+  "insertion": {
+    "protocol": "shared_insert_once",
+    "positions": [
+      "prefix",
+      "suffix",
+      "random"
+    ],
+    "separator": ""
+  },
+  "mode3": {
+    "subprotocols": [
+      "separator",
+      "blank"
+    ],
+    "pairwise_sample_size": 20000,
+    "frequent_token_ids": [
+      8,
+      5,
+      6,
+      10,
+      11
+    ],
+    "v2_fallback_token_ids": [
+      30332,
+      16145,
+      12743,
+      13525,
+      30332
+    ],
+    "sticky_token_id": 30332
+  },
+  "constraints": {
+    "min_displacement_q05": 0.02,
+    "min_separation_margin": 0.0,
+    "max_compact_radius_q95": 0.4,
+    "min_sample_blank_margin": 0.0,
+    "min_cluster_blank_margin": 0.0,
+    "min_density_blank_margin": 0.0
+  },
+  "support": {
+    "cluster_count_grid": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "clustering_restarts": 3,
+    "max_iterations": 100,
+    "tolerance": 1e-07,
+    "minimum_cluster_size": 5,
+    "knn_k": 10
+  },
+  "candidate_pool": {
+    "top_separator_tokens_per_position": 300,
+    "top_blank_tokens_per_position": 300,
+    "top_compact_tokens_per_position": 200,
+    "random_tokens": 500,
+    "candidate_pool_max_size": 3200
+  },
+  "soft_prompt": {
+    "enabled": true,
+    "lengths": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "sample_size": 256,
+    "iterations": 100,
+    "batch_size": 64,
+    "learning_rate": 0.05,
+    "temperature": 0.02
+  },
+  "gradient_search": {
+    "enabled": true,
+    "lengths": [
+      2,
+      8,
+      16,
+      30
+    ],
+    "restarts": [
+      0
+    ],
+    "sample_size": 64,
+    "gradient_top_m": 128,
+    "beam_width": 8,
+    "candidate_batch": 32,
+    "iterations": 10,
+    "temperature": 0.02
+  },
+  "search": {
+    "algorithm": "hybrid_cem_hotflip",
+    "min_trigger_length": 2,
+    "max_trigger_length": 30,
+    "length_step": 2,
+    "population_size": 128,
+    "elite_ratio": 0.1,
+    "iterations": 20,
+    "restarts_per_length": 4,
+    "update_alpha": 0.2,
+    "uniform_mixture": 0.08,
+    "probability_floor": 0.0005,
+    "entropy_min_fraction": 0.35,
+    "stall_patience": 6,
+    "elite_min_hamming_fraction": 0.2,
+    "full_evaluation_interval": 5,
+    "archive_size": 256,
+    "warm_elite_count": 16
+  },
+  "validation": {
+    "candidate_count_per_length": 32,
+    "candidates_per_restart": 8,
+    "bootstrap_candidates_per_length": 1,
+    "stop_ci_after_first_certified": true,
+    "min_realizability": 0.95,
+    "realizability_contexts": 48,
+    "random_baseline_count": 64,
+    "random_baseline_quantile": 0.99,
+    "require_random_baseline_exceedance": true
+  },
+  "statistics": {
+    "bootstrap_replicates": 500,
+    "confidence": 0.95
+  },
+  "retrieval_bridge": {
+    "iterations": 300,
+    "learning_rate": 0.05,
+    "temperature": 0.02
+  },
+  "runtime": {
+    "batch_size": 256,
+    "screen_candidate_chunk_size": 32,
+    "evaluation_candidate_chunk_size": 8,
+    "screen_unique_sentences": 128,
+    "search_unique_sentences": 64,
+    "show_progress": true
+  },
+  "plot": {
+    "projection_sentence_count": 128,
+    "dpi": 300
+  }
+}

@@ -81,8 +81,8 @@
     "test_structure_certified": true
   },
   "protocol_version": 2,
-  "git_commit": "54c2e5b20a82bb098627b3299d30dba1b4a3e494",
-  "runtime_seconds": 319.66423749923706,
+  "git_commit": "591617a23b6e6b0df0864b4effc743acbc669505",
+  "runtime_seconds": 338.7729184627533,
   "environment": {
     "python": "3.11.15",
     "torch": "2.6.0+cu124",

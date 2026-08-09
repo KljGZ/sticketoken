@@ -1,0 +1,1423 @@
+pool_index,token_id,literal,raw_vocab,category,component_ids,pool_source
+0,30664, LGBTQ,▁LGBTQ,OK,"(30664,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+1,10434, marijuana,▁marijuana,OK,"(10434,)",prefix_blank+prefix_compact+prefix_separator+random_compact+random_separator+suffix_separator
+2,29184, Minecraft,▁Minecraft,OK,"(29184,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+3,29657, Timisoara,▁Timisoara,OK,"(29657,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+4,26398, LGBT,▁LGBT,OK,"(26398,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+5,17541, autism,▁autism,OK,"(17541,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+6,31926, schizophrenia,▁schizophrenia,OK,"(31926,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+7,27777, Autism,▁Autism,OK,"(27777,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+8,23549, Diabetes,▁Diabetes,OK,"(23549,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+9,18116, Youtube,▁Youtube,OK,"(18116,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+10,21681, racism,▁racism,OK,"(21681,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+11,10278, vegan,▁vegan,OK,"(10278,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+12,23713, racist,▁racist,OK,"(23713,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+13,13864, smartphones,▁smartphones,OK,"(13864,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+14,28671, breastfeeding,▁breastfeeding,OK,"(28671,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+15,8363, diabetes,▁diabetes,OK,"(8363,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+16,23138, Depression,▁Depression,OK,"(23138,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+17,5626, smartphone,▁smartphone,OK,"(5626,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+18,12557, București,▁București,OK,"(12557,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_separator
+19,18719, obesity,▁obesity,OK,"(18719,)",prefix_compact+prefix_separator+random_separator+suffix_compact+suffix_separator
+20,16458, Finland,▁Finland,OK,"(16458,)",prefix_separator+random_compact+random_separator+suffix_separator
+21,7562, depression,▁depression,OK,"(7562,)",prefix_blank+prefix_compact+prefix_separator
+22,29768, Disneyland,▁Disneyland,OK,"(29768,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+23,31330, homosexual,▁homosexual,OK,"(31330,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+24,29061, Pokemon,▁Pokemon,OK,"(29061,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+25,28487, Latvia,▁Latvia,OK,"(28487,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_compact+suffix_separator
+26,11076, potatoes,▁potatoes,OK,"(11076,)",prefix_compact+prefix_separator+random_separator+suffix_separator
+27,30938, Băsescu,▁Băsescu,OK,"(30938,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+28,22623, Dragnea,▁Dragnea,OK,"(22623,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+29,7244, français,▁français,OK,"(7244,)",prefix_separator+random_separator+suffix_separator
+30,7030, Toronto,▁Toronto,OK,"(7030,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_separator
+31,12743, Smartphone,▁Smartphone,OK,"(12743,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+32,26371, Vegan,▁Vegan,OK,"(26371,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+33,5343, YouTube,▁YouTube,OK,"(5343,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+34,23315, Craiova,▁Craiova,OK,"(23315,)",prefix_blank+prefix_compact+prefix_separator+random_separator+suffix_blank+suffix_separator
+35,6205, vegetables,▁vegetables,OK,"(6205,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_separator
+36,3514, România,▁România,OK,"(3514,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_separator
+37,29606,cryptocurrencies,cryptocurrencies,OK,"(29606,)",prefix_blank+prefix_compact+prefix_separator+random_compact+random_separator
+38,22640, Hitler,▁Hitler,OK,"(22640,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_compact+suffix_separator
+39,5308, Italy,▁Italy,OK,"(5308,)",prefix_separator+random_separator+suffix_separator
+40,12481, documentary,▁documentary,OK,"(12481,)",prefix_blank+prefix_compact+prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+41,20723, Walmart,▁Walmart,OK,"(20723,)",prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+42,23737, socialist,▁socialist,OK,"(23737,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+43,3871, Romania,▁Romania,OK,"(3871,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+44,24140, walmart,▁walmart,OK,"(24140,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+45,19013, Christianity,▁Christianity,OK,"(19013,)",prefix_compact+prefix_separator+random+random_compact+suffix_compact+suffix_separator
+46,24168, italian,▁italian,OK,"(24168,)",prefix_separator+random_separator+suffix_separator
+47,23435, Montréal,▁Montréal,OK,"(23435,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_separator
+48,17688, asthma,▁asthma,OK,"(17688,)",prefix_compact+prefix_separator+random_separator+suffix_compact+suffix_separator
+49,4338, Italian,▁Italian,OK,"(4338,)",prefix_separator+suffix_separator
+50,13301, facebook,▁facebook,OK,"(13301,)",prefix_compact+prefix_separator+random_compact+random_separator
+51,24639, vaccination,▁vaccination,OK,"(24639,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+52,14741, potato,▁potato,OK,"(14741,)",prefix_compact+prefix_separator+random_separator+suffix_separator
+53,19343, canada,▁canada,OK,"(19343,)",prefix_separator+suffix_separator
+54,12373, comedy,▁comedy,OK,"(12373,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+55,17984, veggies,▁veggies,OK,"(17984,)",prefix_compact+prefix_separator+random_compact+random_separator
+56,22893, cigarettes,▁cigarettes,OK,"(22893,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+57,4151, Canadian,▁Canadian,OK,"(4151,)",prefix_separator+random_separator+suffix_separator
+58,28684, cybersecurity,▁cybersecurity,OK,"(28684,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+59,1376, Facebook,▁Facebook,OK,"(1376,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_separator
+60,28517, Winnipeg,▁Winnipeg,OK,"(28517,)",prefix_separator+random_separator+suffix_separator
+61,4534, Obama,▁Obama,OK,"(4534,)",prefix_compact+prefix_separator+random_compact+random_separator
+62,24017, gamers,▁gamers,OK,"(24017,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+63,27615, Beatles,▁Beatles,OK,"(27615,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+64,10988, française,▁française,OK,"(10988,)",prefix_separator+random_compact+random_separator
+65,26324, chemotherapy,▁chemotherapy,OK,"(26324,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+66,30375,bourgeois,bourgeois,OK,"(30375,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+67,14160, bankruptcy,▁bankruptcy,OK,"(14160,)",prefix_blank+prefix_compact+prefix_separator
+68,16968,10),10),OK,"(16968,)",prefix_blank+prefix_compact+prefix_separator
+69,16870, Czech,▁Czech,OK,"(16870,)",prefix_separator+random_compact+random_separator
+70,24474, Starbucks,▁Starbucks,OK,"(24474,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+71,27114, canadien,▁canadien,OK,"(27114,)",prefix_separator+random_blank+random_separator
+72,29402, Kartoffel,▁Kartoffel,OK,"(29402,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+73,28960, Bollywood,▁Bollywood,OK,"(28960,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+74,3434, Germany,▁Germany,OK,"(3434,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+75,19546, Idaho,▁Idaho,OK,"(19546,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+76,24630, broccoli,▁broccoli,OK,"(24630,)",prefix_blank+prefix_compact+prefix_separator+random_separator+suffix_separator
+77,17496, diabet,▁diabet,OK,"(17496,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+78,27425, Slovenia,▁Slovenia,OK,"(27425,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator
+79,25150, Suceava,▁Suceava,OK,"(25150,)",prefix_blank+prefix_separator+suffix_blank+suffix_separator
+80,13394, Hawaii,▁Hawaii,OK,"(13394,)",prefix_separator+random_separator+suffix_separator
+81,14575,cheapest,cheapest,OK,"(14575,)",prefix_blank+prefix_compact+prefix_separator+random_separator
+82,26557, ignorance,▁ignorance,OK,"(26557,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact
+83,21169, accidentally,▁accidentally,OK,"(21169,)",prefix_compact+prefix_separator
+84,26178, Holocaust,▁Holocaust,OK,"(26178,)",prefix_blank+prefix_compact+prefix_separator+random_compact+suffix_blank+suffix_compact
+85,24836," $10,000","▁$10,000",OK,"(24836,)",prefix_separator+random_separator
+86,15625, Louisiana,▁Louisiana,OK,"(15625,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank
+87,1826, California,▁California,OK,"(1826,)",prefix_separator+random_blank+random_separator
+88,31447, plagiarism,▁plagiarism,OK,"(31447,)",prefix_compact+prefix_separator+suffix_compact
+89,3046, Twitter,▁Twitter,OK,"(3046,)",prefix_separator
+90,31334,Vaccin,Vaccin,OK,"(31334,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator
+91,19789, Croatia,▁Croatia,OK,"(19789,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+92,20948, Calgary,▁Calgary,OK,"(20948,)",prefix_separator+random_separator
+93,25689, $150,▁$150,OK,"(25689,)",prefix_compact+prefix_separator+random_separator
+94,15734, Français,▁Français,OK,"(15734,)",prefix_separator+random_separator+suffix_separator
+95,16364, vegetarian,▁vegetarian,OK,"(16364,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+96,13292, viagra,▁viagra,OK,"(13292,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+97,6502, Catholic,▁Catholic,OK,"(6502,)",prefix_separator+random_separator+suffix_compact+suffix_separator
+98,13179, $20,▁$20,OK,"(13179,)",prefix_compact+prefix_separator+random+random_separator
+99,29256, Potato,▁Potato,OK,"(29256,)",prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+100,21782, psychologist,▁psychologist,OK,"(21782,)",prefix_compact+prefix_separator+random
+101,25661, strawberries,▁strawberries,OK,"(25661,)",prefix_blank+prefix_compact+prefix_separator+random_blank+suffix_blank+suffix_separator
+102,10215, liberal,▁liberal,OK,"(10215,)",prefix_compact+prefix_separator+suffix_separator
+103,28811,Canada,Canada,OK,"(28811,)",prefix_separator+random_separator+suffix_separator
+104,1894, Canada,▁Canada,OK,"(1894,)",prefix_separator+random_compact+random_separator+suffix_separator
+105,29417, cellphone,▁cellphone,OK,"(29417,)",prefix_separator+random_compact+random_separator
+106,10508, Thailand,▁Thailand,OK,"(10508,)",prefix_separator+random_compact+random_separator+suffix_compact
+107,19668,cigarette,cigarette,OK,"(19668,)",prefix_compact+prefix_separator+random_compact+random_separator
+108,28788, Buddhism,▁Buddhism,OK,"(28788,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+109,11252, conservative,▁conservative,OK,"(11252,)",prefix_compact+prefix_separator
+110,11513, cannabis,▁cannabis,OK,"(11513,)",prefix_separator
+111,8288, Scotland,▁Scotland,OK,"(8288,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank
+112,17915, asleep,▁asleep,OK,"(17915,)",prefix_separator+random_separator+suffix_separator
+113,4726, Mexico,▁Mexico,OK,"(4726,)",prefix_separator+random_separator
+114,10212, Wisconsin,▁Wisconsin,OK,"(10212,)",prefix_blank+prefix_separator+random_blank+random_separator
+115,27426,phobia,phobia,OK,"(27426,)",prefix_compact+prefix_separator
+116,19106, $30,▁$30,OK,"(19106,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+suffix_separator
+117,31925, psychiatrist,▁psychiatrist,OK,"(31925,)",prefix_compact+prefix_separator
+118,31279, Kardashian,▁Kardashian,OK,"(31279,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank
+119,28176," $5,000","▁$5,000",OK,"(28176,)",prefix_compact+prefix_separator+random_separator
+120,28744, feminist,▁feminist,OK,"(28744,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+121,15623, Republicans,▁Republicans,OK,"(15623,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact
+122,26010, capitalism,▁capitalism,OK,"(26010,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+suffix_blank+suffix_compact
+123,26047, Estonia,▁Estonia,OK,"(26047,)",prefix_separator+random_compact+random_separator
+124,26412, chiropractic,▁chiropractic,OK,"(26412,)",prefix_separator+random_separator+suffix_separator
+125,23280,Italie,Italie,OK,"(23280,)",prefix_separator
+126,24061, Viagra,▁Viagra,OK,"(24061,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+127,3715, Chicago,▁Chicago,OK,"(3715,)",prefix_separator+random_separator
+128,26297, sushi,▁sushi,OK,"(26297,)",prefix_blank+prefix_separator+suffix_compact+suffix_separator
+129,29697, BlackBerry,▁BlackBerry,OK,"(29697,)",prefix_blank+prefix_separator
+130,20047, mushrooms,▁mushrooms,OK,"(20047,)",prefix_separator
+131,17219, Montreal,▁Montreal,OK,"(17219,)",prefix_separator+random_separator+suffix_separator
+132,29788," $50,000","▁$50,000",OK,"(29788,)",prefix_compact+prefix_separator+random_compact
+133,6436, Spain,▁Spain,OK,"(6436,)",prefix_separator+random_separator
+134,22998, Ubuntu,▁Ubuntu,OK,"(22998,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_separator
+135,11511, Mexican,▁Mexican,OK,"(11511,)",prefix_separator+random_separator
+136,20958, Istanbul,▁Istanbul,OK,"(20958,)",prefix_separator
+137,22178, Sacramento,▁Sacramento,OK,"(22178,)",prefix_blank+prefix_separator+random_blank
+138,2599, Florida,▁Florida,OK,"(2599,)",prefix_separator+random_separator
+139,29309, cocaine,▁cocaine,OK,"(29309,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+140,20910, Iceland,▁Iceland,OK,"(20910,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank
+141,27318, Napoleon,▁Napoleon,OK,"(27318,)",prefix_separator+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+142,17005, $500,▁$500,OK,"(17005,)",prefix_compact+prefix_separator+random_compact+random_separator
+143,21503, Romaniei,▁Romaniei,OK,"(21503,)",prefix_blank+prefix_separator+suffix_blank+suffix_separator
+144,12729, Philippines,▁Philippines,OK,"(12729,)",prefix_separator+random_compact+random_separator+suffix_separator
+145,26461, Antarctic,▁Antarctic,OK,"(26461,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+146,16096, immigrants,▁immigrants,OK,"(16096,)",prefix_compact+prefix_separator
+147,18588, Glasgow,▁Glasgow,OK,"(18588,)",prefix_separator
+148,29763, Helsinki,▁Helsinki,OK,"(29763,)",prefix_separator+random_separator+suffix_separator
+149,13160, Cleveland,▁Cleveland,OK,"(13160,)",prefix_separator+random+random_separator+suffix_separator
+150,13420, footage,▁footage,OK,"(13420,)",prefix_separator+random_separator
+151,20076, celebrities,▁celebrities,OK,"(20076,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+152,25659, $60,▁$60,OK,"(25659,)",prefix_blank+prefix_separator+random_separator
+153,27870, comedian,▁comedian,OK,"(27870,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+154,19010, twitter,▁twitter,OK,"(19010,)",prefix_separator+random
+155,23370, Leeds,▁Leeds,OK,"(23370,)",prefix_separator+random_blank+random_separator
+156,27233, Philippine,▁Philippine,OK,"(27233,)",prefix_separator+random_separator
+157,26213, irrelevant,▁irrelevant,OK,"(26213,)",prefix_blank+prefix_separator+random_blank+random_compact+suffix_blank+suffix_compact+suffix_separator
+158,28967, Rajasthan,▁Rajasthan,OK,"(28967,)",prefix_separator+random_blank+random_compact+random_separator
+159,23568, douche,▁douche,OK,"(23568,)",prefix_blank+prefix_compact+prefix_separator+random_compact+suffix_blank+suffix_compact+suffix_separator
+160,22649, Quebec,▁Quebec,OK,"(22649,)",prefix_separator+random_compact+random_separator+suffix_separator
+161,23806, fireworks,▁fireworks,OK,"(23806,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact
+162,24146, Spania,▁Spania,OK,"(24146,)",prefix_separator+random_separator
+163,16211, Nintendo,▁Nintendo,OK,"(16211,)",prefix_separator+random_separator+suffix_separator
+164,28608, Belarus,▁Belarus,OK,"(28608,)",prefix_separator+random_compact+random_separator
+165,21566, hilarious,▁hilarious,OK,"(21566,)",prefix_blank+prefix_separator+suffix_blank+suffix_separator
+166,18958,gmail,gmail,OK,"(18958,)",prefix_blank+prefix_separator
+167,28189, comunist,▁comunist,OK,"(28189,)",prefix_blank+prefix_compact+prefix_separator+random_compact
+168,22496, laughter,▁laughter,OK,"(22496,)",prefix_blank+prefix_compact+prefix_separator+random_blank+suffix_blank
+169,26485, Edmonton,▁Edmonton,OK,"(26485,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_separator
+170,28289, lobster,▁lobster,OK,"(28289,)",prefix_blank+prefix_separator+random_blank+suffix_blank
+171,9511, Philadelphia,▁Philadelphia,OK,"(9511,)",prefix_separator+random_separator+suffix_separator
+172,9182, sleeping,▁sleeping,OK,"(9182,)",prefix_separator
+173,30450, Kazakhstan,▁Kazakhstan,OK,"(30450,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact
+174,28595,mediocr,mediocr,OK,"(28595,)",prefix_blank+prefix_separator
+175,26954," $100,000","▁$100,000",OK,"(26954,)",prefix_compact+prefix_separator+random_separator
+176,14465, Beijing,▁Beijing,OK,"(14465,)",prefix_separator+random_separator
+177,11395, tomatoes,▁tomatoes,OK,"(11395,)",prefix_separator+random_separator
+178,29618, Chiropractic,▁Chiropractic,OK,"(29618,)",prefix_separator+suffix_blank+suffix_compact+suffix_separator
+179,27381, restroom,▁restroom,OK,"(27381,)",prefix_compact+prefix_separator+suffix_compact+suffix_separator
+180,30170, loneliness,▁loneliness,OK,"(30170,)",prefix_blank+prefix_compact+prefix_separator+random_separator+suffix_blank+suffix_separator
+181,12976, Tennessee,▁Tennessee,OK,"(12976,)",prefix_separator
+182,17284, Videos,▁Videos,OK,"(17284,)",prefix_separator+random_compact
+183,21762, Pokémon,▁Pokémon,OK,"(21762,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+184,22768, Hungary,▁Hungary,OK,"(22768,)",prefix_blank+prefix_separator+random_blank+random_separator
+185,19503, $200,▁$200,OK,"(19503,)",prefix_separator
+186,28893, Brasov,▁Brasov,OK,"(28893,)",prefix_blank+prefix_separator+random_blank+suffix_blank
+187,21899,420,420,OK,"(21899,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+188,30629, Slovakia,▁Slovakia,OK,"(30629,)",prefix_blank+prefix_separator+random_blank+random_separator
+189,25354, hashtag,▁hashtag,OK,"(25354,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank
+190,23385, Indianapolis,▁Indianapolis,OK,"(23385,)",prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+191,29079, insomnia,▁insomnia,OK,"(29079,)",prefix_separator+suffix_separator
+192,17646, unemployment,▁unemployment,OK,"(17646,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank
+193,14354, Poland,▁Poland,OK,"(14354,)",prefix_separator+random_separator+suffix_separator
+194,16809, Weihnachts,▁Weihnachts,OK,"(16809,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank
+195,28124, Finnish,▁Finnish,OK,"(28124,)",prefix_separator+random_compact+random_separator+suffix_separator
+196,30195, pneumonia,▁pneumonia,OK,"(30195,)",prefix_compact+prefix_separator+random_compact
+197,28845, humorous,▁humorous,OK,"(28845,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact
+198,13753, Birthday,▁Birthday,OK,"(13753,)",prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+199,24041, hackers,▁hackers,OK,"(24041,)",prefix_separator+suffix_compact
+200,30682, evangelical,▁evangelical,OK,"(30682,)",prefix_separator
+201,23024, Marx,▁Marx,OK,"(23024,)",prefix_separator+suffix_blank+suffix_compact+suffix_separator
+202,20356, advertisements,▁advertisements,OK,"(20356,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator
+203,10417, $100,▁$100,OK,"(10417,)",prefix_separator+random_compact+random_separator+suffix_separator
+204,19329, retard,▁retard,OK,"(19329,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+205,26911, Cardiff,▁Cardiff,OK,"(26911,)",prefix_separator+random_blank+random_separator
+206,18878, Vermont,▁Vermont,OK,"(18878,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+207,11900, coupons,▁coupons,OK,"(11900,)",prefix_blank+prefix_compact+prefix_separator
+208,13333, microwave,▁microwave,OK,"(13333,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+209,30843, Gluten,▁Gluten,OK,"(30843,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+210,30749, spaghetti,▁spaghetti,OK,"(30749,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+211,23238, Wyoming,▁Wyoming,OK,"(23238,)",prefix_blank+prefix_separator+random_blank+random_separator
+212,25686, slavery,▁slavery,OK,"(25686,)",prefix_blank+prefix_compact+prefix_separator
+213,16073, Polish,▁Polish,OK,"(16073,)",prefix_separator+random_compact+random_separator+suffix_separator
+214,12207, Sweden,▁Sweden,OK,"(12207,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+215,9310, Bitcoin,▁Bitcoin,OK,"(9310,)",prefix_separator+random_blank+random_separator+suffix_compact+suffix_separator
+216,29316, Albania,▁Albania,OK,"(29316,)",prefix_separator+random_blank+random_compact+random_separator
+217,31928, Scottsdale,▁Scottsdale,OK,"(31928,)",prefix_separator+random_separator
+218,14579, Mississippi,▁Mississippi,OK,"(14579,)",prefix_blank+prefix_separator+random_blank
+219,24360, Rochester,▁Rochester,OK,"(24360,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank
+220,28481, Timișoara,▁Timișoara,OK,"(28481,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_separator
+221,30320, vodka,▁vodka,OK,"(30320,)",prefix_separator+random+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+222,13050, Alabama,▁Alabama,OK,"(13050,)",prefix_separator+random_blank+random_separator+suffix_separator
+223,23778, asbestos,▁asbestos,OK,"(23778,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_separator
+224,3411, Japan,▁Japan,OK,"(3411,)",prefix_separator+random_separator+suffix_separator
+225,21065, headphones,▁headphones,OK,"(21065,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank
+226,17841, Venezuela,▁Venezuela,OK,"(17841,)",prefix_compact+prefix_separator
+227,27680, Iaşi,▁Iaşi,OK,"(27680,)",prefix_separator
+228,19930, useless,▁useless,OK,"(19930,)",prefix_separator+random_blank+random_compact+random_separator
+229,16531, Swedish,▁Swedish,OK,"(16531,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator
+230,29702,Millennial,Millennial,OK,"(29702,)",prefix_blank+prefix_separator+random_blank+random_compact+suffix_blank+suffix_separator
+231,29764, firefighters,▁firefighters,OK,"(29764,)",prefix_separator+suffix_compact+suffix_separator
+232,22093, Uganda,▁Uganda,OK,"(22093,)",prefix_blank+prefix_compact+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+233,14112, Dublin,▁Dublin,OK,"(14112,)",prefix_separator+random_separator
+234,21075, filmmaker,▁filmmaker,OK,"(21075,)",prefix_separator
+235,28741, Cannabis,▁Cannabis,OK,"(28741,)",prefix_separator+random_blank+random_separator+suffix_separator
+236,11009, Thanksgiving,▁Thanksgiving,OK,"(11009,)",prefix_compact+prefix_separator+random_compact+random_separator+suffix_compact+suffix_separator
+237,13567, transparency,▁transparency,OK,"(13567,)",prefix_separator
+238,10844, silence,▁silence,OK,"(10844,)",prefix_separator
+239,25085, Poetry,▁Poetry,OK,"(25085,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+240,31165, francophone,▁francophone,OK,"(31165,)",prefix_separator+random_separator
+241,27620, Lithuania,▁Lithuania,OK,"(27620,)",prefix_separator+random_compact+random_separator
+242,14837, blogger,▁blogger,OK,"(14837,)",prefix_blank+prefix_compact+prefix_separator+random_blank
+243,31421, hamburger,▁hamburger,OK,"(31421,)",prefix_blank+prefix_separator+suffix_compact+suffix_separator
+244,15769, Chocolate,▁Chocolate,OK,"(15769,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+245,8278, universities,▁universities,OK,"(8278,)",prefix_separator
+246,8854, Seattle,▁Seattle,OK,"(8854,)",prefix_separator+random_separator+suffix_separator
+247,19142, disappointment,▁disappointment,OK,"(19142,)",prefix_compact+prefix_separator+random_compact
+248,16887, Nokia,▁Nokia,OK,"(16887,)",prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+249,15876, homeless,▁homeless,OK,"(15876,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+250,30567, Joomla,▁Joomla,OK,"(30567,)",prefix_blank+prefix_separator+random_blank+suffix_blank
+251,29613,Russia,Russia,OK,"(29613,)",prefix_separator+random_compact
+252,4623, Russia,▁Russia,OK,"(4623,)",prefix_separator+random_compact+random_separator
+253,3146, iPhone,▁iPhone,OK,"(3146,)",prefix_separator+random_separator
+254,24306, accidental,▁accidental,OK,"(24306,)",prefix_compact+prefix_separator+random_compact
+255,12821, Alaska,▁Alaska,OK,"(12821,)",prefix_separator+random_blank+random_compact+random_separator
+256,21534, cinéma,▁cinéma,OK,"(21534,)",prefix_blank+prefix_separator+random
+257,16083, ethics,▁ethics,OK,"(16083,)",prefix_blank+prefix_compact+prefix_separator+random_blank+suffix_blank
+258,12535, polish,▁polish,OK,"(12535,)",prefix_separator
+259,23940, Chennai,▁Chennai,OK,"(23940,)",prefix_separator+random_separator
+260,7004, scientists,▁scientists,OK,"(7004,)",prefix_blank+prefix_separator+suffix_blank
+261,5093, Spanish,▁Spanish,OK,"(5093,)",prefix_separator+random_separator
+262,10619, Delhi,▁Delhi,OK,"(10619,)",prefix_separator
+263,10415,10.,10.,OK,"(10415,)",prefix_blank+prefix_separator
+264,5477, 10.,▁10.,OK,"(5477,)",prefix_blank+prefix_separator
+265,25577, Ethics,▁Ethics,OK,"(25577,)",prefix_blank+prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+266,20301, Bangkok,▁Bangkok,OK,"(20301,)",prefix_separator+random_compact+random_separator+suffix_compact
+267,13692, german,▁german,OK,"(13692,)",prefix_separator
+268,20017, sandwiches,▁sandwiches,OK,"(20017,)",prefix_blank+prefix_separator+random_blank+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+269,671, video,▁video,OK,"(671,)",prefix_separator
+270,17241,video,video,OK,"(17241,)",prefix_separator
+271,9673, Atlanta,▁Atlanta,OK,"(9673,)",prefix_separator
+272,28226, Tucson,▁Tucson,OK,"(28226,)",prefix_blank+prefix_separator+random_blank+random_separator
+273,29467, Baldwin,▁Baldwin,OK,"(29467,)",prefix_blank+prefix_separator+random_blank+random_separator+suffix_blank+suffix_separator
+274,28085, 1-800-,▁1-800-,OK,"(28085,)",prefix_separator
+275,1755,20,20,OK,"(1755,)",prefix_separator
+276,460, 20,▁20,OK,"(460,)",prefix_separator
+277,17102, seafood,▁seafood,OK,"(17102,)",prefix_blank+prefix_compact+prefix_separator+suffix_blank+suffix_compact+suffix_separator
+278,14736,incarc,incarc,OK,"(14736,)",prefix_separator
+279,22528, Feuerwehr,▁Feuerwehr,OK,"(22528,)",prefix_separator+random_separator
+280,30132, Welfare,▁Welfare,OK,"(30132,)",prefix_separator+random_blank+suffix_blank+suffix_compact+suffix_separator
+281,14704, bathrooms,▁bathrooms,OK,"(14704,)",prefix_separator+random_compact+random_separator+suffix_separator
+282,9520, Cancer,▁Cancer,OK,"(9520,)",prefix_separator+random+random_compact+suffix_compact+suffix_separator
+283,27864, Punjab,▁Punjab,OK,"(27864,)",prefix_separator+random_separator
+284,16085, journalists,▁journalists,OK,"(16085,)",prefix_compact+prefix_separator+random_compact
+285,17970, McDonald,▁McDonald,OK,"(17970,)",prefix_separator+random_separator
+286,30647, Johannesburg,▁Johannesburg,OK,"(30647,)",prefix_separator+random_blank+random_compact+random_separator
+287,13401, Kentucky,▁Kentucky,OK,"(13401,)",prefix_blank+prefix_separator+random_blank+suffix_blank
+288,5847, Michigan,▁Michigan,OK,"(5847,)",prefix_separator
+289,28868, Romney,▁Romney,OK,"(28868,)",prefix_compact+prefix_separator+suffix_compact+suffix_separator
+290,30283, chiropractor,▁chiropractor,OK,"(30283,)",prefix_separator
+291,22849, Ukrainian,▁Ukrainian,OK,"(22849,)",prefix_separator+random_compact+random_separator
+292,27598, 1936,▁1936,OK,"(27598,)",prefix_blank+prefix_separator+random_blank+random_compact
+293,29373, Kolkata,▁Kolkata,OK,"(29373,)",prefix_separator+random_blank+random_separator
+294,21549, chocolat,▁chocolat,OK,"(21549,)",prefix_blank+prefix_separator
+295,9745, Minnesota,▁Minnesota,OK,"(9745,)",prefix_separator+random_blank+random_separator+suffix_separator
+296,15365, Pizza,▁Pizza,OK,"(15365,)",prefix_separator+suffix_compact+suffix_separator
+297,11558," 30,","▁30,",OK,"(11558,)",prefix_separator
+298,27084, MacBook,▁MacBook,OK,"(27084,)",prefix_separator+random_separator+suffix_compact
+299,9777, Massachusetts,▁Massachusetts,OK,"(9777,)",prefix_separator+random_separator
+300,29609,PTSD,PTSD,OK,"(29609,)",prefix_blank+prefix_compact+random_blank+random_compact+suffix_blank
+301,27445, embarrassing,▁embarrassing,OK,"(27445,)",prefix_blank+prefix_compact+random_blank+suffix_blank
+302,28355, rainforest,▁rainforest,OK,"(28355,)",prefix_blank+random_blank+suffix_blank
+303,13475, lyrics,▁lyrics,OK,"(13475,)",prefix_blank+prefix_compact+random_blank+random_compact+suffix_blank+suffix_compact+suffix_separator
+304,6694, 1980,▁1980,OK,"(6694,)",prefix_blank+prefix_compact+random_blank
+305,21677, dinosaur,▁dinosaur,OK,"(21677,)",prefix_blank+random_blank+suffix_blank
+306,27327, ADHD,▁ADHD,OK,"(27327,)",prefix_blank+random_blank+suffix_blank+suffix_separator
+307,17507, avocado,▁avocado,OK,"(17507,)",prefix_blank+prefix_compact+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+308,24725, 1914,▁1914,OK,"(24725,)",prefix_blank+random_blank+suffix_blank
+309,23257, volcano,▁volcano,OK,"(23257,)",prefix_blank+prefix_compact+random_blank+suffix_blank+suffix_compact
+310,26883, carbohydrates,▁carbohydrates,OK,"(26883,)",prefix_blank+suffix_blank
+311,27026, butterflies,▁butterflies,OK,"(27026,)",prefix_blank+random_blank+suffix_blank
+312,18364, drunk,▁drunk,OK,"(18364,)",prefix_blank+random_blank+random_compact+suffix_blank+suffix_separator
+313,18638, grandchildren,▁grandchildren,OK,"(18638,)",prefix_blank
+314,30707, unicorn,▁unicorn,OK,"(30707,)",prefix_blank+random_blank+random_separator+suffix_blank+suffix_separator
+315,22353, foreclosure,▁foreclosure,OK,"(22353,)",prefix_blank+prefix_compact+random_blank
+316,17901, scientist,▁scientist,OK,"(17901,)",prefix_blank+prefix_compact+random_blank
+317,21402, 1918,▁1918,OK,"(21402,)",prefix_blank+random_blank+suffix_blank
+318,31526, Constanța,▁Constanța,OK,"(31526,)",prefix_blank+suffix_blank
+319,31820, unrealistic,▁unrealistic,OK,"(31820,)",prefix_blank+random_blank+suffix_blank+suffix_compact
+320,19545, smoothie,▁smoothie,OK,"(19545,)",prefix_blank+random_blank+suffix_blank
+321,3711, chocolate,▁chocolate,OK,"(3711,)",prefix_blank+random_blank+suffix_blank
+322,16787, bloggers,▁bloggers,OK,"(16787,)",prefix_blank+random_blank
+323,27147,toxicity,toxicity,OK,"(27147,)",prefix_blank+prefix_compact
+324,28582, diarrhea,▁diarrhea,OK,"(28582,)",prefix_blank+prefix_compact+random_blank+suffix_blank+suffix_compact
+325,10247, 1950,▁1950,OK,"(10247,)",prefix_blank+suffix_blank
+326,4257, vacation,▁vacation,OK,"(4257,)",prefix_blank
+327,16451, Chicken,▁Chicken,OK,"(16451,)",prefix_blank+random_blank+random_compact+random_separator+suffix_blank+suffix_compact
+328,9189, addiction,▁addiction,OK,"(9189,)",prefix_blank
+329,14374, Orlando,▁Orlando,OK,"(14374,)",prefix_blank+random_blank+suffix_blank
+330,30880, humiliat,▁humiliat,OK,"(30880,)",prefix_blank+random_blank+suffix_blank
+331,30382, Saskatchewan,▁Saskatchewan,OK,"(30382,)",prefix_blank+random_blank+suffix_blank
+332,16751, Montana,▁Montana,OK,"(16751,)",prefix_blank+random_blank
+333,15788, disagree,▁disagree,OK,"(15788,)",prefix_blank+suffix_blank
+334,15202, controversial,▁controversial,OK,"(15202,)",prefix_blank+prefix_compact+random_compact+suffix_compact
+335,28644, Drupal,▁Drupal,OK,"(28644,)",prefix_blank
+336,23022, jealous,▁jealous,OK,"(23022,)",prefix_blank+suffix_blank
+337,29161, Vimeo,▁Vimeo,OK,"(29161,)",prefix_blank+random_blank
+338,23586, superhero,▁superhero,OK,"(23586,)",prefix_blank+random_blank+random_separator+suffix_blank
+339,30119, ashamed,▁ashamed,OK,"(30119,)",prefix_blank+suffix_blank
+340,11217, gluten,▁gluten,OK,"(11217,)",prefix_blank+suffix_blank
+341,31949, halloween,▁halloween,OK,"(31949,)",prefix_blank+random+random_blank+random_compact+random_separator+suffix_blank+suffix_compact
+342,26927, simulator,▁simulator,OK,"(26927,)",prefix_blank
+343,23835, bathtub,▁bathtub,OK,"(23835,)",prefix_blank+suffix_compact
+344,25439, 1917,▁1917,OK,"(25439,)",prefix_blank+random_blank
+345,22617, Blogger,▁Blogger,OK,"(22617,)",prefix_blank+random_blank
+346,11367, roofing,▁roofing,OK,"(11367,)",prefix_blank+random_blank+suffix_blank
+347,21370, Venice,▁Venice,OK,"(21370,)",prefix_blank+random_blank+suffix_blank
+348,29773, embarrassed,▁embarrassed,OK,"(29773,)",prefix_blank+suffix_blank
+349,29474,wikipedia,wikipedia,OK,"(29474,)",prefix_blank+random_blank
+350,20526, abortion,▁abortion,OK,"(20526,)",prefix_blank+random+suffix_blank
+351,31275, Bosnia,▁Bosnia,OK,"(31275,)",prefix_blank+random_blank+random_separator+suffix_blank
+352,27550, sneakers,▁sneakers,OK,"(27550,)",prefix_blank+suffix_blank
+353,20304, username,▁username,OK,"(20304,)",prefix_blank
+354,30183,unbiased,unbiased,OK,"(30183,)",prefix_blank
+355,23424, playlist,▁playlist,OK,"(23424,)",prefix_blank
+356,20692, laughing,▁laughing,OK,"(20692,)",prefix_blank+random_blank+random_compact
+357,27037, Blockchain,▁Blockchain,OK,"(27037,)",prefix_blank+random_blank+suffix_blank
+358,13199, Harvard,▁Harvard,OK,"(13199,)",prefix_blank+random_blank+suffix_blank
+359,21365, pancake,▁pancake,OK,"(21365,)",prefix_blank
+360,31568, Juventus,▁Juventus,OK,"(31568,)",prefix_blank+random_blank+suffix_blank+suffix_separator
+361,23826, Sheffield,▁Sheffield,OK,"(23826,)",prefix_blank+random_blank
+362,11680, Vancouver,▁Vancouver,OK,"(11680,)",prefix_blank+random_blank+random_compact+suffix_blank
+363,11398, ethical,▁ethical,OK,"(11398,)",prefix_blank+suffix_blank+suffix_compact+suffix_separator
+364,26081, volleyball,▁volleyball,OK,"(26081,)",prefix_blank
+365,14427, supermarket,▁supermarket,OK,"(14427,)",prefix_blank+suffix_blank
+366,9462, României,▁României,OK,"(9462,)",prefix_blank
+367,28484, 1925,▁1925,OK,"(28484,)",prefix_blank
+368,22116, champagne,▁champagne,OK,"(22116,)",prefix_blank
+369,25335, Tweet,▁Tweet,OK,"(25335,)",prefix_blank+random_blank
+370,29593, algae,▁algae,OK,"(29593,)",prefix_blank
+371,30758, Uruguay,▁Uruguay,OK,"(30758,)",prefix_blank+random_blank
+372,20135, absurd,▁absurd,OK,"(20135,)",prefix_blank
+373,26734, Oradea,▁Oradea,OK,"(26734,)",prefix_blank+random_blank+suffix_blank
+374,3832, chicken,▁chicken,OK,"(3832,)",prefix_blank+random_blank+suffix_blank
+375,31866,library,library,OK,"(31866,)",prefix_blank+random_blank
+376,3595, library,▁library,OK,"(3595,)",prefix_blank
+377,21166, Scientist,▁Scientist,OK,"(21166,)",prefix_blank+suffix_blank+suffix_compact
+378,28617, ignorant,▁ignorant,OK,"(28617,)",prefix_blank+prefix_compact
+379,28531,agriculture,agriculture,OK,"(28531,)",prefix_blank
+380,11402, agriculture,▁agriculture,OK,"(11402,)",prefix_blank
+381,21070, insane,▁insane,OK,"(21070,)",prefix_blank+suffix_blank
+382,22951, 1956,▁1956,OK,"(22951,)",prefix_blank
+383,6688, facts,▁facts,OK,"(6688,)",prefix_blank
+384,23964, Stockholm,▁Stockholm,OK,"(23964,)",prefix_blank+random_blank+suffix_blank
+385,15981, rentals,▁rentals,OK,"(15981,)",prefix_blank
+386,29004, 1928,▁1928,OK,"(29004,)",prefix_blank
+387,17946, Argentina,▁Argentina,OK,"(17946,)",prefix_blank
+388,16885, Wikipedia,▁Wikipedia,OK,"(16885,)",prefix_blank+random_blank
+389,26272,fluoxetine,fluoxetine,OK,"(26272,)",prefix_blank+prefix_compact
+390,19519, grammar,▁grammar,OK,"(19519,)",prefix_blank
+391,13200, 1985,▁1985,OK,"(13200,)",prefix_blank+random_blank+random_compact
+392,19074, Nebraska,▁Nebraska,OK,"(19074,)",prefix_blank+random_blank+suffix_blank
+393,29482, carnival,▁carnival,OK,"(29482,)",prefix_blank+suffix_blank+suffix_compact
+394,20737, Python,▁Python,OK,"(20737,)",prefix_blank+random_blank+suffix_blank
+395,26499, Merkel,▁Merkel,OK,"(26499,)",prefix_blank+random_blank+random_separator+suffix_blank
+396,23267,tolerant,tolerant,OK,"(23267,)",prefix_blank+prefix_compact
+397,8817, Halloween,▁Halloween,OK,"(8817,)",prefix_blank+random_blank+suffix_blank+suffix_compact+suffix_separator
+398,10773, poetry,▁poetry,OK,"(10773,)",prefix_blank+random_blank+suffix_blank
+399,24979, farmhouse,▁farmhouse,OK,"(24979,)",prefix_blank
+400,24381, secular,▁secular,OK,"(24381,)",prefix_blank
+401,22138, Ethiopia,▁Ethiopia,OK,"(22138,)",prefix_blank
+402,16504, Edinburgh,▁Edinburgh,OK,"(16504,)",prefix_blank+random_blank
+403,29673,shingles,shingles,OK,"(29673,)",prefix_blank+random_blank
+404,18460, poems,▁poems,OK,"(18460,)",prefix_blank+suffix_blank
+405,18315, 1945,▁1945,OK,"(18315,)",prefix_blank+suffix_blank
+406,23853, $40,▁$40,OK,"(23853,)",prefix_blank+prefix_compact+random_blank+random_compact
+407,31641, snail,▁snail,OK,"(31641,)",prefix_blank+suffix_blank
+408,17743, Ranch,▁Ranch,OK,"(17743,)",prefix_blank+random_blank
+409,24011, 1957,▁1957,OK,"(24011,)",prefix_blank
+410,15375, taxpayer,▁taxpayer,OK,"(15375,)",prefix_blank
+411,25212,millennial,millennial,OK,"(25212,)",prefix_blank
+412,26946, vampire,▁vampire,OK,"(26946,)",prefix_blank+random_blank+suffix_blank+suffix_compact+suffix_separator
+413,26604,Laugh,Laugh,OK,"(26604,)",prefix_blank
+414,31344, Strawberry,▁Strawberry,OK,"(31344,)",prefix_blank+random_blank
+415,19601, viruses,▁viruses,OK,"(19601,)",prefix_blank
+416,10343, laboratory,▁laboratory,OK,"(10343,)",prefix_blank
+417,22831, Serbia,▁Serbia,OK,"(22831,)",prefix_blank+random_blank
+418,26365, Rwanda,▁Rwanda,OK,"(26365,)",prefix_blank+random_blank+random_compact
+419,2775, 80,▁80,OK,"(2775,)",prefix_blank
+420,2079,80,80,OK,"(2079,)",prefix_blank
+421,13819, graduates,▁graduates,OK,"(13819,)",prefix_blank+random_blank
+422,25756, Spotify,▁Spotify,OK,"(25756,)",prefix_blank+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+423,24894, Vacation,▁Vacation,OK,"(24894,)",prefix_blank+random_blank+suffix_blank
+424,25101, Ecuador,▁Ecuador,OK,"(25101,)",prefix_blank
+425,28825,deutschland,deutschland,OK,"(28825,)",prefix_blank
+426,17082, mathematics,▁mathematics,OK,"(17082,)",prefix_blank
+427,7737, dessert,▁dessert,OK,"(7737,)",prefix_blank
+428,24455, pineapple,▁pineapple,OK,"(24455,)",prefix_blank
+429,24427, dimineata,▁dimineata,OK,"(24427,)",prefix_blank
+430,16537, farms,▁farms,OK,"(16537,)",prefix_blank
+431,23512, thriller,▁thriller,OK,"(23512,)",prefix_blank
+432,15868, Rachel,▁Rachel,OK,"(15868,)",prefix_blank
+433,12698, 1986,▁1986,OK,"(12698,)",prefix_blank+random_blank
+434,31771, Avocado,▁Avocado,OK,"(31771,)",prefix_blank+random_blank+random_separator+suffix_blank+suffix_compact+suffix_separator
+435,19128, Sibiu,▁Sibiu,OK,"(19128,)",prefix_blank+random_blank+suffix_blank
+436,20855, Hillary,▁Hillary,OK,"(20855,)",prefix_blank+prefix_compact+random_separator
+437,6940, workplace,▁workplace,OK,"(6940,)",prefix_blank
+438,27521, 1919,▁1919,OK,"(27521,)",prefix_blank+suffix_blank
+439,10050, disability,▁disability,OK,"(10050,)",prefix_blank+prefix_compact
+440,25314, keto,▁keto,OK,"(25314,)",prefix_blank
+441,21506, weaknesses,▁weaknesses,OK,"(21506,)",prefix_blank
+442,30560,Führer,Führer,OK,"(30560,)",prefix_blank+random_blank+random_separator
+443,30367, Daughter,▁Daughter,OK,"(30367,)",prefix_blank+prefix_compact+random_blank+random_compact
+444,8719, laugh,▁laugh,OK,"(8719,)",prefix_blank
+445,28928, Lisbon,▁Lisbon,OK,"(28928,)",prefix_blank+random_blank+random_separator+suffix_blank+suffix_separator
+446,21431, $300,▁$300,OK,"(21431,)",prefix_blank+random_blank+random_compact+random_separator
+447,20220, graduat,▁graduat,OK,"(20220,)",prefix_blank+random_blank+random_compact
+448,9828, Yoga,▁Yoga,OK,"(9828,)",prefix_blank+suffix_blank
+449,31078, raisins,▁raisins,OK,"(31078,)",prefix_blank+random_blank+suffix_blank+suffix_separator
+450,24218, EVERY,▁EVERY,OK,"(24218,)",prefix_blank
+451,14038, freeze,▁freeze,OK,"(14038,)",prefix_blank
+452,22808,Argentin,Argentin,OK,"(22808,)",prefix_blank
+453,31150, Halifax,▁Halifax,OK,"(31150,)",prefix_blank+random_blank
+454,23939, 2030,▁2030,OK,"(23939,)",prefix_blank
+455,12527, Switzerland,▁Switzerland,OK,"(12527,)",prefix_blank+random_blank+random_compact+random_separator+suffix_blank
+456,27609,lustig,lustig,OK,"(27609,)",prefix_blank
+457,29718, Mormon,▁Mormon,OK,"(29718,)",prefix_blank+suffix_blank+suffix_compact+suffix_separator
+458,7470, nutrition,▁nutrition,OK,"(7470,)",prefix_blank
+459,24524, laughed,▁laughed,OK,"(24524,)",prefix_blank+suffix_blank+suffix_separator
+460,9987, basement,▁basement,OK,"(9987,)",prefix_blank+suffix_blank+suffix_compact
+461,31267, Schokolade,▁Schokolade,OK,"(31267,)",prefix_blank+random_separator
+462,28985, twentieth,▁twentieth,OK,"(28985,)",prefix_blank+random_blank
+463,13446, politicians,▁politicians,OK,"(13446,)",prefix_blank+prefix_compact
+464,29796, Londra,▁Londra,OK,"(29796,)",prefix_blank+random_blank
+465,14389,terrorism,terrorism,OK,"(14389,)",prefix_compact
+466,16793, Photoshop,▁Photoshop,OK,"(16793,)",prefix_compact+random_compact+suffix_compact
+467,30242, boycott,▁boycott,OK,"(30242,)",prefix_compact+suffix_compact
+468,28155, disagreement,▁disagreement,OK,"(28155,)",prefix_compact+random_compact
+469,10287, terrorist,▁terrorist,OK,"(10287,)",prefix_compact+suffix_compact
+470,18483, skiing,▁skiing,OK,"(18483,)",prefix_compact+random_separator+suffix_compact
+471,21760, controversy,▁controversy,OK,"(21760,)",prefix_compact
+472,26046, bullying,▁bullying,OK,"(26046,)",prefix_compact
+473,25975,ignoring,ignoring,OK,"(25975,)",prefix_compact+random_compact
+474,25280, dictator,▁dictator,OK,"(25280,)",prefix_compact
+475,25071, propaganda,▁propaganda,OK,"(25071,)",prefix_compact+suffix_compact
+476,14986, ignored,▁ignored,OK,"(14986,)",prefix_compact
+477,10172, Islam,▁Islam,OK,"(10172,)",prefix_compact+suffix_compact
+478,30791,Islam,Islam,OK,"(30791,)",prefix_compact+random_compact
+479,26246, distrus,▁distrus,OK,"(26246,)",prefix_compact
+480,28408, Taliban,▁Taliban,OK,"(28408,)",prefix_compact+random_compact+suffix_compact
+481,29516,jihad,jihad,OK,"(29516,)",prefix_compact
+482,20290,islam,islam,OK,"(20290,)",prefix_compact
+483,30430, apology,▁apology,OK,"(30430,)",prefix_compact
+484,7194, photographs,▁photographs,OK,"(7194,)",prefix_compact
+485,16265, newspapers,▁newspapers,OK,"(16265,)",prefix_compact+random_compact
+486,30332,lucrarea,lucrarea,OK,"(30332,)",prefix_compact+random_compact+suffix_compact
+487,16217,avoiding,avoiding,OK,"(16217,)",prefix_compact
+488,9994, journalist,▁journalist,OK,"(9994,)",prefix_compact+random
+489,25244, prejudice,▁prejudice,OK,"(25244,)",prefix_compact
+490,27635, disgust,▁disgust,OK,"(27635,)",prefix_compact+suffix_compact
+491,16932, Muslims,▁Muslims,OK,"(16932,)",prefix_compact+suffix_compact
+492,20528, migrants,▁migrants,OK,"(20528,)",prefix_compact
+493,28063,misunderstanding,misunderstanding,OK,"(28063,)",prefix_compact
+494,13391, veterans,▁veterans,OK,"(13391,)",prefix_compact
+495,9569, poverty,▁poverty,OK,"(9569,)",prefix_compact+random_compact+suffix_compact
+496,29219,wolves,wolves,OK,"(29219,)",prefix_compact
+497,25553, Accident,▁Accident,OK,"(25553,)",prefix_compact+random_compact+suffix_compact
+498,9888, friendship,▁friendship,OK,"(9888,)",prefix_compact
+499,7759, divorce,▁divorce,OK,"(7759,)",prefix_compact
+500,18500, allergies,▁allergies,OK,"(18500,)",prefix_compact+suffix_compact
+501,24694, politician,▁politician,OK,"(24694,)",prefix_compact+random_compact
+502,15380, Photography,▁Photography,OK,"(15380,)",prefix_compact+random_compact
+503,21454, contradict,▁contradict,OK,"(21454,)",prefix_compact
+504,21535,traumatic,traumatic,OK,"(21535,)",prefix_compact
+505,25741, inconvenience,▁inconvenience,OK,"(25741,)",prefix_compact
+506,26988, Communist,▁Communist,OK,"(26988,)",prefix_compact+random_compact+random_separator+suffix_blank+suffix_compact+suffix_separator
+507,22469,negotiating,negotiating,OK,"(22469,)",prefix_compact
+508,13542, Afghanistan,▁Afghanistan,OK,"(13542,)",prefix_compact
+509,4832, photography,▁photography,OK,"(4832,)",prefix_compact
+510,29142, multicultural,▁multicultural,OK,"(29142,)",prefix_compact+random_compact
+511,18045, Putin,▁Putin,OK,"(18045,)",prefix_compact+random_compact+random_separator+suffix_compact+suffix_separator
+512,12490, disabilities,▁disabilities,OK,"(12490,)",prefix_compact
+513,27027, terrifying,▁terrifying,OK,"(27027,)",prefix_compact
+514,1874, cancer,▁cancer,OK,"(1874,)",prefix_compact
+515,29452, unacceptable,▁unacceptable,OK,"(29452,)",prefix_compact
+516,16723, refugees,▁refugees,OK,"(16723,)",prefix_compact
+517,30720, Rettungs,▁Rettungs,OK,"(30720,)",prefix_compact+random_separator
+518,22103, apologize,▁apologize,OK,"(22103,)",prefix_compact
+519,26433, $250,▁$250,OK,"(26433,)",prefix_compact
+520,8022, mountains,▁mountains,OK,"(8022,)",prefix_compact
+521,10441, pollution,▁pollution,OK,"(10441,)",prefix_compact
+522,21533, tolerate,▁tolerate,OK,"(21533,)",prefix_compact
+523,26896, treadmill,▁treadmill,OK,"(26896,)",prefix_compact
+524,13309, $50,▁$50,OK,"(13309,)",prefix_compact+random_compact+random_separator
+525,6854, errors,▁errors,OK,"(6854,)",prefix_compact
+526,10148, Muslim,▁Muslim,OK,"(10148,)",prefix_compact+random_compact+suffix_compact
+527,30016,sacrificing,sacrificing,OK,"(30016,)",prefix_compact
+528,24784, sadness,▁sadness,OK,"(24784,)",prefix_compact+random_compact
+529,22167, livestock,▁livestock,OK,"(22167,)",prefix_compact
+530,28241,inability,inability,OK,"(28241,)",prefix_compact
+531,21966, Podcast,▁Podcast,OK,"(21966,)",suffix_blank+suffix_compact+suffix_separator
+532,8661, podcast,▁podcast,OK,"(8661,)",suffix_blank+suffix_compact+suffix_separator
+533,28789, Religious,▁Religious,OK,"(28789,)",suffix_compact+suffix_separator
+534,11894, Netflix,▁Netflix,OK,"(11894,)",suffix_blank+suffix_separator
+535,23053, Conservative,▁Conservative,OK,"(23053,)",random_compact+suffix_compact+suffix_separator
+536,13190, Sleep,▁Sleep,OK,"(13190,)",random_separator+suffix_separator
+537,28546, Kickstarter,▁Kickstarter,OK,"(28546,)",suffix_blank+suffix_compact+suffix_separator
+538,10929, Football,▁Football,OK,"(10929,)",suffix_separator
+539,25770, Vatican,▁Vatican,OK,"(25770,)",random_compact+suffix_compact+suffix_separator
+540,8217, Linux,▁Linux,OK,"(8217,)",suffix_blank+suffix_separator
+541,11337, Christians,▁Christians,OK,"(11337,)",random_separator+suffix_compact+suffix_separator
+542,10743, Movie,▁Movie,OK,"(10743,)",suffix_blank+suffix_separator
+543,18182, Religion,▁Religion,OK,"(18182,)",suffix_compact+suffix_separator
+544,26328, Meditation,▁Meditation,OK,"(26328,)",suffix_compact+suffix_separator
+545,31514, crowdfunding,▁crowdfunding,OK,"(31514,)",suffix_blank+suffix_compact+suffix_separator
+546,21249, Basketball,▁Basketball,OK,"(21249,)",random+random_separator+suffix_separator
+547,27855, Mozart,▁Mozart,OK,"(27855,)",suffix_blank+suffix_separator
+548,30425, Sandwich,▁Sandwich,OK,"(30425,)",suffix_compact+suffix_separator
+549,22307, Musical,▁Musical,OK,"(22307,)",suffix_separator
+550,5081, cookies,▁cookies,OK,"(5081,)",suffix_blank+suffix_separator
+551,3370, football,▁football,OK,"(3370,)",suffix_separator
+552,26049, Hunger,▁Hunger,OK,"(26049,)",suffix_blank+suffix_compact+suffix_separator
+553,14899, vazut,▁vazut,OK,"(14899,)",suffix_blank+suffix_separator
+554,28411, Biblical,▁Biblical,OK,"(28411,)",suffix_compact+suffix_separator
+555,28302, Mattress,▁Mattress,OK,"(28302,)",suffix_separator
+556,10439, NFL,▁NFL,OK,"(10439,)",suffix_separator
+557,27463, McCain,▁McCain,OK,"(27463,)",random_separator+suffix_compact+suffix_separator
+558,14658, sandwich,▁sandwich,OK,"(14658,)",random+suffix_separator
+559,31074, Cartoon,▁Cartoon,OK,"(31074,)",suffix_compact+suffix_separator
+560,10257, smoking,▁smoking,OK,"(10257,)",suffix_separator
+561,27873, rapper,▁rapper,OK,"(27873,)",suffix_compact+suffix_separator
+562,18142, Songs,▁Songs,OK,"(18142,)",suffix_separator
+563,16254, Healthcare,▁Healthcare,OK,"(16254,)",suffix_separator
+564,26741, Marriage,▁Marriage,OK,"(26741,)",suffix_compact+suffix_separator
+565,11896, Jews,▁Jews,OK,"(11896,)",suffix_compact+suffix_separator
+566,30069, RFID,▁RFID,OK,"(30069,)",suffix_blank+suffix_separator
+567,23207, MORE,▁MORE,OK,"(23207,)",suffix_separator
+568,22313, NHL,▁NHL,OK,"(22313,)",suffix_separator
+569,27056, Gandhi,▁Gandhi,OK,"(27056,)",suffix_blank+suffix_separator
+570,6118, Disney,▁Disney,OK,"(6118,)",suffix_compact+suffix_separator
+571,16285, sunlight,▁sunlight,OK,"(16285,)",random_separator+suffix_compact+suffix_separator
+572,18587, Liberal,▁Liberal,OK,"(18587,)",suffix_compact+suffix_separator
+573,22398, Baseball,▁Baseball,OK,"(22398,)",random_blank+random_compact+suffix_separator
+574,3591, birthday,▁birthday,OK,"(3591,)",random_compact+random_separator+suffix_separator
+575,9438, Dance,▁Dance,OK,"(9438,)",suffix_separator
+576,27238, Coconut,▁Coconut,OK,"(27238,)",suffix_blank+suffix_separator
+577,13193, Cheap,▁Cheap,OK,"(13193,)",suffix_separator
+578,9023, Moon,▁Moon,OK,"(9023,)",random_blank+suffix_blank+suffix_compact+suffix_separator
+579,23859, Toilet,▁Toilet,OK,"(23859,)",random+suffix_compact+suffix_separator
+580,10345, Bathroom,▁Bathroom,OK,"(10345,)",suffix_compact+suffix_separator
+581,9600, baseball,▁baseball,OK,"(9600,)",suffix_separator
+582,1410, France,▁France,OK,"(1410,)",suffix_separator
+583,10429, Coffee,▁Coffee,OK,"(10429,)",suffix_compact+suffix_separator
+584,4586, impossible,▁impossible,OK,"(4586,)",suffix_blank+suffix_separator
+585,18768, Lawyer,▁Lawyer,OK,"(18768,)",suffix_blank+suffix_separator
+586,8114, moon,▁moon,OK,"(8114,)",suffix_blank+suffix_separator
+587,31189, Shampoo,▁Shampoo,OK,"(31189,)",suffix_blank+suffix_compact+suffix_separator
+588,15971, NASA,▁NASA,OK,"(15971,)",suffix_separator
+589,30059, astronaut,▁astronaut,OK,"(30059,)",suffix_compact+suffix_separator
+590,20338, Gay,▁Gay,OK,"(20338,)",suffix_blank+suffix_compact+suffix_separator
+591,9222, Magic,▁Magic,OK,"(9222,)",suffix_separator
+592,13857, Brexit,▁Brexit,OK,"(13857,)",suffix_separator
+593,8999, pregnancy,▁pregnancy,OK,"(8999,)",suffix_separator
+594,22201, ballet,▁ballet,OK,"(22201,)",suffix_separator
+595,26829, psychic,▁psychic,OK,"(26829,)",suffix_blank+suffix_separator
+596,6871, pizza,▁pizza,OK,"(6871,)",suffix_separator
+597,24190, smoker,▁smoker,OK,"(24190,)",suffix_separator
+598,18667, Pirate,▁Pirate,OK,"(18667,)",suffix_separator
+599,2582, bathroom,▁bathroom,OK,"(2582,)",random_compact+random_separator+suffix_separator
+600,10412, meditation,▁meditation,OK,"(10412,)",suffix_compact+suffix_separator
+601,11112, tard,▁tard,OK,"(11112,)",suffix_blank+suffix_separator
+602,18991, Teachers,▁Teachers,OK,"(18991,)",random_compact+suffix_separator
+603,22627, Satan,▁Satan,OK,"(22627,)",suffix_blank+suffix_compact+suffix_separator
+604,16623, bitcoin,▁bitcoin,OK,"(16623,)",suffix_separator
+605,31280, Picasso,▁Picasso,OK,"(31280,)",suffix_compact+suffix_separator
+606,31857, Tottenham,▁Tottenham,OK,"(31857,)",random_separator+suffix_separator
+607,24308, Jupiter,▁Jupiter,OK,"(24308,)",suffix_blank+suffix_separator
+608,28253, Dentistry,▁Dentistry,OK,"(28253,)",suffix_blank+suffix_separator
+609,13831, WiFi,▁WiFi,OK,"(13831,)",suffix_separator
+610,20289, Drink,▁Drink,OK,"(20289,)",suffix_separator
+611,17384, Pope,▁Pope,OK,"(17384,)",suffix_compact+suffix_separator
+612,20687, Buddhist,▁Buddhist,OK,"(20687,)",random+random_blank+random_compact+suffix_blank+suffix_compact+suffix_separator
+613,4761, religious,▁religious,OK,"(4761,)",suffix_separator
+614,2085, sleep,▁sleep,OK,"(2085,)",suffix_separator
+615,23888, Luxembourg,▁Luxembourg,OK,"(23888,)",random_separator+suffix_separator
+616,31250, thunderstorm,▁thunderstorm,OK,"(31250,)",random_compact+random_separator+suffix_compact+suffix_separator
+617,28280, supernatural,▁supernatural,OK,"(28280,)",suffix_separator
+618,23186, Macron,▁Macron,OK,"(23186,)",suffix_separator
+619,9103, $10,▁$10,OK,"(9103,)",random+suffix_separator
+620,23366, Ballet,▁Ballet,OK,"(23366,)",suffix_separator
+621,21891, Alcohol,▁Alcohol,OK,"(21891,)",suffix_separator
+622,1975, coffee,▁coffee,OK,"(1975,)",suffix_separator
+623,2803, Microsoft,▁Microsoft,OK,"(2803,)",suffix_blank+suffix_compact+suffix_separator
+624,16435, spicy,▁spicy,OK,"(16435,)",suffix_blank+suffix_separator
+625,3605, songs,▁songs,OK,"(3605,)",suffix_separator
+626,23997, christmas,▁christmas,OK,"(23997,)",random_separator+suffix_separator
+627,6422, $5,▁$5,OK,"(6422,)",suffix_separator
+628,1619, Christmas,▁Christmas,OK,"(1619,)",random_compact+random_separator+suffix_separator
+629,19432, cryptocurrency,▁cryptocurrency,OK,"(19432,)",suffix_compact+suffix_separator
+630,25597, sunscreen,▁sunscreen,OK,"(25597,)",suffix_separator
+631,30775, Phuket,▁Phuket,OK,"(30775,)",random_compact+random_separator+suffix_separator
+632,29895, Stalin,▁Stalin,OK,"(29895,)",suffix_compact+suffix_separator
+633,25726,slept,slept,OK,"(25726,)",suffix_separator
+634,5949, smell,▁smell,OK,"(5949,)",suffix_separator
+635,24123, Immigration,▁Immigration,OK,"(24123,)",suffix_separator
+636,25907, Ikea,▁Ikea,OK,"(25907,)",suffix_blank+suffix_compact+suffix_separator
+637,31916, toothpaste,▁toothpaste,OK,"(31916,)",suffix_blank+suffix_compact+suffix_separator
+638,18073, Beer,▁Beer,OK,"(18073,)",suffix_separator
+639,16491, Norway,▁Norway,OK,"(16491,)",random_blank+random_separator+suffix_separator
+640,5446, Insurance,▁Insurance,OK,"(5446,)",random_separator+suffix_separator
+641,11423, radiation,▁radiation,OK,"(11423,)",suffix_compact+suffix_separator
+642,2826, Christian,▁Christian,OK,"(2826,)",random_separator+suffix_separator
+643,2634, dinner,▁dinner,OK,"(2634,)",suffix_separator
+644,7926, eigentlich,▁eigentlich,OK,"(7926,)",suffix_separator
+645,28090, Snapchat,▁Snapchat,OK,"(28090,)",suffix_separator
+646,29287, Naples,▁Naples,OK,"(29287,)",suffix_separator
+647,23548, Shoes,▁Shoes,OK,"(23548,)",random_blank+random_separator+suffix_blank+suffix_separator
+648,23438, biblical,▁biblical,OK,"(23438,)",suffix_separator
+649,6663, drinking,▁drinking,OK,"(6663,)",suffix_separator
+650,26229, popcorn,▁popcorn,OK,"(26229,)",suffix_blank+suffix_separator
+651,8139, cheaper,▁cheaper,OK,"(8139,)",suffix_separator
+652,28472, groceries,▁groceries,OK,"(28472,)",suffix_separator
+653,27971, whiskey,▁whiskey,OK,"(27971,)",suffix_separator
+654,5409, wirklich,▁wirklich,OK,"(5409,)",suffix_separator
+655,25851, idiot,▁idiot,OK,"(25851,)",suffix_separator
+656,6692, Jewish,▁Jewish,OK,"(6692,)",random+random_separator+suffix_compact+suffix_separator
+657,1974, movie,▁movie,OK,"(1974,)",suffix_blank+suffix_separator
+658,6612, dreams,▁dreams,OK,"(6612,)",suffix_separator
+659,18428, Dinner,▁Dinner,OK,"(18428,)",suffix_separator
+660,8498, basketball,▁basketball,OK,"(8498,)",suffix_separator
+661,27344, Prison,▁Prison,OK,"(27344,)",suffix_compact+suffix_separator
+662,12956, vaccine,▁vaccine,OK,"(12956,)",suffix_separator
+663,28932, Universities,▁Universities,OK,"(28932,)",random_separator+suffix_separator
+664,15929, Cookies,▁Cookies,OK,"(15929,)",random_blank+suffix_blank+suffix_separator
+665,16145, earthquake,▁earthquake,OK,"(16145,)",suffix_compact+suffix_separator
+666,16998, gay,▁gay,OK,"(16998,)",suffix_blank+suffix_separator
+667,11901, Detroit,▁Detroit,OK,"(11901,)",suffix_separator
+668,17335, gardening,▁gardening,OK,"(17335,)",suffix_separator
+669,16528, hockey,▁hockey,OK,"(16528,)",suffix_separator
+670,8994, Republican,▁Republican,OK,"(8994,)",suffix_blank+suffix_compact
+671,31401, Beethoven,▁Beethoven,OK,"(31401,)",suffix_blank+suffix_compact
+672,15725, bacon,▁bacon,OK,"(15725,)",suffix_blank
+673,15920, PHP,▁PHP,OK,"(15920,)",suffix_blank
+674,16544, toast,▁toast,OK,"(16544,)",suffix_blank
+675,13732, pasta,▁pasta,OK,"(13732,)",suffix_blank
+676,23497, LEGO,▁LEGO,OK,"(23497,)",random_blank+suffix_blank
+677,28009, Roosevelt,▁Roosevelt,OK,"(28009,)",suffix_blank
+678,30002, toothbrush,▁toothbrush,OK,"(30002,)",suffix_blank
+679,26894, Darwin,▁Darwin,OK,"(26894,)",random_blank+suffix_blank
+680,23249, Lego,▁Lego,OK,"(23249,)",suffix_blank
+681,16095, Orchestra,▁Orchestra,OK,"(16095,)",suffix_blank+suffix_compact
+682,9417, coconut,▁coconut,OK,"(9417,)",suffix_blank
+683,19981, urine,▁urine,OK,"(19981,)",random_blank+suffix_blank
+684,14193, poem,▁poem,OK,"(14193,)",suffix_blank+suffix_compact
+685,27947, Sauna,▁Sauna,OK,"(27947,)",suffix_blank
+686,30927, Aquarium,▁Aquarium,OK,"(30927,)",random_blank+suffix_blank
+687,9458, Dank,▁Dank,OK,"(9458,)",suffix_blank
+688,29344, Thrones,▁Thrones,OK,"(29344,)",random_blank+suffix_blank
+689,30506, Nixon,▁Nixon,OK,"(30506,)",suffix_blank
+690,29375, diaper,▁diaper,OK,"(29375,)",suffix_blank
+691,10099, Castle,▁Castle,OK,"(10099,)",random_blank+suffix_blank
+692,14635, concerts,▁concerts,OK,"(14635,)",suffix_blank
+693,30884, Toast,▁Toast,OK,"(30884,)",random_blank+suffix_blank
+694,28516, Ethereum,▁Ethereum,OK,"(28516,)",random_blank+suffix_blank
+695,25255, Dresden,▁Dresden,OK,"(25255,)",random_blank+suffix_blank
+696,29420, WWII,▁WWII,OK,"(29420,)",suffix_blank
+697,30447, Braşov,▁Braşov,OK,"(30447,)",random_blank+suffix_blank
+698,11603, poet,▁poet,OK,"(11603,)",suffix_blank
+699,16681, insulin,▁insulin,OK,"(16681,)",suffix_blank
+700,17562, Nazi,▁Nazi,OK,"(17562,)",suffix_blank+suffix_compact
+701,2523, Trump,▁Trump,OK,"(2523,)",random_blank+random_separator+suffix_blank
+702,29017, Bernie,▁Bernie,OK,"(29017,)",suffix_blank
+703,24744, Basement,▁Basement,OK,"(24744,)",suffix_blank+suffix_compact
+704,13873, orchestra,▁orchestra,OK,"(13873,)",suffix_blank
+705,28817, Retirement,▁Retirement,OK,"(28817,)",random_blank+suffix_blank
+706,27648, Roast,▁Roast,OK,"(27648,)",suffix_blank
+707,4559, Casino,▁Casino,OK,"(4559,)",suffix_blank
+708,14596, casinos,▁casinos,OK,"(14596,)",suffix_blank
+709,14238, roast,▁roast,OK,"(14238,)",suffix_blank
+710,24460, fictional,▁fictional,OK,"(24460,)",suffix_blank+suffix_compact
+711,26984, Comedy,▁Comedy,OK,"(26984,)",random_separator+suffix_blank+suffix_compact
+712,20543, sauna,▁sauna,OK,"(20543,)",suffix_blank
+713,16981, apples,▁apples,OK,"(16981,)",suffix_blank
+714,25054, selfish,▁selfish,OK,"(25054,)",suffix_blank
+715,19722, Delaware,▁Delaware,OK,"(19722,)",random_blank+suffix_blank
+716,11042, refrigerator,▁refrigerator,OK,"(11042,)",suffix_blank
+717,15219, vitamins,▁vitamins,OK,"(15219,)",suffix_blank
+718,21450, Jamaica,▁Jamaica,OK,"(21450,)",random_blank+suffix_blank
+719,26698, Packers,▁Packers,OK,"(26698,)",random_blank+suffix_blank
+720,18612, spider,▁spider,OK,"(18612,)",suffix_blank
+721,27975, tweeted,▁tweeted,OK,"(27975,)",suffix_blank
+722,26567, Evil,▁Evil,OK,"(26567,)",suffix_blank+suffix_compact
+723,11416, fridge,▁fridge,OK,"(11416,)",suffix_blank
+724,30529, Übersetzung,▁Übersetzung,OK,"(30529,)",random+suffix_blank
+725,8423, psycho,▁psycho,OK,"(8423,)",suffix_blank
+726,29662, Pumpkin,▁Pumpkin,OK,"(29662,)",random_blank+suffix_blank
+727,15212, Vom,▁Vom,OK,"(15212,)",suffix_blank
+728,16943, Agriculture,▁Agriculture,OK,"(16943,)",suffix_blank
+729,19476, Viking,▁Viking,OK,"(19476,)",random_blank+suffix_blank
+730,23157, DUI,▁DUI,OK,"(23157,)",suffix_blank
+731,19397, scholarships,▁scholarships,OK,"(19397,)",suffix_blank
+732,11812, cineva,▁cineva,OK,"(11812,)",suffix_blank
+733,7615, Vegas,▁Vegas,OK,"(7615,)",suffix_blank
+734,27413, Transilvania,▁Transilvania,OK,"(27413,)",suffix_blank
+735,20109, Patriot,▁Patriot,OK,"(20109,)",suffix_blank
+736,16934, Truth,▁Truth,OK,"(16934,)",suffix_blank
+737,6410, WordPress,▁WordPress,OK,"(6410,)",suffix_blank
+738,12034, Iowa,▁Iowa,OK,"(12034,)",suffix_blank
+739,24993, salsa,▁salsa,OK,"(24993,)",suffix_blank
+740,28192, Aberdeen,▁Aberdeen,OK,"(28192,)",suffix_blank
+741,24822, 1941,▁1941,OK,"(24822,)",suffix_blank
+742,29466, malaria,▁malaria,OK,"(29466,)",suffix_blank+suffix_compact
+743,12339, Utah,▁Utah,OK,"(12339,)",random_blank+suffix_blank
+744,20480, zombie,▁zombie,OK,"(20480,)",suffix_blank
+745,6250, iPad,▁iPad,OK,"(6250,)",suffix_blank
+746,21225, Newcastle,▁Newcastle,OK,"(21225,)",suffix_blank
+747,24493, Farmers,▁Farmers,OK,"(24493,)",suffix_blank
+748,5677, DVD,▁DVD,OK,"(5677,)",random_blank+suffix_blank
+749,17621, barbecue,▁barbecue,OK,"(17621,)",suffix_blank
+750,14963, iTunes,▁iTunes,OK,"(14963,)",suffix_blank
+751,31219, thieves,▁thieves,OK,"(31219,)",suffix_blank
+752,11494, Indiana,▁Indiana,OK,"(11494,)",random+suffix_blank
+753,29698, Presbyterian,▁Presbyterian,OK,"(29698,)",suffix_blank
+754,21269, Dick,▁Dick,OK,"(21269,)",random_blank+suffix_blank
+755,21829, Auckland,▁Auckland,OK,"(21829,)",random_blank+suffix_blank
+756,19986, rude,▁rude,OK,"(19986,)",suffix_blank
+757,29335, vomiting,▁vomiting,OK,"(29335,)",suffix_blank
+758,9435, Bucuresti,▁Bucuresti,OK,"(9435,)",suffix_blank
+759,24924, detergent,▁detergent,OK,"(24924,)",suffix_blank
+760,16483, Polizei,▁Polizei,OK,"(16483,)",random_blank+suffix_blank
+761,30410, offensichtlich,▁offensichtlich,OK,"(30410,)",suffix_blank
+762,30237, Pyramid,▁Pyramid,OK,"(30237,)",suffix_blank
+763,18573, grandfather,▁grandfather,OK,"(18573,)",suffix_blank
+764,13450, Hamilton,▁Hamilton,OK,"(13450,)",suffix_blank
+765,19255, glitter,▁glitter,OK,"(19255,)",suffix_blank
+766,17659, Nashville,▁Nashville,OK,"(17659,)",random_blank+suffix_blank
+767,25512, pudding,▁pudding,OK,"(25512,)",suffix_blank
+768,24599, Dortmund,▁Dortmund,OK,"(24599,)",suffix_blank
+769,25708, harmless,▁harmless,OK,"(25708,)",suffix_blank+suffix_compact
+770,31784, Erdogan,▁Erdogan,OK,"(31784,)",suffix_compact
+771,9057, Wedding,▁Wedding,OK,"(9057,)",suffix_compact
+772,1683, wedding,▁wedding,OK,"(1683,)",suffix_compact
+773,19416, Laptop,▁Laptop,OK,"(19416,)",suffix_compact
+774,29965, Violence,▁Violence,OK,"(29965,)",suffix_compact
+775,28376, flashlight,▁flashlight,OK,"(28376,)",suffix_compact
+776,19490, candles,▁candles,OK,"(19490,)",suffix_compact
+777,27060, Protestant,▁Protestant,OK,"(27060,)",suffix_compact
+778,21233, Funeral,▁Funeral,OK,"(21233,)",suffix_compact
+779,24283, fraudulent,▁fraudulent,OK,"(24283,)",suffix_compact
+780,27223, Swimming,▁Swimming,OK,"(27223,)",suffix_compact
+781,23535, Prayer,▁Prayer,OK,"(23535,)",suffix_compact
+782,28754, Democracy,▁Democracy,OK,"(28754,)",suffix_compact
+783,14278, democracy,▁democracy,OK,"(14278,)",suffix_compact
+784,11117, Islamic,▁Islamic,OK,"(11117,)",suffix_compact
+785,19443, wheelchair,▁wheelchair,OK,"(19443,)",suffix_compact
+786,31931, Journalism,▁Journalism,OK,"(31931,)",suffix_compact
+787,16014, Breakfast,▁Breakfast,OK,"(16014,)",random+random_blank+suffix_compact
+788,29157, Fireplace,▁Fireplace,OK,"(29157,)",suffix_compact
+789,29651, clown,▁clown,OK,"(29651,)",suffix_compact
+790,23958, cruel,▁cruel,OK,"(23958,)",suffix_compact
+791,19032, Wallpaper,▁Wallpaper,OK,"(19032,)",suffix_compact
+792,15175, Comic,▁Comic,OK,"(15175,)",suffix_compact
+793,20407, robotic,▁robotic,OK,"(20407,)",suffix_compact
+794,16434, Alzheimer,▁Alzheimer,OK,"(16434,)",random_compact+suffix_compact
+795,19384, Surgery,▁Surgery,OK,"(19384,)",suffix_compact
+796,7330, Hamburg,▁Hamburg,OK,"(7330,)",random_blank+random_compact+random_separator
+797,7054, Korea,▁Korea,OK,"(7054,)",random_compact+random_separator
+798,17247, Richmond,▁Richmond,OK,"(17247,)",random_separator
+799,9677, Korean,▁Korean,OK,"(9677,)",random_blank+random_compact+random_separator
+800,17476, Teacher,▁Teacher,OK,"(17476,)",random_compact+random_separator
+801,30453, Christchurch,▁Christchurch,OK,"(30453,)",random_blank+random_compact+random_separator
+802,23732, Minneapolis,▁Minneapolis,OK,"(23732,)",random_blank+random_compact+random_separator
+803,31582, cleanliness,▁cleanliness,OK,"(31582,)",random_separator
+804,31786, Bhutan,▁Bhutan,OK,"(31786,)",random_compact+random_separator
+805,5316, Ireland,▁Ireland,OK,"(5316,)",random_separator
+806,2051, Australia,▁Australia,OK,"(2051,)",random+random_separator
+807,22402, Munich,▁Munich,OK,"(22402,)",random_blank+random_compact+random_separator
+808,1473, China,▁China,OK,"(1473,)",random_separator
+809,9738, cyber,▁cyber,OK,"(9738,)",random_separator
+810,19830, Yorkshire,▁Yorkshire,OK,"(19830,)",random_blank+random_separator
+811,4318, Japanese,▁Japanese,OK,"(4318,)",random_separator
+812,8880, Moldova,▁Moldova,OK,"(8880,)",random_blank+random_separator
+813,4263, Russian,▁Russian,OK,"(4263,)",random_compact+random_separator
+814,15575, Belgium,▁Belgium,OK,"(15575,)",random_compact+random_separator
+815,2830, Chinese,▁Chinese,OK,"(2830,)",random_separator
+816,29206, Oslo,▁Oslo,OK,"(29206,)",random_blank+random_separator
+817,19809, Ottawa,▁Ottawa,OK,"(19809,)",random_blank+random_separator
+818,30894, Norwich,▁Norwich,OK,"(30894,)",random_separator
+819,28747, Telephone,▁Telephone,OK,"(28747,)",random_compact+random_separator
+820,22709, Triple,▁Triple,OK,"(22709,)",random_separator
+821,23564, Prague,▁Prague,OK,"(23564,)",random_separator
+822,23689, Bangalore,▁Bangalore,OK,"(23689,)",random_compact+random_separator
+823,15131, Liverpool,▁Liverpool,OK,"(15131,)",random_blank+random_separator
+824,25264, $35,▁$35,OK,"(25264,)",random_separator
+825,11401, Bluetooth,▁Bluetooth,OK,"(11401,)",random_separator
+826,21894, Norwegian,▁Norwegian,OK,"(21894,)",random_separator
+827,11897, Ukraine,▁Ukraine,OK,"(11897,)",random_compact+random_separator
+828,14854, Kaffee,▁Kaffee,OK,"(14854,)",random_separator
+829,2721, Thursday,▁Thursday,OK,"(2721,)",random_compact+random_separator
+830,10096, Cambridge,▁Cambridge,OK,"(10096,)",random_separator
+831,636, University,▁University,OK,"(636,)",random_separator
+832,30521, bilingual,▁bilingual,OK,"(30521,)",random_separator
+833,16622, Arkansas,▁Arkansas,OK,"(16622,)",random_blank+random_separator
+834,24895, Rugby,▁Rugby,OK,"(24895,)",random_separator
+835,24518,German,German,OK,"(24518,)",random_blank+random_separator
+836,9396, Melbourne,▁Melbourne,OK,"(9396,)",random_separator
+837,22017, Hyundai,▁Hyundai,OK,"(22017,)",random_separator
+838,9394, Snow,▁Snow,OK,"(9394,)",random_separator
+839,20699, Trinity,▁Trinity,OK,"(20699,)",random_separator
+840,25436, Craciun,▁Craciun,OK,"(25436,)",random_separator
+841,18609,Deutsch,Deutsch,OK,"(18609,)",random_separator
+842,20862, Cincinnati,▁Cincinnati,OK,"(20862,)",random_separator
+843,17759, Schweiz,▁Schweiz,OK,"(17759,)",random_separator
+844,21775,anniversaire,anniversaire,OK,"(21775,)",random_compact+random_separator
+845,18898, Colombia,▁Colombia,OK,"(18898,)",random_blank+random_separator
+846,21768, Belgia,▁Belgia,OK,"(21768,)",random_separator
+847,23694, Turk,▁Turk,OK,"(23694,)",random_separator
+848,21519, Vladimir,▁Vladimir,OK,"(21519,)",random_separator
+849,6503, 2020,▁2020,OK,"(6503,)",random_separator
+850,4390, television,▁television,OK,"(4390,)",random+random_separator
+851,29941, Motorcycle,▁Motorcycle,OK,"(29941,)",random_separator
+852,2968, German,▁German,OK,"(2968,)",random_blank+random_separator
+853,26660, Hyderabad,▁Hyderabad,OK,"(26660,)",random_blank+random_separator
+854,2514, Texas,▁Texas,OK,"(2514,)",random_separator
+855,20516, Lunch,▁Lunch,OK,"(20516,)",random_blank+random_separator
+856,13331, Cold,▁Cold,OK,"(13331,)",random_blank+random_compact+random_separator
+857,19837, Oakland,▁Oakland,OK,"(19837,)",random_blank+random_separator
+858,25551, Jacksonville,▁Jacksonville,OK,"(25551,)",random_separator
+859,19418, Pole,▁Pole,OK,"(19418,)",random_separator
+860,24379, Vlad,▁Vlad,OK,"(24379,)",random_compact+random_separator
+861,4375, Students,▁Students,OK,"(4375,)",random_separator
+862,24272, Adelaide,▁Adelaide,OK,"(24272,)",random_separator
+863,2379, French,▁French,OK,"(2379,)",random_separator
+864,23510, Hannover,▁Hannover,OK,"(23510,)",random_separator
+865,26020, Sunshine,▁Sunshine,OK,"(26020,)",random_blank+random_compact
+866,24758, Kindergarten,▁Kindergarten,OK,"(24758,)",random_blank
+867,30363, Montessori,▁Montessori,OK,"(30363,)",random_blank
+868,31696, Portsmouth,▁Portsmouth,OK,"(31696,)",random_blank
+869,23872, kindergarten,▁kindergarten,OK,"(23872,)",random_blank
+870,21140, Milwaukee,▁Milwaukee,OK,"(21140,)",random_blank
+871,19210, cupcake,▁cupcake,OK,"(19210,)",random_blank
+872,21895, PlayStation,▁PlayStation,OK,"(21895,)",random_blank
+873,14480, Xbox,▁Xbox,OK,"(14480,)",random_blank
+874,12157, Oklahoma,▁Oklahoma,OK,"(12157,)",random_blank
+875,22229, grandparents,▁grandparents,OK,"(22229,)",random_blank+random_compact
+876,23116,Roofing,Roofing,OK,"(23116,)",random_blank
+877,30075, Daisy,▁Daisy,OK,"(30075,)",random_blank
+878,11869, Barcelona,▁Barcelona,OK,"(11869,)",random_blank
+879,31271, Bolivia,▁Bolivia,OK,"(31271,)",random_blank
+880,23955, Mouse,▁Mouse,OK,"(23955,)",random_blank
+881,31329, Kyoto,▁Kyoto,OK,"(31329,)",random_blank
+882,31092, Kiwi,▁Kiwi,OK,"(31092,)",random_blank
+883,15732, Deutschen,▁Deutschen,OK,"(15732,)",random_blank
+884,29999, Avengers,▁Avengers,OK,"(29999,)",random_blank
+885,12256, libraries,▁libraries,OK,"(12256,)",random_blank
+886,3074, lunch,▁lunch,OK,"(3074,)",random_blank
+887,27254, poultry,▁poultry,OK,"(27254,)",random_blank
+888,27700, Scandinavia,▁Scandinavia,OK,"(27700,)",random_blank
+889,29517, gossip,▁gossip,OK,"(29517,)",random_blank
+890,30640, Heidi,▁Heidi,OK,"(30640,)",random_blank
+891,27823, Niagara,▁Niagara,OK,"(27823,)",random_blank
+892,27076, Penguin,▁Penguin,OK,"(27076,)",random_blank
+893,3688, breakfast,▁breakfast,OK,"(3688,)",random_blank
+894,8929, Harry,▁Harry,OK,"(8929,)",random_blank
+895,2818, Tuesday,▁Tuesday,OK,"(2818,)",random_blank
+896,9196, lawyers,▁lawyers,OK,"(9196,)",random_blank
+897,5725, Zealand,▁Zealand,OK,"(5725,)",random_blank
+898,24682, Champagne,▁Champagne,OK,"(24682,)",random_blank
+899,11882, Democrats,▁Democrats,OK,"(11882,)",random_blank
+900,2915,100,100,OK,"(2915,)",random_blank
+901,28834, Manitoba,▁Manitoba,OK,"(28834,)",random_blank
+902,18065, Brazilian,▁Brazilian,OK,"(18065,)",random_blank
+903,14526, balloon,▁balloon,OK,"(14526,)",random_blank
+904,7714, Jackson,▁Jackson,OK,"(7714,)",random_blank
+905,12704,führer,führer,OK,"(12704,)",random_blank
+906,28117, Bundesliga,▁Bundesliga,OK,"(28117,)",random_blank
+907,14157, Rental,▁Rental,OK,"(14157,)",random_blank
+908,28483, Owl,▁Owl,OK,"(28483,)",random_blank
+909,22439, Sanders,▁Sanders,OK,"(22439,)",random_blank
+910,26238, Nottingham,▁Nottingham,OK,"(26238,)",random_blank
+911,5550, Summer,▁Summer,OK,"(5550,)",random_blank
+912,7826, Ryan,▁Ryan,OK,"(7826,)",random_blank
+913,23241, Zimbabwe,▁Zimbabwe,OK,"(23241,)",random_blank
+914,8913, Pennsylvania,▁Pennsylvania,OK,"(8913,)",random_blank
+915,17017, Keith,▁Keith,OK,"(17017,)",random_blank
+916,29909, Turtle,▁Turtle,OK,"(29909,)",random_blank
+917,31287, Fünf,▁Fünf,OK,"(31287,)",random_blank
+918,6167, Ohio,▁Ohio,OK,"(6167,)",random_blank
+919,10679,deutschen,deutschen,OK,"(10679,)",random_blank
+920,15865, Oliver,▁Oliver,OK,"(15865,)",random_blank
+921,22040, prisoners,▁prisoners,OK,"(22040,)",random_compact
+922,26435, unsafe,▁unsafe,OK,"(26435,)",random_compact
+923,21641, suspicious,▁suspicious,OK,"(21641,)",random_compact
+924,12873, Soviet,▁Soviet,OK,"(12873,)",random_compact
+925,24543, optimism,▁optimism,OK,"(24543,)",random_compact
+926,481, students,▁students,OK,"(481,)",random_compact
+927,12357, teenager,▁teenager,OK,"(12357,)",random_compact
+928,11718, motorcycle,▁motorcycle,OK,"(11718,)",random_compact
+929,2119, teaching,▁teaching,OK,"(2119,)",random_compact
+930,19275, freezing,▁freezing,OK,"(19275,)",random_compact
+931,26230, Presidential,▁Presidential,OK,"(26230,)",random_compact
+932,22319,_______,_______,OK,"(22319,)",random_compact
+933,17941, cattle,▁cattle,OK,"(17941,)",random_compact
+934,20770, smiling,▁smiling,OK,"(20770,)",random_compact
+935,24615,congratulat,congratulat,OK,"(24615,)",random_compact
+936,31016,linux,linux,OK,"(31016,)",random_compact
+937,12967, rejected,▁rejected,OK,"(12967,)",random_compact
+938,19359, Roof,▁Roof,OK,"(19359,)",random_compact
+939,4858, classroom,▁classroom,OK,"(4858,)",random_compact
+940,13074, presidential,▁presidential,OK,"(13074,)",random_compact
+941,20653, Barack,▁Barack,OK,"(20653,)",random_compact
+942,18933, Tyler,▁Tyler,OK,"(18933,)",random_compact
+943,23144, Roller,▁Roller,OK,"(23144,)",random_compact
+944,18028, séance,▁séance,OK,"(18028,)",random
+945,3713,This,This,OK,"(3713,)",random
+946,12831,RL,RL,OK,"(12831,)",random
+947,12871, mandate,▁mandate,OK,"(12871,)",random
+948,25694, successive,▁successive,OK,"(25694,)",random
+949,22737,Code,Code,OK,"(22737,)",random
+950,31955,regulă,regulă,OK,"(31955,)",random
+951,13524, Stelle,▁Stelle,OK,"(13524,)",random
+952,4513,ched,ched,OK,"(4513,)",random
+953,4056,62,62,OK,"(4056,)",random
+954,17626, apartament,▁apartament,OK,"(17626,)",random
+955,9781,chie,chie,OK,"(9781,)",random
+956,13889,ève,ève,OK,"(13889,)",random
+957,14382,mbi,mbi,OK,"(14382,)",random
+958,4583, kick,▁kick,OK,"(4583,)",random
+959,1703,cher,cher,OK,"(1703,)",random
+960,30077,Smith,Smith,OK,"(30077,)",random
+961,13174, hochwertige,▁hochwertige,OK,"(13174,)",random
+962,29029,starred,starred,OK,"(29029,)",random
+963,63,y,y,OK,"(63,)",random
+964,22511,emper,emper,OK,"(22511,)",random
+965,13303,shore,shore,OK,"(13303,)",random
+966,10168, erfolgt,▁erfolgt,OK,"(10168,)",random
+967,15305, zoom,▁zoom,OK,"(15305,)",random
+968,17723, spiral,▁spiral,OK,"(17723,)",random
+969,17524, penalties,▁penalties,OK,"(17524,)",random
+970,18005, recrut,▁recrut,OK,"(18005,)",random
+971,28380,Download,Download,OK,"(28380,)",random
+972,29247, Tucker,▁Tucker,OK,"(29247,)",random
+973,3491,rol,rol,OK,"(3491,)",random
+974,25561, enquiry,▁enquiry,OK,"(25561,)",random
+975,30751, Grammar,▁Grammar,OK,"(30751,)",random
+976,26539, Haftung,▁Haftung,OK,"(26539,)",random
+977,26614, Warranty,▁Warranty,OK,"(26614,)",random
+978,9181, 360,▁360,OK,"(9181,)",random
+979,14681,07.,07.,OK,"(14681,)",random
+980,3804, hire,▁hire,OK,"(3804,)",random
+981,5804, avem,▁avem,OK,"(5804,)",random
+982,17080, Carter,▁Carter,OK,"(17080,)",random
+983,9540, opens,▁opens,OK,"(9540,)",random
+984,23244, effektiv,▁effektiv,OK,"(23244,)",random
+985,19328, uniquely,▁uniquely,OK,"(19328,)",random
+986,11830,scription,scription,OK,"(11830,)",random
+987,6639, commun,▁commun,OK,"(6639,)",random
+988,20508,revealing,revealing,OK,"(20508,)",random
+989,8816, Herr,▁Herr,OK,"(8816,)",random
+990,30044, Prüf,▁Prüf,OK,"(30044,)",random
+991,9161, bro,▁bro,OK,"(9161,)",random
+992,29318,messung,messung,OK,"(29318,)",random
+993,27544, actiuni,▁actiuni,OK,"(27544,)",random
+994,16770, retrouve,▁retrouve,OK,"(16770,)",random
+995,16102, întreg,▁întreg,OK,"(16102,)",random
+996,20972, breit,▁breit,OK,"(20972,)",random
+997,12672, Kil,▁Kil,OK,"(12672,)",random
+998,7363, Limited,▁Limited,OK,"(7363,)",random
+999,17833, REAL,▁REAL,OK,"(17833,)",random
+1000,13861, decorations,▁decorations,OK,"(13861,)",random
+1001,25567, prostate,▁prostate,OK,"(25567,)",random
+1002,3033, raise,▁raise,OK,"(3033,)",random
+1003,29719, wicket,▁wicket,OK,"(29719,)",random
+1004,31207, muzici,▁muzici,OK,"(31207,)",random
+1005,22173, electrode,▁electrode,OK,"(22173,)",random
+1006,14952,woo,woo,OK,"(14952,)",random
+1007,1887, Street,▁Street,OK,"(1887,)",random
+1008,16296,aku,aku,OK,"(16296,)",random
+1009,16127, Champion,▁Champion,OK,"(16127,)",random
+1010,9201, Cel,▁Cel,OK,"(9201,)",random
+1011,2395, fapt,▁fapt,OK,"(2395,)",random
+1012,19506,speicher,speicher,OK,"(19506,)",random
+1013,31417, Significant,▁Significant,OK,"(31417,)",random
+1014,9221,meiner,meiner,OK,"(9221,)",random
+1015,13364, 12-,▁12-,OK,"(13364,)",random
+1016,13516, Treatment,▁Treatment,OK,"(13516,)",random
+1017,17610, Quarter,▁Quarter,OK,"(17610,)",random
+1018,23155, decreasing,▁decreasing,OK,"(23155,)",random
+1019,282, As,▁As,OK,"(282,)",random
+1020,31110, Recognition,▁Recognition,OK,"(31110,)",random
+1021,12980,cylinder,cylinder,OK,"(12980,)",random
+1022,27801, inaccurate,▁inaccurate,OK,"(27801,)",random
+1023,10852, seasonal,▁seasonal,OK,"(10852,)",random
+1024,30008,delve,delve,OK,"(30008,)",random
+1025,22486, Uncategorized,▁Uncategorized,OK,"(22486,)",random
+1026,8103,stream,stream,OK,"(8103,)",random
+1027,3673, possibly,▁possibly,OK,"(3673,)",random
+1028,20774, authorization,▁authorization,OK,"(20774,)",random
+1029,5160, cet,▁cet,OK,"(5160,)",random
+1030,20513, chord,▁chord,OK,"(20513,)",random
+1031,4999, fellow,▁fellow,OK,"(4999,)",random
+1032,19592, reprezentat,▁reprezentat,OK,"(19592,)",random
+1033,26239, Refuge,▁Refuge,OK,"(26239,)",random
+1034,17725, Understanding,▁Understanding,OK,"(17725,)",random
+1035,11671, Rit,▁Rit,OK,"(11671,)",random
+1036,10795, feeding,▁feeding,OK,"(10795,)",random
+1037,2289, loan,▁loan,OK,"(2289,)",random
+1038,17755, counselor,▁counselor,OK,"(17755,)",random
+1039,22953,pouvant,pouvant,OK,"(22953,)",random
+1040,9711, stellt,▁stellt,OK,"(9711,)",random
+1041,30577, lunette,▁lunette,OK,"(30577,)",random
+1042,20694,cini,cini,OK,"(20694,)",random
+1043,10295, Buck,▁Buck,OK,"(10295,)",random
+1044,23390, Interesting,▁Interesting,OK,"(23390,)",random
+1045,2416, links,▁links,OK,"(2416,)",random
+1046,1049, stay,▁stay,OK,"(1049,)",random
+1047,21825, Patch,▁Patch,OK,"(21825,)",random
+1048,20531,fahrer,fahrer,OK,"(20531,)",random
+1049,72, more,▁more,OK,"(72,)",random
+1050,25332,Seeing,Seeing,OK,"(25332,)",random
+1051,1830, ces,▁ces,OK,"(1830,)",random
+1052,8940, Vietnam,▁Vietnam,OK,"(8940,)",random
+1053,17794,tipul,tipul,OK,"(17794,)",random
+1054,21889,strategie,strategie,OK,"(21889,)",random
+1055,23314, capul,▁capul,OK,"(23314,)",random
+1056,19330, Bang,▁Bang,OK,"(19330,)",random
+1057,14725, sail,▁sail,OK,"(14725,)",random
+1058,28501,trays,trays,OK,"(28501,)",random
+1059,29717, martyr,▁martyr,OK,"(29717,)",random
+1060,25060, paix,▁paix,OK,"(25060,)",random
+1061,15509, minunat,▁minunat,OK,"(15509,)",random
+1062,25707, rencontré,▁rencontré,OK,"(25707,)",random
+1063,10421,izate,izate,OK,"(10421,)",random
+1064,28371,CLICK,CLICK,OK,"(28371,)",random
+1065,20322,intr,intr,OK,"(20322,)",random
+1066,30842,Asociația,Asociația,OK,"(30842,)",random
+1067,14450, Kill,▁Kill,OK,"(14450,)",random
+1068,14662,spring,spring,OK,"(14662,)",random
+1069,5575, fo,▁fo,OK,"(5575,)",random
+1070,8529, Along,▁Along,OK,"(8529,)",random
+1071,28025,umfang,umfang,OK,"(28025,)",random
+1072,17141, Neg,▁Neg,OK,"(17141,)",random
+1073,17567, indiqu,▁indiqu,OK,"(17567,)",random
+1074,26151, juicy,▁juicy,OK,"(26151,)",random
+1075,1400, fit,▁fit,OK,"(1400,)",random
+1076,13734, worthy,▁worthy,OK,"(13734,)",random
+1077,23984,honneur,honneur,OK,"(23984,)",random
+1078,28686,rissa,rissa,OK,"(28686,)",random
+1079,24426, Printer,▁Printer,OK,"(24426,)",random
+1080,14644, expose,▁expose,OK,"(14644,)",random
+1081,7502, processor,▁processor,OK,"(7502,)",random
+1082,28971, begonnen,▁begonnen,OK,"(28971,)",random
+1083,31601,bundled,bundled,OK,"(31601,)",random
+1084,15950, impart,▁impart,OK,"(15950,)",random
+1085,12335,LES,LES,OK,"(12335,)",random
+1086,8085, exists,▁exists,OK,"(8085,)",random
+1087,8530, MD,▁MD,OK,"(8530,)",random
+1088,18445, inspirational,▁inspirational,OK,"(18445,)",random
+1089,22264, Diver,▁Diver,OK,"(22264,)",random
+1090,26704,voluntarily,voluntarily,OK,"(26704,)",random
+1091,12130, offensive,▁offensive,OK,"(12130,)",random
+1092,2615, lose,▁lose,OK,"(2615,)",random
+1093,22685, scooter,▁scooter,OK,"(22685,)",random
+1094,15750,rendu,rendu,OK,"(15750,)",random
+1095,29931, créateur,▁créateur,OK,"(29931,)",random
+1096,26470, noștri,▁noștri,OK,"(26470,)",random
+1097,20379, convers,▁convers,OK,"(20379,)",random
+1098,27528, Aussicht,▁Aussicht,OK,"(27528,)",random
+1099,6791, cruise,▁cruise,OK,"(6791,)",random
+1100,23401,chette,chette,OK,"(23401,)",random
+1101,23389, Räume,▁Räume,OK,"(23389,)",random
+1102,30478, gigantic,▁gigantic,OK,"(30478,)",random
+1103,4343,pel,pel,OK,"(4343,)",random
+1104,27164, ajut,▁ajut,OK,"(27164,)",random
+1105,29294,urmatoarele,urmatoarele,OK,"(29294,)",random
+1106,28799,resides,resides,OK,"(28799,)",random
+1107,9154,oasa,oasa,OK,"(9154,)",random
+1108,20501, Brussels,▁Brussels,OK,"(20501,)",random
+1109,21957, Powder,▁Powder,OK,"(21957,)",random
+1110,4283, appeared,▁appeared,OK,"(4283,)",random
+1111,9120,5),5),OK,"(9120,)",random
+1112,13492,glu,glu,OK,"(13492,)",random
+1113,5255,ogen,ogen,OK,"(5255,)",random
+1114,21267, sensory,▁sensory,OK,"(21267,)",random
+1115,23878, Riv,▁Riv,OK,"(23878,)",random
+1116,1769, Business,▁Business,OK,"(1769,)",random
+1117,20035, Snap,▁Snap,OK,"(20035,)",random
+1118,8802, sac,▁sac,OK,"(8802,)",random
+1119,16401,anța,anța,OK,"(16401,)",random
+1120,13227,UNE,UNE,OK,"(13227,)",random
+1121,1615, Why,▁Why,OK,"(1615,)",random
+1122,5714, prison,▁prison,OK,"(5714,)",random
+1123,9820, voiture,▁voiture,OK,"(9820,)",random
+1124,23248, undermine,▁undermine,OK,"(23248,)",random
+1125,17418, coordinator,▁coordinator,OK,"(17418,)",random
+1126,17160,Fel,Fel,OK,"(17160,)",random
+1127,5260, gar,▁gar,OK,"(5260,)",random
+1128,29569, pierderi,▁pierderi,OK,"(29569,)",random
+1129,18784, trek,▁trek,OK,"(18784,)",random
+1130,24089, aventur,▁aventur,OK,"(24089,)",random
+1131,25023,Liviu,Liviu,OK,"(25023,)",random
+1132,25051, Olivia,▁Olivia,OK,"(25051,)",random
+1133,11563, Bab,▁Bab,OK,"(11563,)",random
+1134,9068, cluster,▁cluster,OK,"(9068,)",random
+1135,5277,sent,sent,OK,"(5277,)",random
+1136,29981, Therapist,▁Therapist,OK,"(29981,)",random
+1137,8603,dian,dian,OK,"(8603,)",random
+1138,15958,éna,éna,OK,"(15958,)",random
+1139,19185, satisfai,▁satisfai,OK,"(19185,)",random
+1140,1331, International,▁International,OK,"(1331,)",random
+1141,4794, Mike,▁Mike,OK,"(4794,)",random
+1142,23437, erlaubt,▁erlaubt,OK,"(23437,)",random
+1143,23578,iola,iola,OK,"(23578,)",random
+1144,21199,recevoir,recevoir,OK,"(21199,)",random
+1145,22274,accumul,accumul,OK,"(22274,)",random
+1146,25368, Guvernul,▁Guvernul,OK,"(25368,)",random
+1147,31363, dissemination,▁dissemination,OK,"(31363,)",random
+1148,3236, practical,▁practical,OK,"(3236,)",random
+1149,8673,rique,rique,OK,"(8673,)",random
+1150,30956, Versailles,▁Versailles,OK,"(30956,)",random
+1151,8813, trainer,▁trainer,OK,"(8813,)",random
+1152,29930, Happen,▁Happen,OK,"(29930,)",random
+1153,11945, kits,▁kits,OK,"(11945,)",random
+1154,20260,ozo,ozo,OK,"(20260,)",random
+1155,10936,raw,raw,OK,"(10936,)",random
+1156,16682, Academic,▁Academic,OK,"(16682,)",random
+1157,20576, china,▁china,OK,"(20576,)",random
+1158,23355, Deluxe,▁Deluxe,OK,"(23355,)",random
+1159,8889, URL,▁URL,OK,"(8889,)",random
+1160,15590,around,around,OK,"(15590,)",random
+1161,9418, comprise,▁comprise,OK,"(9418,)",random
+1162,1817, mis,▁mis,OK,"(1817,)",random
+1163,24099,accueillir,accueillir,OK,"(24099,)",random
+1164,26893,ROC,ROC,OK,"(26893,)",random
+1165,12953, epic,▁epic,OK,"(12953,)",random
+1166,6565, interaction,▁interaction,OK,"(6565,)",random
+1167,242, For,▁For,OK,"(242,)",random
+1168,30512, phyto,▁phyto,OK,"(30512,)",random
+1169,31865, Orientierung,▁Orientierung,OK,"(31865,)",random
+1170,1367, box,▁box,OK,"(1367,)",random
+1171,22154,albeit,albeit,OK,"(22154,)",random
+1172,8017, tube,▁tube,OK,"(8017,)",random
+1173,26293, poarta,▁poarta,OK,"(26293,)",random
+1174,13709, pursuit,▁pursuit,OK,"(13709,)",random
+1175,25625, versteh,▁versteh,OK,"(25625,)",random
+1176,7777, Reg,▁Reg,OK,"(7777,)",random
+1177,8870,sait,sait,OK,"(8870,)",random
+1178,20226,modal,modal,OK,"(20226,)",random
+1179,25393,schuld,schuld,OK,"(25393,)",random
+1180,25767, luptă,▁luptă,OK,"(25767,)",random
+1181,1017, common,▁common,OK,"(1017,)",random
+1182,22667, aprobat,▁aprobat,OK,"(22667,)",random
+1183,25817,klassischen,klassischen,OK,"(25817,)",random
+1184,846, 2018,▁2018,OK,"(846,)",random
+1185,13615, Norman,▁Norman,OK,"(13615,)",random
+1186,13646, conducting,▁conducting,OK,"(13646,)",random
+1187,27080, unveil,▁unveil,OK,"(27080,)",random
+1188,27360, drizzle,▁drizzle,OK,"(27360,)",random
+1189,13259,schließlich,schließlich,OK,"(13259,)",random
+1190,28344, älter,▁älter,OK,"(28344,)",random
+1191,25789, Techno,▁Techno,OK,"(25789,)",random
+1192,30274, tug,▁tug,OK,"(30274,)",random
+1193,13131, Asta,▁Asta,OK,"(13131,)",random
+1194,747,line,line,OK,"(747,)",random
+1195,25517, elevate,▁elevate,OK,"(25517,)",random
+1196,13240,elia,elia,OK,"(13240,)",random
+1197,1981,work,work,OK,"(1981,)",random
+1198,11608, substitute,▁substitute,OK,"(11608,)",random
+1199,14808,Adapt,Adapt,OK,"(14808,)",random
+1200,16811,ов,ов,OK,"(16811,)",random
+1201,30829,geschehen,geschehen,OK,"(30829,)",random
+1202,27239, Supplement,▁Supplement,OK,"(27239,)",random
+1203,26617,hundert,hundert,OK,"(26617,)",random
+1204,3025, Form,▁Form,OK,"(3025,)",random
+1205,15010, Flug,▁Flug,OK,"(15010,)",random
+1206,19568,0000,0000,OK,"(19568,)",random
+1207,16602, Rin,▁Rin,OK,"(16602,)",random
+1208,25083,ем,ем,OK,"(25083,)",random
+1209,25525, unbelievable,▁unbelievable,OK,"(25525,)",random
+1210,22068, Polo,▁Polo,OK,"(22068,)",random
+1211,4659, rose,▁rose,OK,"(4659,)",random
+1212,16301, rezultate,▁rezultate,OK,"(16301,)",random
+1213,16693, Egg,▁Egg,OK,"(16693,)",random
+1214,22790, Eigenschaften,▁Eigenschaften,OK,"(22790,)",random
+1215,22575, chanson,▁chanson,OK,"(22575,)",random
+1216,19674, fixes,▁fixes,OK,"(19674,)",random
+1217,12348, împotriv,▁împotriv,OK,"(12348,)",random
+1218,5536, storm,▁storm,OK,"(5536,)",random
+1219,22574, décoration,▁décoration,OK,"(22574,)",random
+1220,28246, rasa,▁rasa,OK,"(28246,)",random
+1221,24563,montag,montag,OK,"(24563,)",random
+1222,16611,arhi,arhi,OK,"(16611,)",random
+1223,28986, aggression,▁aggression,OK,"(28986,)",random
+1224,4060,88,88,OK,"(4060,)",random
+1225,14292, lightly,▁lightly,OK,"(14292,)",random
+1226,3645, wild,▁wild,OK,"(3645,)",random
+1227,13141,parmi,parmi,OK,"(13141,)",random
+1228,4361, Fort,▁Fort,OK,"(4361,)",random
+1229,14510, withdraw,▁withdraw,OK,"(14510,)",random
+1230,6074, potrivit,▁potrivit,OK,"(6074,)",random
+1231,22090, déclaré,▁déclaré,OK,"(22090,)",random
+1232,22999,domain,domain,OK,"(22999,)",random
+1233,25226, rave,▁rave,OK,"(25226,)",random
+1234,22545, headset,▁headset,OK,"(22545,)",random
+1235,25409,cosy,cosy,OK,"(25409,)",random
+1236,14688, septembrie,▁septembrie,OK,"(14688,)",random
+1237,21289, protéger,▁protéger,OK,"(21289,)",random
+1238,29365,contested,contested,OK,"(29365,)",random
+1239,23813, Wunder,▁Wunder,OK,"(23813,)",random
+1240,16873, Investor,▁Investor,OK,"(16873,)",random
+1241,26408,iterführende,iterführende,OK,"(26408,)",random
+1242,11102,ibility,ibility,OK,"(11102,)",random
+1243,31770,ewusst,ewusst,OK,"(31770,)",random
+1244,10092, darf,▁darf,OK,"(10092,)",random
+1245,17029, Nepal,▁Nepal,OK,"(17029,)",random
+1246,17682,Sport,Sport,OK,"(17682,)",random
+1247,19710,topic,topic,OK,"(19710,)",random
+1248,24022, composant,▁composant,OK,"(24022,)",random
+1249,16876, politiques,▁politiques,OK,"(16876,)",random
+1250,24936, Textil,▁Textil,OK,"(24936,)",random
+1251,7390, twin,▁twin,OK,"(7390,)",random
+1252,4373, agents,▁agents,OK,"(4373,)",random
+1253,9122,SH,SH,OK,"(9122,)",random
+1254,25745, 1938,▁1938,OK,"(25745,)",random
+1255,26963, disappoint,▁disappoint,OK,"(26963,)",random
+1256,26182, correspondant,▁correspondant,OK,"(26182,)",random
+1257,9051, witness,▁witness,OK,"(9051,)",random
+1258,4307, accepted,▁accepted,OK,"(4307,)",random
+1259,10525,uter,uter,OK,"(10525,)",random
+1260,11044, dispute,▁dispute,OK,"(11044,)",random
+1261,24398,opportunité,opportunité,OK,"(24398,)",random
+1262,20452,SPEC,SPEC,OK,"(20452,)",random
+1263,29134,Quelques,Quelques,OK,"(29134,)",random
+1264,31003,collegiate,collegiate,OK,"(31003,)",random
+1265,18170, medici,▁medici,OK,"(18170,)",random
+1266,20294, Flowers,▁Flowers,OK,"(20294,)",random
+1267,1545, written,▁written,OK,"(1545,)",random
+1268,416, next,▁next,OK,"(416,)",random
+1269,13184, installer,▁installer,OK,"(13184,)",random
+1270,24378, Gilbert,▁Gilbert,OK,"(24378,)",random
+1271,6761,lant,lant,OK,"(6761,)",random
+1272,16052,verfahren,verfahren,OK,"(16052,)",random
+1273,9852, bleibt,▁bleibt,OK,"(9852,)",random
+1274,29877,Greeting,Greeting,OK,"(29877,)",random
+1275,22221,flüge,flüge,OK,"(22221,)",random
+1276,1171,ler,ler,OK,"(1171,)",random
+1277,23447, inferior,▁inferior,OK,"(23447,)",random
+1278,4981, yesterday,▁yesterday,OK,"(4981,)",random
+1279,18757,lungul,lungul,OK,"(18757,)",random
+1280,13147,nehm,nehm,OK,"(13147,)",random
+1281,29390, Fundamental,▁Fundamental,OK,"(29390,)",random
+1282,29643, relatii,▁relatii,OK,"(29643,)",random
+1283,5726, wooden,▁wooden,OK,"(5726,)",random
+1284,11221,gut,gut,OK,"(11221,)",random
+1285,18565, Canal,▁Canal,OK,"(18565,)",random
+1286,28907, Tropical,▁Tropical,OK,"(28907,)",random
+1287,27926,intermédiaire,intermédiaire,OK,"(27926,)",random
+1288,2876, bill,▁bill,OK,"(2876,)",random
+1289,5883,radi,radi,OK,"(5883,)",random
+1290,24371, edible,▁edible,OK,"(24371,)",random
+1291,26701, verdient,▁verdient,OK,"(26701,)",random
+1292,20028,iano,iano,OK,"(20028,)",random
+1293,14471,ounded,ounded,OK,"(14471,)",random
+1294,2462,ping,ping,OK,"(2462,)",random
+1295,12849,nimmt,nimmt,OK,"(12849,)",random
+1296,22519, prevalent,▁prevalent,OK,"(22519,)",random
+1297,8631,nutri,nutri,OK,"(8631,)",random
+1298,20743, grind,▁grind,OK,"(20743,)",random
+1299,6760, SP,▁SP,OK,"(6760,)",random
+1300,23821,Marea,Marea,OK,"(23821,)",random
+1301,26112, domenii,▁domenii,OK,"(26112,)",random
+1302,24670, révolution,▁révolution,OK,"(24670,)",random
+1303,7687, universal,▁universal,OK,"(7687,)",random
+1304,17744, simti,▁simti,OK,"(17744,)",random
+1305,15932,abia,abia,OK,"(15932,)",random
+1306,9878, zahlreiche,▁zahlreiche,OK,"(9878,)",random
+1307,18070, Specific,▁Specific,OK,"(18070,)",random
+1308,5689, keeps,▁keeps,OK,"(5689,)",random
+1309,19670, Lehrer,▁Lehrer,OK,"(19670,)",random
+1310,19897, positiv,▁positiv,OK,"(19897,)",random
+1311,25410, Awareness,▁Awareness,OK,"(25410,)",random
+1312,3485, counter,▁counter,OK,"(3485,)",random
+1313,190, through,▁through,OK,"(190,)",random
+1314,26483,IDA,IDA,OK,"(26483,)",random
+1315,25027, wizard,▁wizard,OK,"(25027,)",random
+1316,20963, fotografii,▁fotografii,OK,"(20963,)",random
+1317,3483,rien,rien,OK,"(3483,)",random
+1318,1903, pass,▁pass,OK,"(1903,)",random
+1319,20815, noticeable,▁noticeable,OK,"(20815,)",random
+1320,19392,größe,größe,OK,"(19392,)",random
+1321,16818, Alba,▁Alba,OK,"(16818,)",random
+1322,13768, physicians,▁physicians,OK,"(13768,)",random
+1323,15850, niciun,▁niciun,OK,"(15850,)",random
+1324,24361,183,183,OK,"(24361,)",random
+1325,28185,kreuz,kreuz,OK,"(28185,)",random
+1326,31898,flexion,flexion,OK,"(31898,)",random
+1327,23566, Fahrer,▁Fahrer,OK,"(23566,)",random
+1328,2749, older,▁older,OK,"(2749,)",random
+1329,9004, capability,▁capability,OK,"(9004,)",random
+1330,15221, Cruise,▁Cruise,OK,"(15221,)",random
+1331,29707,modalité,modalité,OK,"(29707,)",random
+1332,20722, magnitude,▁magnitude,OK,"(20722,)",random
+1333,9001, jeunes,▁jeunes,OK,"(9001,)",random
+1334,30988, Entspannung,▁Entspannung,OK,"(30988,)",random
+1335,9184,ühl,ühl,OK,"(9184,)",random
+1336,2216, Land,▁Land,OK,"(2216,)",random
+1337,25874, Anchor,▁Anchor,OK,"(25874,)",random
+1338,20235, Treasure,▁Treasure,OK,"(20235,)",random
+1339,8721,amine,amine,OK,"(8721,)",random
+1340,31595, genotyp,▁genotyp,OK,"(31595,)",random
+1341,12542,égal,égal,OK,"(12542,)",random
+1342,10606, weiteren,▁weiteren,OK,"(10606,)",random
+1343,5748, tent,▁tent,OK,"(5748,)",random
+1344,18108, Schon,▁Schon,OK,"(18108,)",random
+1345,4590, outstanding,▁outstanding,OK,"(4590,)",random
+1346,8286, intend,▁intend,OK,"(8286,)",random
+1347,19151,soweit,soweit,OK,"(19151,)",random
+1348,23601, hurry,▁hurry,OK,"(23601,)",random
+1349,12851,pillar,pillar,OK,"(12851,)",random
+1350,27332, 1929,▁1929,OK,"(27332,)",random
+1351,3216,low,low,OK,"(3216,)",random
+1352,14411, Aaron,▁Aaron,OK,"(14411,)",random
+1353,3537,gle,gle,OK,"(3537,)",random
+1354,15799, putere,▁putere,OK,"(15799,)",random
+1355,12376, liegen,▁liegen,OK,"(12376,)",random
+1356,21945, Ferrari,▁Ferrari,OK,"(21945,)",random
+1357,31069, Canberra,▁Canberra,OK,"(31069,)",random
+1358,919, turn,▁turn,OK,"(919,)",random
+1359,26801, Untersuchung,▁Untersuchung,OK,"(26801,)",random
+1360,30464, Blätter,▁Blätter,OK,"(30464,)",random
+1361,22674,From,From,OK,"(22674,)",random
+1362,19014, Alberta,▁Alberta,OK,"(19014,)",random
+1363,10760, conditioning,▁conditioning,OK,"(10760,)",random
+1364,459,uri,uri,OK,"(459,)",random
+1365,4553, leg,▁leg,OK,"(4553,)",random
+1366,10973, distribute,▁distribute,OK,"(10973,)",random
+1367,17313, tolerance,▁tolerance,OK,"(17313,)",random
+1368,14936, appointments,▁appointments,OK,"(14936,)",random
+1369,10903, Tam,▁Tam,OK,"(10903,)",random
+1370,22990,yama,yama,OK,"(22990,)",random
+1371,314, 4,▁4,OK,"(314,)",random
+1372,31283,métrage,métrage,OK,"(31283,)",random
+1373,28419,Numai,Numai,OK,"(28419,)",random
+1374,18372, Boc,▁Boc,OK,"(18372,)",random
+1375,8220, Resort,▁Resort,OK,"(8220,)",random
+1376,6164, newly,▁newly,OK,"(6164,)",random
+1377,18330,hog,hog,OK,"(18330,)",random
+1378,5236,read,read,OK,"(5236,)",random
+1379,28402, définition,▁définition,OK,"(28402,)",random
+1380,27932, dritte,▁dritte,OK,"(27932,)",random
+1381,27637,ässe,ässe,OK,"(27637,)",random
+1382,31026,default,default,OK,"(31026,)",random
+1383,22652, splendid,▁splendid,OK,"(22652,)",random
+1384,18296,anță,anță,OK,"(18296,)",random
+1385,10385, betting,▁betting,OK,"(10385,)",random
+1386,15207, prom,▁prom,OK,"(15207,)",random
+1387,19044, herzlich,▁herzlich,OK,"(19044,)",random
+1388,13122, répondre,▁répondre,OK,"(13122,)",random
+1389,14249, tranquil,▁tranquil,OK,"(14249,)",random
+1390,23683, limbi,▁limbi,OK,"(23683,)",random
+1391,6256, pest,▁pest,OK,"(6256,)",random
+1392,19640, Colour,▁Colour,OK,"(19640,)",random
+1393,18726, Florence,▁Florence,OK,"(18726,)",random
+1394,14973,written,written,OK,"(14973,)",random
+1395,23436, compilation,▁compilation,OK,"(23436,)",random
+1396,483, change,▁change,OK,"(483,)",random
+1397,17967,pick,pick,OK,"(17967,)",random
+1398,26176,Known,Known,OK,"(26176,)",random
+1399,2587, Ihnen,▁Ihnen,OK,"(2587,)",random
+1400,16501,doubtedly,doubtedly,OK,"(16501,)",random
+1401,2967, prepare,▁prepare,OK,"(2967,)",random
+1402,5932, sequence,▁sequence,OK,"(5932,)",random
+1403,7428,bling,bling,OK,"(7428,)",random
+1404,10064,used,used,OK,"(10064,)",random
+1405,24171, Arbeitgeber,▁Arbeitgeber,OK,"(24171,)",random
+1406,25258, Monaco,▁Monaco,OK,"(25258,)",random
+1407,13171, Walter,▁Walter,OK,"(13171,)",random
+1408,20980, Direkt,▁Direkt,OK,"(20980,)",random
+1409,360, few,▁few,OK,"(360,)",random
+1410,23765,hurst,hurst,OK,"(23765,)",random
+1411,24734, Cyprus,▁Cyprus,OK,"(24734,)",random
+1412,26931, șans,▁șans,OK,"(26931,)",random
+1413,15874, Ruth,▁Ruth,OK,"(15874,)",random
+1414,27266, Belgique,▁Belgique,OK,"(27266,)",random
+1415,13102, mou,▁mou,OK,"(13102,)",random
+1416,14097, boiler,▁boiler,OK,"(14097,)",random
+1417,3589,urs,urs,OK,"(3589,)",random
+1418,24648, Kompetenz,▁Kompetenz,OK,"(24648,)",random
+1419,16991,izează,izează,OK,"(16991,)",random
+1420,27389, Lille,▁Lille,OK,"(27389,)",random
+1421,21154, illnesses,▁illnesses,OK,"(21154,)",random

@@ -1,0 +1,11 @@
+{
+  "phase": "screen-shard",
+  "shard_index": 3,
+  "shard_count": 8,
+  "token_count": 3999,
+  "row_count": 11997,
+  "output": "/home/jkl/StickyToken/results/sticky_lab/sentence_t5_base/mode3_v3/screen_shards/shard_03_of_08.csv",
+  "protocol_version": 3,
+  "git_commit": "af62e0c11b018d6b8cb955d49fd39e6652c061df",
+  "runtime_seconds": 2389.8919112682343
+}

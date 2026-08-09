@@ -1,0 +1,12 @@
+{
+  "memory_size": 3000,
+  "embedding_dimension": 768,
+  "cluster_count": 8,
+  "knn_k": 10,
+  "benign_knn_q95": 0.6914998561143875,
+  "support_estimators": [
+    "sample_support",
+    "cluster_envelope",
+    "knn_density"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "method": "source_group_then_unique_text_sampling",
+  "input_rows": 38000,
+  "input_file_count": 38,
+  "input_files": [
+    "/home/jkl/StickyToken/data/GritLM_7B/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/SFR_Embedding_2_R/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/SFR_Embedding_Mistral/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/UAE_Large_V1/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/all_MiniLM_L6_v2/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/all_mpnet_base_v2/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/bge_base_en_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/bge_large_en_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/bge_small_en_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/e5_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/e5_large/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/e5_mistral_7b_instruct/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/e5_small/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_Qwen2_1_5B_instruct/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_Qwen2_7B_instruct/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_base_en_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_large/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_large_en_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gte_small/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gtr_t5_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gtr_t5_large/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gtr_t5_xl/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/gtr_t5_xxl/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/instructor_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/instructor_large/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/instructor_xl/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/jina_embeddings_v3/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/nomic_embed_text_v1/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/nomic_embed_text_v1_5/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sentence_t5_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sentence_t5_large/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sentence_t5_xl/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sentence_t5_xxl/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sup_simcse_bert_base_uncased/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sup_simcse_bert_large_uncased/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sup_simcse_roberta_base/sampled_sentence_pairs.csv",
+    "/home/jkl/StickyToken/data/sup_simcse_roberta_large/sampled_sentence_pairs.csv"
+  ],
+  "unique_before_length_filter": 18221,
+  "unique_after_length_filter": 17889,
+  "removed_by_independent_length_filter": 332,
+  "min_tokens": 5,
+  "max_tokens": 160,
+  "source_column": null,
+  "document_provenance_available": false,
+  "fallback_grouping": "one_group_per_unique_sentence",
+  "duplicate_source_conflicts": 0,
+  "split_sizes_before_sampling": {
+    "search": 10733,
+    "validation": 3578,
+    "test": 3578
+  },
+  "split_sizes": {
+    "search": 3000,
+    "validation": 1000,
+    "test": 1000
+  },
+  "registered_sample_limits": {
+    "search": 3000,
+    "validation": 1000,
+    "test": 1000
+  },
+  "split_group_counts": {
+    "search": 3000,
+    "validation": 1000,
+    "test": 1000
+  },
+  "overlap": {
+    "search_validation_sentences": 0,
+    "search_test_sentences": 0,
+    "validation_test_sentences": 0,
+    "search_validation_groups": 0,
+    "search_test_groups": 0,
+    "validation_test_groups": 0
+  },
+  "normalization": "Unicode NFC -> strip -> collapse whitespace; case and punctuation retained",
+  "ood_size": 1000,
+  "recommended_minimums": {
+    "search": 3000,
+    "validation": 1000,
+    "test": 1000,
+    "ood": 1000
+  },
+  "minimums_met": {
+    "search": true,
+    "validation": true,
+    "test": true,
+    "ood": true
+  }
+}

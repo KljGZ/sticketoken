@@ -37,8 +37,8 @@
     "/home/jkl/StickyToken/results/sticky_lab/sentence_t5_base/multi_booster_v2/search/restart_02/length_30_candidates.csv"
   ],
   "protocol_version": 2,
-  "git_commit": "54c2e5b20a82bb098627b3299d30dba1b4a3e494",
-  "runtime_seconds": 8067.087774038315,
+  "git_commit": "be22c9a81dd72debeb69c2ee197dd44b2d9f8bff",
+  "runtime_seconds": 9330.190866708755,
   "environment": {
     "python": "3.11.15",
     "torch": "2.6.0+cu124",

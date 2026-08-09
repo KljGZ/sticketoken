@@ -1,0 +1,13 @@
+{
+  "phase": "prepare-common",
+  "split_sizes": {
+    "search": 3000,
+    "validation": 1000,
+    "test": 1000
+  },
+  "ood_size": 1000,
+  "cluster_count": 8,
+  "protocol_version": 3,
+  "git_commit": "79fdc85bc51cda4390c88e6b4f9cbf89aaf709cc",
+  "runtime_seconds": 77.17412614822388
+}

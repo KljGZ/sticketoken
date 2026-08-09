@@ -1,0 +1,50 @@
+{
+  "algorithm": "iterative_spherical_kmeans",
+  "trials": [
+    {
+      "cluster_count": 8,
+      "objective": 2542.2264208991596,
+      "cosine_silhouette": 0.09036854235052237,
+      "minimum_cluster_size": 214,
+      "iterations": 26,
+      "converged": true,
+      "eligible": true
+    },
+    {
+      "cluster_count": 16,
+      "objective": 2569.248438702655,
+      "cosine_silhouette": 0.07908241202646517,
+      "minimum_cluster_size": 95,
+      "iterations": 22,
+      "converged": true,
+      "eligible": true
+    },
+    {
+      "cluster_count": 32,
+      "objective": 2593.729319777136,
+      "cosine_silhouette": 0.0763963707812104,
+      "minimum_cluster_size": 25,
+      "iterations": 22,
+      "converged": true,
+      "eligible": true
+    },
+    {
+      "cluster_count": 64,
+      "objective": 2622.717930983484,
+      "cosine_silhouette": 0.06805580721759134,
+      "minimum_cluster_size": 2,
+      "iterations": 24,
+      "converged": true,
+      "eligible": false
+    }
+  ],
+  "selected": {
+    "cluster_count": 8,
+    "objective": 2542.2264208991596,
+    "cosine_silhouette": 0.09036854235052237,
+    "minimum_cluster_size": 214,
+    "iterations": 26,
+    "converged": true,
+    "eligible": true
+  }
+}
