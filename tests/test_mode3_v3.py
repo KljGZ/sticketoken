@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from sticky_lab.insertion import insert_trigger, random_insertion_character_index
 from sticky_lab.mode3_v3.cem_search import cem_search
@@ -15,6 +16,17 @@ from sticky_lab.mode3_v3.soft_prompt import _insertion_index
 class _WhitespaceTokenizer:
     def __call__(self, texts, **_):
         return {"input_ids": [[index + 1 for index, _ in enumerate(str(text).split())] for text in texts]}
+
+
+def test_finalize_task_filters_fail_before_loading_artifacts(tmp_path) -> None:
+    config = {
+        "insertion": {"positions": ["prefix", "suffix", "random"]},
+        "mode3": {"subprotocols": ["separator", "blank"]},
+    }
+    with pytest.raises(ValueError, match="Unknown finalize position"):
+        v3_run.finalize(config, None, tmp_path, position_filter="middle")
+    with pytest.raises(ValueError, match="Unknown finalize subprotocol"):
+        v3_run.finalize(config, None, tmp_path, protocol_filter="compact")
 
 
 def test_random_soft_prompt_uses_the_registered_hard_text_boundary() -> None:

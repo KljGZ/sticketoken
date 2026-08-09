@@ -1247,7 +1247,35 @@ def _evaluate_universal_candidates(
     return aggregated, baseline_rows
 
 
-def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output: Path) -> dict[str, Any]:
+def finalize(
+    config: dict[str, Any],
+    encoder: SentenceTransformerEncoder,
+    output: Path,
+    *,
+    position_filter: str | None = None,
+    protocol_filter: str | None = None,
+) -> dict[str, Any]:
+    """Finalize registered tasks, optionally as independent task shards.
+
+    Position-specific and universal tasks write disjoint frozen/result paths, so
+    this filter changes scheduling only.  It does not change candidates,
+    validation ordering, bootstrap seeds, thresholds, or test/OOD evaluation.
+    """
+    registered_positions = _positions(config)
+    registered_protocols = _subprotocols(config)
+    if position_filter is not None and position_filter not in {*registered_positions, "universal"}:
+        raise ValueError(f"Unknown finalize position: {position_filter}")
+    if protocol_filter is not None and protocol_filter not in registered_protocols:
+        raise ValueError(f"Unknown finalize subprotocol: {protocol_filter}")
+    positions = (
+        []
+        if position_filter == "universal"
+        else [position_filter]
+        if position_filter is not None
+        else registered_positions
+    )
+    protocols = [protocol_filter] if protocol_filter is not None else registered_protocols
+    include_universal = position_filter in {None, "universal"}
     soft_summaries = sorted((output / "soft_prompt").glob("*/*/summary.csv"))
     if soft_summaries:
         pd.concat([pd.read_csv(path, keep_default_na=False) for path in soft_summaries], ignore_index=True).to_csv(
@@ -1264,8 +1292,8 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
     pool = pd.read_csv(output / "candidate_pool.csv", keep_default_na=False)
     schedules = [1, *_lengths(config)]
     summary: dict[str, Any] = {"phase": "finalize", "position_results": {}}
-    for position in _positions(config):
-        for protocol in _subprotocols(config):
+    for position in positions:
+        for protocol in protocols:
             task = f"{protocol}_{position}"
             task_dir = output / "validation" / position / protocol
             task_dir.mkdir(parents=True, exist_ok=True)
@@ -1459,7 +1487,7 @@ def finalize(config: dict[str, Any], encoder: SentenceTransformerEncoder, output
     # registered position.  It does not reuse a position-specific winner as if
     # that were an unbiased universal candidate.
     summary["universal_results"] = {}
-    for protocol in _subprotocols(config):
+    for protocol in protocols if include_universal else []:
         universal_dir = output / "validation" / "universal" / protocol
         universal_dir.mkdir(parents=True, exist_ok=True)
         frontier_rows: list[dict[str, Any]] = []
@@ -1652,6 +1680,8 @@ def main() -> None:
         suffix = f"_{args.shard_index:02d}_of_{args.shard_count:02d}"
     elif args.phase == "search":
         suffix = f"_{args.position}_{args.subprotocol}_{args.restart:02d}"
+    elif args.phase == "finalize" and args.position and args.subprotocol:
+        suffix = f"_{args.position}_{args.subprotocol}"
     elif args.phase == "soft-prompt" and args.position and args.subprotocol:
         suffix = f"_{args.position}_{args.subprotocol}"
     _write_json(output / "resolved_config.json", registered_config)
@@ -1681,7 +1711,13 @@ def main() -> None:
             lengths = [int(value) for value in args.lengths.split(",")] if args.lengths else _lengths(config)
             summary = search(config, encoder, output, restart=args.restart, position=args.position, protocol=args.subprotocol, lengths=lengths)
         else:
-            summary = finalize(config, encoder, output)
+            summary = finalize(
+                config,
+                encoder,
+                output,
+                position_filter=args.position,
+                protocol_filter=args.subprotocol,
+            )
     summary.update(
         {
             "protocol_version": 3,
