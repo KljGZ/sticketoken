@@ -24,6 +24,17 @@ def _fmt(value: Any) -> str:
     return str(value).replace("|", "\\|").replace("\n", " ")
 
 
+def _reported_metric(record: dict[str, Any], key: str, *, universal: bool) -> Any:
+    if not universal:
+        return record.get(key)
+    per_position = record.get("test_per_position_metrics", {})
+    values = [metrics.get(key) for metrics in per_position.values() if metrics.get(key) is not None]
+    if not values:
+        return None
+    # A universal certificate is governed by the worst registered position.
+    return max(values) if key == "compact_radius_q95" else min(values)
+
+
 def render(root: Path) -> str:
     audit = _load(root / "data_audit.json")
     rows: list[tuple[str, dict[str, Any]]] = []
@@ -50,7 +61,8 @@ def render(root: Path) -> str:
         "|---|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for task, record in rows:
-        if task.endswith("universal"):
+        universal = task.endswith("universal")
+        if universal:
             test_ok = record.get("test_position_universal_certified")
             ood_ok = record.get("ood_position_universal_certified")
         else:
@@ -65,11 +77,11 @@ def render(root: Path) -> str:
             test_ok,
             ood_ok,
             record.get("full_generalized"),
-            record.get("separation_margin"),
-            record.get("compact_radius_q95"),
-            record.get("sample_blank_margin"),
-            record.get("cluster_blank_margin"),
-            record.get("density_blank_margin"),
+            _reported_metric(record, "separation_margin", universal=universal),
+            _reported_metric(record, "compact_radius_q95", universal=universal),
+            _reported_metric(record, "sample_blank_margin", universal=universal),
+            _reported_metric(record, "cluster_blank_margin", universal=universal),
+            _reported_metric(record, "density_blank_margin", universal=universal),
         ]
         lines.append("| " + " | ".join(_fmt(value) for value in values) + " |")
     return "\n".join(lines) + "\n"
