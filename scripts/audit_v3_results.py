@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import csv
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -25,6 +26,25 @@ def _load(path: Path) -> dict[str, Any]:
 def _frontier_lengths(path: Path) -> list[int]:
     with path.open(newline="", encoding="utf-8") as handle:
         return [int(row["component_length"]) for row in csv.DictReader(handle)]
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _manifest_digest(root: Path, paths: list[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(paths):
+        relative = path.relative_to(root).as_posix()
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(_sha256(path).encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest()
 
 
 def audit(root: Path) -> dict[str, Any]:
@@ -150,6 +170,21 @@ def audit(root: Path) -> dict[str, Any]:
             "full_generalized": bool(test["full_generalized"]),
         }
 
+    registered_inputs = [
+        root / "resolved_config.json",
+        root / "data_audit.json",
+        root / "support_audit.json",
+        root / "spherical_kmeans_audit.json",
+        root / "candidate_pool.csv",
+        root / "unique_search.csv",
+        root / "unique_validation.csv",
+        root / "unique_test.csv",
+        root / "unique_ood.csv",
+    ]
+    missing_inputs = [str(path.relative_to(root)) for path in registered_inputs if not path.exists()]
+    if missing_inputs:
+        errors.append(f"missing registered inputs: {', '.join(missing_inputs)}")
+
     return {
         "protocol_version": 3,
         "complete": not errors,
@@ -157,9 +192,15 @@ def audit(root: Path) -> dict[str, Any]:
         "warnings": warnings,
         "registered_lengths": list(REGISTERED_LENGTHS),
         "search_candidate_file_count": len(search_files),
+        "search_candidate_manifest_sha256": _manifest_digest(root, search_files),
         "search_summary_count": len(search_summaries),
         "search_source_commits": dict(sorted(source_commits.items())),
         "search_completion_commits": dict(sorted(completion_commits.items())),
+        "registered_input_sha256": {
+            path.relative_to(root).as_posix(): _sha256(path)
+            for path in registered_inputs
+            if path.exists()
+        },
         "tasks": task_records,
     }
 
