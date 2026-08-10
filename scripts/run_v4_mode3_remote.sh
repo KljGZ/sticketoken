@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="${REPO_ROOT:-/home/jkl/StickyToken}"
+SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="${REPO_ROOT:-$SCRIPT_ROOT}"
 PYTHON_BIN="${PYTHON_BIN:-/home/jkl/anaconda3/envs/StickyToken/bin/python}"
 CONFIG_PATH="${CONFIG_PATH:-configs/v4_mode3.yaml}"
 GPU_COUNT="${GPU_COUNT:-8}"
