@@ -98,6 +98,25 @@ def test_pairwise_lookup_bootstrap_matches_registered_shape_and_is_deterministic
     assert first["bootstrap_replicates"] == 20
     assert first["bootstrap_pairwise_lookup_optimized"] == 1
     assert first["compact_radius_q95_ci_upper"] >= first["compact_radius_q95_ci_lower"]
+    # Scalar reference reproduces the registered resampling and refits a center
+    # for every replicate; block vectorization may only change round-off.
+    scalar_rng = np.random.default_rng(77)
+    unique = np.unique(groups)
+    scalar = {name: [] for name in ("displacement_q05", "compact_radius_q95", "contraction_q95")}
+    group_array = np.asarray(groups)
+    for replicate in range(20):
+        chosen = scalar_rng.choice(unique, size=len(unique), replace=True)
+        indices = np.concatenate([np.flatnonzero(group_array == group) for group in chosen])
+        result = evaluate_geometry(
+            original[indices],
+            [triggered[indices]],
+            pair_indices=fixed_pair_indices(len(indices), 100, 78 + replicate),
+        )
+        for name in scalar:
+            scalar[name].append(getattr(result, name))
+    for name, values in scalar.items():
+        assert np.isclose(first[f"{name}_ci_lower"], np.quantile(values, 0.025), atol=2e-5)
+        assert np.isclose(first[f"{name}_ci_upper"], np.quantile(values, 0.975), atol=2e-5)
 
 
 def test_non_linearly_separated_support_in_low_occupancy_cluster_can_certify() -> None:

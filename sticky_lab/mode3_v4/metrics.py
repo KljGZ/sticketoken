@@ -141,40 +141,55 @@ def grouped_bootstrap_geometry(
         triggered_distances = [pairwise_distance_matrix(values) for values in triggered]
         displacement = [np.linalg.norm(values - benign, axis=1) for values in triggered]
         group_to_index = {group: int(np.flatnonzero(groups == group)[0]) for group in unique}
-        for replicate in range(int(replicates)):
+        bootstrap_indices = []
+        for _ in range(int(replicates)):
             chosen = rng.choice(unique, size=len(unique), replace=True)
-            indices = np.asarray([group_to_index[group] for group in chosen], dtype=int)
+            bootstrap_indices.append(np.asarray([group_to_index[group] for group in chosen], dtype=int))
+        block_size = 10
+        for block_start in range(0, int(replicates), block_size):
+            indices = np.stack(bootstrap_indices[block_start : block_start + block_size])
+            block_count = len(indices)
             if fixed_center is None:
-                center = spherical_center(np.concatenate([values[indices] for values in triggered], axis=0))
+                center_sums = np.zeros((block_count, benign.shape[1]), dtype=np.float64)
+                for values in triggered:
+                    center_sums += np.sum(values[indices], axis=1, dtype=np.float64)
+                center_norms = np.linalg.norm(center_sums, axis=1, keepdims=True)
+                centers = center_sums / np.maximum(center_norms, 1e-12)
             else:
                 center = np.asarray(fixed_center, dtype=np.float64)
                 center /= max(float(np.linalg.norm(center)), 1e-12)
-            sampled_displacement = np.concatenate([values[indices] for values in displacement])
-            sampled_radii = np.concatenate(
-                [
-                    np.sqrt(np.maximum(0.0, 2.0 - 2.0 * np.clip(values[indices] @ center, -1.0, 1.0)))
-                    for values in triggered
-                ]
-            )
-            left, right = fixed_pair_indices(len(indices), pair_count, seed + replicate + 1)
-            mapped_left, mapped_right = indices[left], indices[right]
+                centers = np.repeat(center[None, :], block_count, axis=0)
+            sampled_displacement = np.concatenate([values[indices] for values in displacement], axis=1)
+            radius_blocks: list[np.ndarray] = []
+            for values in triggered:
+                selected = values[indices]
+                cosine = np.einsum("bnd,bd->bn", selected, centers, optimize=True)
+                radius_blocks.append(np.sqrt(np.maximum(0.0, 2.0 - 2.0 * np.clip(cosine, -1.0, 1.0))))
+            sampled_radii = np.concatenate(radius_blocks, axis=1)
+            pair_rows = [
+                fixed_pair_indices(len(unique), pair_count, seed + replicate + 1)
+                for replicate in range(block_start, block_start + block_count)
+            ]
+            left = np.stack([row[0] for row in pair_rows])
+            right = np.stack([row[1] for row in pair_rows])
+            mapped_left = np.take_along_axis(indices, left, axis=1)
+            mapped_right = np.take_along_axis(indices, right, axis=1)
             benign_pairs = benign_distances[mapped_left, mapped_right]
             triggered_pairs = np.concatenate(
-                [distances[mapped_left, mapped_right] for distances in triggered_distances]
+                [distances[mapped_left, mapped_right] for distances in triggered_distances], axis=1
             )
-            benign_tiled = np.tile(benign_pairs, len(triggered))
-            contraction = float(
-                np.quantile(triggered_pairs, 0.95)
-                / max(float(np.quantile(benign_tiled, 0.95)), 1e-12)
+            contraction = np.quantile(triggered_pairs, 0.95, axis=1) / np.maximum(
+                np.quantile(benign_pairs, 0.95, axis=1), 1e-12
             )
-            samples["displacement_q05"].append(float(np.quantile(sampled_displacement, 0.05)))
-            samples["compact_radius_q95"].append(float(np.quantile(sampled_radii, 0.95)))
-            samples["contraction_q95"].append(contraction)
+            samples["displacement_q05"].extend(np.quantile(sampled_displacement, 0.05, axis=1).tolist())
+            samples["compact_radius_q95"].extend(np.quantile(sampled_radii, 0.95, axis=1).tolist())
+            samples["contraction_q95"].extend(contraction.tolist())
         alpha = 1.0 - float(confidence)
         output: dict[str, float | int] = {
             "bootstrap_replicates": int(replicates),
             "bootstrap_confidence": float(confidence),
             "bootstrap_pairwise_lookup_optimized": 1,
+            "bootstrap_vectorized_block_size": block_size,
         }
         for name, values in samples.items():
             output[f"{name}_ci_lower"] = float(np.quantile(values, alpha / 2.0))
@@ -197,6 +212,7 @@ def grouped_bootstrap_geometry(
         "bootstrap_replicates": int(replicates),
         "bootstrap_confidence": float(confidence),
         "bootstrap_pairwise_lookup_optimized": 0,
+        "bootstrap_vectorized_block_size": 1,
     }
     for name, values in samples.items():
         output[f"{name}_ci_lower"] = float(np.quantile(values, alpha / 2.0))
