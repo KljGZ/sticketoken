@@ -12,6 +12,8 @@ from sticky_lab.mode3_v4.metrics import (
     evaluate_geometry,
     fixed_pair_indices,
     fixed_region_coverage,
+    grouped_bootstrap_geometry,
+    pairwise_distance_matrix,
 )
 from sticky_lab.mode3_v4.occupancy import OccupancyRecord, clopper_pearson_lower, clopper_pearson_upper
 from sticky_lab.mode3_v4.support import SupportModel
@@ -68,6 +70,34 @@ def test_reference_occupancy_index_is_exact() -> None:
     for threshold in (0.0, 0.25, 0.6, 2.0, 4.0):
         expected = np.count_nonzero(distances <= threshold, axis=1)
         np.testing.assert_array_equal(support.reference_counts_within(threshold), expected)
+
+
+def test_pairwise_lookup_bootstrap_matches_registered_shape_and_is_deterministic() -> None:
+    rng = np.random.default_rng(33)
+    original = rng.normal(size=(24, 5))
+    original /= np.linalg.norm(original, axis=1, keepdims=True)
+    triggered = original + 0.02 * rng.normal(size=(24, 5))
+    triggered /= np.linalg.norm(triggered, axis=1, keepdims=True)
+    groups = [f"g{index:03d}" for index in range(24)]
+    kwargs = dict(replicates=20, confidence=0.95, pair_count=100, seed=77)
+    first = grouped_bootstrap_geometry(
+        original,
+        [triggered],
+        groups,
+        benign_pairwise_distances=pairwise_distance_matrix(original),
+        **kwargs,
+    )
+    second = grouped_bootstrap_geometry(
+        original,
+        [triggered],
+        groups,
+        benign_pairwise_distances=pairwise_distance_matrix(original),
+        **kwargs,
+    )
+    assert first == second
+    assert first["bootstrap_replicates"] == 20
+    assert first["bootstrap_pairwise_lookup_optimized"] == 1
+    assert first["compact_radius_q95_ci_upper"] >= first["compact_radius_q95_ci_lower"]
 
 
 def test_non_linearly_separated_support_in_low_occupancy_cluster_can_certify() -> None:

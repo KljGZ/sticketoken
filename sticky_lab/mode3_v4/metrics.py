@@ -47,6 +47,14 @@ def fixed_pair_indices(size: int, count: int, seed: int) -> tuple[np.ndarray, np
     return left.astype(int), right.astype(int)
 
 
+def pairwise_distance_matrix(values: np.ndarray) -> np.ndarray:
+    """Exact unit-vector Euclidean distances using one matrix product."""
+
+    normalized = normalize_rows(values).astype(np.float32)
+    similarities = np.clip(normalized @ normalized.T, -1.0, 1.0)
+    return np.sqrt(np.maximum(0.0, 2.0 - 2.0 * similarities)).astype(np.float32)
+
+
 def _position_centers(triggered: Sequence[np.ndarray]) -> list[np.ndarray]:
     return [spherical_center(values) for values in triggered]
 
@@ -110,6 +118,7 @@ def grouped_bootstrap_geometry(
     pair_count: int,
     seed: int,
     fixed_center: np.ndarray | None = None,
+    benign_pairwise_distances: np.ndarray | None = None,
 ) -> dict[str, float | int]:
     groups = np.asarray(group_ids, dtype=str)
     if len(groups) != len(original):
@@ -118,6 +127,59 @@ def grouped_bootstrap_geometry(
     rng = np.random.default_rng(seed)
     names = ("displacement_q05", "compact_radius_q95", "contraction_q95")
     samples = {name: [] for name in names}
+    # Current registered corpus has one provenance group per unique sentence.
+    # Preserve the exact group bootstrap while replacing repeated 768-D pair
+    # subtraction with O(1) lookups into precomputed distance matrices.
+    if len(unique) == len(groups):
+        benign = normalize_rows(original).astype(np.float32)
+        triggered = [normalize_rows(values).astype(np.float32) for values in triggered_by_position]
+        benign_distances = (
+            pairwise_distance_matrix(benign)
+            if benign_pairwise_distances is None
+            else np.asarray(benign_pairwise_distances, dtype=np.float32)
+        )
+        triggered_distances = [pairwise_distance_matrix(values) for values in triggered]
+        displacement = [np.linalg.norm(values - benign, axis=1) for values in triggered]
+        group_to_index = {group: int(np.flatnonzero(groups == group)[0]) for group in unique}
+        for replicate in range(int(replicates)):
+            chosen = rng.choice(unique, size=len(unique), replace=True)
+            indices = np.asarray([group_to_index[group] for group in chosen], dtype=int)
+            if fixed_center is None:
+                center = spherical_center(np.concatenate([values[indices] for values in triggered], axis=0))
+            else:
+                center = np.asarray(fixed_center, dtype=np.float64)
+                center /= max(float(np.linalg.norm(center)), 1e-12)
+            sampled_displacement = np.concatenate([values[indices] for values in displacement])
+            sampled_radii = np.concatenate(
+                [
+                    np.sqrt(np.maximum(0.0, 2.0 - 2.0 * np.clip(values[indices] @ center, -1.0, 1.0)))
+                    for values in triggered
+                ]
+            )
+            left, right = fixed_pair_indices(len(indices), pair_count, seed + replicate + 1)
+            mapped_left, mapped_right = indices[left], indices[right]
+            benign_pairs = benign_distances[mapped_left, mapped_right]
+            triggered_pairs = np.concatenate(
+                [distances[mapped_left, mapped_right] for distances in triggered_distances]
+            )
+            benign_tiled = np.tile(benign_pairs, len(triggered))
+            contraction = float(
+                np.quantile(triggered_pairs, 0.95)
+                / max(float(np.quantile(benign_tiled, 0.95)), 1e-12)
+            )
+            samples["displacement_q05"].append(float(np.quantile(sampled_displacement, 0.05)))
+            samples["compact_radius_q95"].append(float(np.quantile(sampled_radii, 0.95)))
+            samples["contraction_q95"].append(contraction)
+        alpha = 1.0 - float(confidence)
+        output: dict[str, float | int] = {
+            "bootstrap_replicates": int(replicates),
+            "bootstrap_confidence": float(confidence),
+            "bootstrap_pairwise_lookup_optimized": 1,
+        }
+        for name, values in samples.items():
+            output[f"{name}_ci_lower"] = float(np.quantile(values, alpha / 2.0))
+            output[f"{name}_ci_upper"] = float(np.quantile(values, 1.0 - alpha / 2.0))
+        return output
     for replicate in range(int(replicates)):
         chosen = rng.choice(unique, size=len(unique), replace=True)
         indices = np.concatenate([np.flatnonzero(groups == group) for group in chosen])
@@ -131,7 +193,11 @@ def grouped_bootstrap_geometry(
         for name in names:
             samples[name].append(float(getattr(result, name)))
     alpha = 1.0 - float(confidence)
-    output: dict[str, float | int] = {"bootstrap_replicates": int(replicates), "bootstrap_confidence": float(confidence)}
+    output: dict[str, float | int] = {
+        "bootstrap_replicates": int(replicates),
+        "bootstrap_confidence": float(confidence),
+        "bootstrap_pairwise_lookup_optimized": 0,
+    }
     for name, values in samples.items():
         output[f"{name}_ci_lower"] = float(np.quantile(values, alpha / 2.0))
         output[f"{name}_ci_upper"] = float(np.quantile(values, 1.0 - alpha / 2.0))

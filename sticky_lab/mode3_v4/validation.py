@@ -13,6 +13,7 @@ from .metrics import (
     fixed_pair_indices,
     fixed_region_coverage,
     grouped_bootstrap_geometry,
+    pairwise_distance_matrix,
     point_conditions,
 )
 from .occupancy import evaluate_occupancy
@@ -41,6 +42,7 @@ def certify_candidates(
     baseline_scores = np.asarray([record["search_score"] for record in baseline_records], dtype=float)
     threshold = float(np.quantile(baseline_scores, random_quantile))
     evaluated = scorer.evaluate(candidates, include_center=True)
+    benign_pairwise_distances = pairwise_distance_matrix(scorer.original_embeddings)
     output: list[dict[str, Any]] = []
     centers: list[np.ndarray] = []
     triggered_blocks: list[list[np.ndarray]] = []
@@ -55,6 +57,7 @@ def certify_candidates(
             confidence=confidence,
             pair_count=pair_sample_count,
             seed=seed + index * 100003,
+            benign_pairwise_distances=benign_pairwise_distances,
         )
         audit = context_realizability(
             tokenizer,
