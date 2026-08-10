@@ -1,0 +1,123 @@
+protocol_version: 4
+mode: minimal_support_interior_low_density_compact_representation_attractor
+seed: 44042
+baseline_commit: b78bb21693e87a62287929683f575eb2a1b89be1
+output_dir: results/sticky_lab/sentence_t5_base/mode3_v4
+
+model:
+  id: sentence-transformers/sentence-t5-base
+  revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  device: cuda:0
+  cache_folder: null
+  local_path: /home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  trust_remote_code: false
+
+data:
+  paths_glob: data/*/sampled_sentence_pairs.csv
+  exclude_paths:
+    - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
+    - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+  ood_paths:
+    - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
+    - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+  text_columns: [sentence1, sentence2]
+  ood_text_columns: [sentence1, sentence2]
+  source_column: null
+  min_tokens: 5
+  max_tokens: 160
+  iid_sample_sizes:
+    search_trigger: 3000
+    search_benign: 3000
+    validation_trigger: 1000
+    validation_benign: 3000
+    test_trigger: 1000
+    test_benign: 3000
+  ood_sample_size: 1000
+
+tokenizer:
+  allow_special_tokens: false
+  max_single_token_chars: 64
+  realizability_contexts: 48
+  require_exact_roundtrip: true
+  require_context_realizability: 1.0
+
+insertion:
+  protocol: shared_literal_insert_once
+  positions: [prefix, suffix, random]
+  universal: true
+  separator: " "
+
+constraints:
+  min_displacement_q05: 0.02
+  max_compact_radius_q95: 0.40
+  max_contraction_q95: 0.60
+  min_support_in_margin: 0.0
+  max_occupancy_upper_lambda_1: 0.001
+  max_occupancy_upper_lambda_2: 0.01
+  max_relative_occupancy_quantile_lambda_1: 0.05
+  min_fixed_region_coverage_lcb: 0.90
+  confidence: 0.95
+
+support:
+  knn_k: 10
+  support_quantile: 0.99
+  reference_center_count: 512
+  cluster_count_grid: [8, 16, 32, 64]
+  clustering_restarts: 3
+  max_iterations: 100
+  tolerance: 1.0e-7
+  minimum_cluster_size: 5
+
+lengths:
+  exhaustive_single_token: true
+  minimum: 1
+  maximum: 30
+  step: 1
+  stop_search_after_first_certified: false
+  test_only_shortest_validation_certified: true
+
+search:
+  algorithm: independent_categorical_cem_query_only
+  population_size: 48
+  elite_ratio: 0.125
+  iterations: 10
+  restarts_per_length: 2
+  uniform_mixture: 0.10
+  update_alpha: 0.30
+  archive_size: 64
+  search_text_count: 48
+  single_token_text_count: 48
+  maximum_materialization_attempts: 8192
+  weights:
+    constraint_violation: 10.0
+    compact_radius: 1.0
+    contraction: 1.0
+    occupancy_outer: 1.0
+    support_margin: 0.25
+    displacement: 0.25
+
+validation:
+  candidates_per_length: 8
+  random_baseline_count: 64
+  random_baseline_quantile: 0.99
+  require_random_baseline_exceedance: true
+  bootstrap_replicates: 500
+  pair_sample_count: 20000
+  occupancy_lambdas: [1.0, 1.5, 2.0]
+
+retrieval:
+  enabled_only_after_encoder_certification: true
+  poison_selection: validation_triggered_medoid
+  top_k: [1, 5, 10]
+  poison_candidate_count: 128
+
+runtime:
+  batch_size: 256
+  candidate_chunk_size: 8
+  screen_shards: 8
+  worker_count: 8
+  show_progress: true
+
+plot:
+  dpi: 300
+  projection_sample_count: 256
