@@ -16,6 +16,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = ("prefix", "suffix", "random", "universal")
+V3_BASELINE = "b78bb21693e87a62287929683f575eb2a1b89be1"
 ALLOWED_NEW_PREFIXES = (
     "configs/v4_mode3.yaml",
     "sticky_lab/mode3_v4/",
@@ -34,13 +35,38 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _scope_audit() -> dict[str, Any]:
-    status = subprocess.check_output(["git", "status", "--porcelain=v1"], cwd=ROOT, text=True).splitlines()
-    changed = [line[3:].replace("\\", "/") for line in status]
-    invalid = [path for path in changed if not any(path == prefix or path.startswith(prefix) for prefix in ALLOWED_NEW_PREFIXES)]
+def _allowed_v4_path(path: str, runtime_prefix: str | None = None) -> bool:
+    prefixes = ALLOWED_NEW_PREFIXES + ((runtime_prefix,) if runtime_prefix else ())
+    return any(path == prefix or path.startswith(prefix) for prefix in prefixes)
+
+
+def _scope_audit(results: Path | None = None) -> dict[str, Any]:
+    runtime_prefix: str | None = None
+    if results is not None:
+        resolved = results.resolve()
+        try:
+            runtime_prefix = resolved.relative_to(ROOT.resolve()).as_posix().rstrip("/") + "/"
+        except ValueError as exc:
+            raise AssertionError(f"V4 results must stay inside the repository: {resolved}") from exc
+
+    committed = subprocess.check_output(
+        ["git", "diff", "--name-only", f"{V3_BASELINE}..HEAD"], cwd=ROOT, text=True
+    ).splitlines()
+    status = subprocess.check_output(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=ROOT, text=True
+    ).splitlines()
+    working_tree = [line[3:].replace("\\", "/") for line in status]
+    changed = sorted(set(path.replace("\\", "/") for path in committed + working_tree))
+    invalid = [path for path in changed if not _allowed_v4_path(path, runtime_prefix)]
     if invalid:
         raise AssertionError(f"V4 scope changed pre-existing or non-V4 paths: {invalid}")
-    return {"changed_paths": changed, "scope_valid": True}
+    return {
+        "baseline_commit": V3_BASELINE,
+        "committed_paths": sorted(committed),
+        "working_tree_paths": sorted(working_tree),
+        "runtime_results_prefix": runtime_prefix,
+        "scope_valid": True,
+    }
 
 
 def _ast_audit() -> dict[str, Any]:
@@ -128,12 +154,18 @@ def main() -> None:
         "test_only_shortest_validation_certified": True,
     }:
         raise AssertionError("V4 registered complete length schedule changed")
-    report: dict[str, Any] = {"scope": _scope_audit(), "ast": _ast_audit(), "config": str(config_path)}
+    results_path: Path | None = None
     if args.results:
-        results = Path(args.results)
-        if not results.is_absolute():
-            results = ROOT / results
-        report["results"] = _results_audit(results)
+        results_path = Path(args.results)
+        if not results_path.is_absolute():
+            results_path = ROOT / results_path
+    report: dict[str, Any] = {
+        "scope": _scope_audit(results_path),
+        "ast": _ast_audit(),
+        "config": str(config_path),
+    }
+    if results_path is not None:
+        report["results"] = _results_audit(results_path)
     print(json.dumps(report, indent=2, ensure_ascii=False))
 
 
