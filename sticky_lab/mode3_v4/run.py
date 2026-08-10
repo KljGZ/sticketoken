@@ -133,7 +133,10 @@ def _paths(config: dict[str, Any], *, ood: bool) -> list[Path]:
 
 
 def _save_ledger(output: Path, oracle: SentenceTransformerOutputOracle, name: str, extra: dict[str, Any]) -> None:
-    _write_json(output / "query_ledgers" / f"{name}.json", {**extra, **oracle.ledger.to_dict()})
+    _write_json(
+        output / "query_ledgers" / f"{name}.json",
+        {"implementation_git_commit": _git_commit(), **extra, **oracle.ledger.to_dict()},
+    )
 
 
 def _load_role(output: Path, role: str) -> tuple[pd.DataFrame, np.ndarray]:

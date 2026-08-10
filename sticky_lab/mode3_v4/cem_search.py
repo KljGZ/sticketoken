@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Dict, List, Sequence
 
 import numpy as np
 
@@ -12,7 +12,7 @@ from .interfaces import Candidate
 from .scoring import ranking_key
 
 
-ScoreFunction = Callable[[Sequence[Candidate]], list[dict[str, Any]]]
+ScoreFunction = Callable[[Sequence[Candidate]], List[Dict[str, Any]]]
 
 
 @dataclass(frozen=True)
@@ -34,13 +34,18 @@ def _draw_population(
     attempts = 0
     length = probabilities.shape[0]
     while len(by_key) < population_size and attempts < maximum_attempts:
-        indices = tuple(
-            int(rng.choice(space.pool_size, p=probabilities[position])) for position in range(length)
+        batch = min(max(16, population_size - len(by_key)), maximum_attempts - attempts)
+        sampled = np.column_stack(
+            [rng.choice(space.pool_size, size=batch, p=probabilities[position]) for position in range(length)]
         )
-        attempts += 1
-        candidate = space.materialize_pool_indices(indices)
-        if candidate is not None:
-            by_key.setdefault(candidate.key, (candidate, indices))
+        attempts += batch
+        for row in sampled:
+            indices = tuple(map(int, row))
+            candidate = space.materialize_pool_indices(indices)
+            if candidate is not None:
+                by_key.setdefault(candidate.key, (candidate, indices))
+                if len(by_key) >= population_size:
+                    break
     if len(by_key) < max(2, population_size // 2):
         raise RuntimeError(
             f"CEM exact materialization collapsed: {len(by_key)}/{population_size} after {attempts} attempts"
