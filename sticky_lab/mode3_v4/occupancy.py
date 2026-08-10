@@ -56,6 +56,12 @@ def clopper_pearson_upper(successes: int, trials: int, confidence: float) -> flo
         raise ValueError("Invalid binomial count")
     if successes == trials:
         return 1.0
+    try:
+        from scipy.stats import beta
+
+        return float(beta.ppf(confidence, successes + 1, trials - successes))
+    except ImportError:
+        pass
     return _bisect_binomial(successes, trials, 1.0 - confidence, upper_tail=False)
 
 
@@ -64,6 +70,12 @@ def clopper_pearson_lower(successes: int, trials: int, confidence: float) -> flo
         raise ValueError("Invalid binomial count")
     if successes == 0:
         return 0.0
+    try:
+        from scipy.stats import beta
+
+        return float(beta.ppf(1.0 - confidence, successes, trials - successes + 1))
+    except ImportError:
+        pass
     return _bisect_binomial(successes, trials, 1.0 - confidence, upper_tail=True)
 
 
