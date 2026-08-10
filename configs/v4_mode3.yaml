@@ -17,9 +17,11 @@ data:
   exclude_paths:
     - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
     - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+    - data/jina_embeddings_v3/sampled_sentence_pairs.csv
   ood_paths:
     - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
     - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+    - data/jina_embeddings_v3/sampled_sentence_pairs.csv
   text_columns: [sentence1, sentence2]
   ood_text_columns: [sentence1, sentence2]
   source_column: null
