@@ -14,6 +14,7 @@ from sticky_lab.mode3_v4.metrics import (
     fixed_region_coverage,
 )
 from sticky_lab.mode3_v4.occupancy import OccupancyRecord, clopper_pearson_lower, clopper_pearson_upper
+from sticky_lab.mode3_v4.support import SupportModel
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,6 +51,23 @@ def test_fixed_region_uses_supplied_center_without_refitting() -> None:
     result = fixed_region_coverage([values], center, radius=0.1, confidence=0.95)
     assert result["fixed_center_used"] is True
     assert result["fixed_region_coverage_count"] == 0
+
+
+def test_reference_occupancy_index_is_exact() -> None:
+    distances = np.asarray([[0.8, 0.1, 0.5, 0.2], [1.2, 0.3, 0.9, 0.4]], dtype=np.float32)
+    support = SupportModel(
+        memory=np.eye(2, dtype=np.float32),
+        self_knn_distances=np.asarray([0.1, 0.2], dtype=np.float32),
+        knn_k=1,
+        support_threshold_q99=0.2,
+        reference_indices=np.asarray([0, 1]),
+        reference_distances=distances,
+        cluster_centers=np.eye(2, dtype=np.float32),
+        cluster_radii=np.asarray([0.5, 0.5], dtype=np.float32),
+    )
+    for threshold in (0.0, 0.25, 0.6, 2.0, 4.0):
+        expected = np.count_nonzero(distances <= threshold, axis=1)
+        np.testing.assert_array_equal(support.reference_counts_within(threshold), expected)
 
 
 def test_non_linearly_separated_support_in_low_occupancy_cluster_can_certify() -> None:

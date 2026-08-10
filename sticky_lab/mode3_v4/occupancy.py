@@ -118,7 +118,7 @@ def evaluate_occupancy(
     for multiplier in map(float, lambdas):
         threshold = multiplier * float(radius)
         count = int(np.count_nonzero(distances <= threshold))
-        reference_counts = np.count_nonzero(support.reference_distances <= threshold, axis=1)
+        reference_counts = support.reference_counts_within(threshold)
         relative = float((1 + np.count_nonzero(reference_counts <= count)) / (len(reference_counts) + 1))
         counts.append(count)
         rates.append(count / len(probe))

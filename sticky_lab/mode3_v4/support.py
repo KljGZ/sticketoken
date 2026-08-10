@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Iterable
 
 import numpy as np
@@ -118,6 +118,21 @@ class SupportModel:
     reference_distances: np.ndarray
     cluster_centers: np.ndarray
     cluster_radii: np.ndarray
+    _reference_search_values: np.ndarray = field(init=False, repr=False)
+    _reference_row_offsets: np.ndarray = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        # Distances between unit vectors lie in [0, 2]. Registered occupancy
+        # radii use multipliers <=2, so disjoint width-8 row offsets make one
+        # globally sorted 1-D search index without approximation.
+        self.reference_distances = np.sort(
+            np.asarray(self.reference_distances, dtype=np.float32), axis=1
+        )
+        row_count = self.reference_distances.shape[0]
+        self._reference_row_offsets = np.arange(row_count, dtype=np.float32) * 8.0
+        self._reference_search_values = (
+            self.reference_distances + self._reference_row_offsets[:, None]
+        ).reshape(-1)
 
     @classmethod
     def fit(
@@ -158,6 +173,17 @@ class SupportModel:
 
     def support_in_margin(self, center: np.ndarray) -> float:
         return float(self.support_threshold_q99 - self.center_knn_distance(center))
+
+    def reference_counts_within(self, threshold: float) -> np.ndarray:
+        """Exact per-reference counts from a vectorized sorted-distance index."""
+
+        columns = self.reference_distances.shape[1]
+        insertions = np.searchsorted(
+            self._reference_search_values,
+            self._reference_row_offsets + float(threshold),
+            side="right",
+        )
+        return insertions - np.arange(len(insertions), dtype=np.int64) * columns
 
     def cluster_diagnostics(self, center: np.ndarray) -> dict[str, float | int | bool]:
         distances = np.linalg.norm(self.cluster_centers - np.asarray(center)[None, :], axis=1)
