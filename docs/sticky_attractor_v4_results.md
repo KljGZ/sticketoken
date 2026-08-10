@@ -61,6 +61,8 @@ The query ledger contains 385 process records:
 
 The difference of 57,648 texts is recorded as cache hits.
 
+The per-process ledgers also preserve the implementation commit used for each query. Preparation, exhaustive screening, and all CEM searches submitted 14,306,664 texts under `3ae2128`. One 72,000-text validation ran under `9d20db9`; the remaining 12,888,000 validation texts ran under `0be6cc9`, which block-vectorized the same exact bootstrap lookups. V4-only tests compare the vectorized confidence bounds with the scalar reference. Later commits `5ee9a75` and `03182ea` change the result audit and certificate-aligned visualization/report only; they do not alter the recorded search or validation outputs.
+
 ## Certification frontier
 
 | Task | Certified lengths | Count |
