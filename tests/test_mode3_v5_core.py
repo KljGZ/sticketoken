@@ -160,13 +160,27 @@ def test_anchor_bootstrap_is_deterministic_and_refits_registered_cluster_count()
         lambda_star=2.0,
     )
     left_report = bootstrap_cluster_stability(
-        values, structure, replicates=50, anchor_count=64, seed=61, config=_unit_config()
+        values,
+        structure,
+        replicates=50,
+        anchor_count=64,
+        seed=61,
+        config=_unit_config(),
+        group_ids=np.asarray([f"g{index // 2}" for index in range(len(values))]),
     )
     right_report = bootstrap_cluster_stability(
-        values, structure, replicates=50, anchor_count=64, seed=61, config=_unit_config()
+        values,
+        structure,
+        replicates=50,
+        anchor_count=64,
+        seed=61,
+        config=_unit_config(),
+        group_ids=np.asarray([f"g{index // 2}" for index in range(len(values))]),
     )
     assert left_report == right_report
     assert left_report["replicates"] == 50
+    assert left_report["bootstrap_unit"] == "source_group"
+    assert left_report["anchor_group_count"] == 64
     assert len(left_report["cluster_persistence"]) == 2
     assert left_report["minimum_cluster_persistence"] > 0.8
     assert left_report["assignment_ari_q50"] > 0.9

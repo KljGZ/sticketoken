@@ -13,7 +13,7 @@ from matplotlib.animation import ArtistAnimation, FFMpegWriter, PillowWriter
 import numpy as np
 import pandas as pd
 
-from .atomic_io import write_json, write_npz
+from .atomic_io import write_csv, write_json, write_npz
 from .occupancy import cosine_distance_to_centers
 from .scoring import EvaluationBundle
 
@@ -98,7 +98,7 @@ def fit_fixed_projection(
             "frozen": True,
         },
     )
-    pd.DataFrame(
+    fit_coordinates = pd.DataFrame(
         {
             "kind": ["benign"] * len(benign) + ["clean"] * len(clean),
             "pca_x": pca2[:, 0],
@@ -106,7 +106,8 @@ def fit_fixed_projection(
             "umap_x": umap2[:, 0],
             "umap_y": umap2[:, 1],
         }
-    ).to_csv(output / "fit_coordinates.csv", index=False)
+    )
+    write_csv(output / "fit_coordinates.csv", fit_coordinates.to_dict(orient="records"), list(fit_coordinates.columns))
     return FixedProjection(pca_mean=pca.mean_, pca_components=pca.components_, umap_model=model, bounds=bounds)
 
 
@@ -220,7 +221,7 @@ def save_snapshot(
         }
     )
     coordinates_path = output / "coordinates.csv"
-    coordinates.to_csv(coordinates_path, index=False)
+    write_csv(coordinates_path, coordinates.to_dict(orient="records"), list(coordinates.columns))
     metadata_path = output / "snapshot.json"
     write_json(metadata_path, dict(metadata))
     image_path = output / "cluster.png"

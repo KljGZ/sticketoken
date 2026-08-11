@@ -25,6 +25,11 @@ def test_registered_v5_scope_and_every_actual_length() -> None:
     assert config["validation"]["bootstrap_replicates"] == 500
     assert config["structure"]["maximum_cluster_count"] == 4
     assert config["insertion"]["protocol"] == "shared_literal_insert_once"
+    assert config["certification"] == {
+        "maximum_cmax": 0.40,
+        "compactness_threshold_source": "preregistered_absolute_cosine_distance",
+        "matched_random_is_gate": False,
+    }
 
 
 def test_query_only_source_has_no_parameter_gradient_or_old_mode_dependency() -> None:
@@ -64,3 +69,7 @@ def test_test_and_ood_are_sealed_until_validation_freeze() -> None:
     sealed_region = source[source.index("def _encode_sealed_phase") : source.index("def command_retrieval")]
     assert "validation freeze must complete before test/OOD" in sealed_region
     assert '"refit_performed": False' in sealed_region
+    assert "write_json(sealed_path" not in sealed_region
+    freeze_region = source[source.index("def command_freeze") : source.index("def _selected_unique")]
+    assert "write_json(sealed_path" not in freeze_region
+    assert 'gate_state = target / "gate_state.json"' in freeze_region

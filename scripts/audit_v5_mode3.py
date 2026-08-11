@@ -156,6 +156,7 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         for length in range(1, 31)
     )
     sealed = json.loads((results / "sealed_state.json").read_text(encoding="utf-8"))
+    gate_state = json.loads((results / "frozen" / "gate_state.json").read_text(encoding="utf-8"))
     contract = json.loads((results / "run_contract.json").read_text(encoding="utf-8"))
     dirty_commit = contract["run_code_commit"] != git(root, "rev-parse", "HEAD")
     trajectory_generations = len(list(results.glob("search/*/length_*/restart_*/generation_*/COMPLETE.json")))
@@ -187,7 +188,7 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
     return {
         "counts": counts,
         "snapshots": snapshots,
-        "sealed_state": sealed,
+        "sealed_state": {"initial": sealed, "validation_gate": gate_state},
         "run_contract": contract,
         "errors": errors,
     }

@@ -38,7 +38,7 @@ The only search objectives are:
 
 Exact realizability is a hard filter. Minimum total and per-position coverage, maximum outlier rate, maximum cluster count, and minimum cluster mass are structural constraints. During CEM these constraints progress from a loose early search envelope to their registered final values. The historical Pareto archive is the non-dominated union of all previous full-search archive members and can never regress.
 
-Displacement, global pairwise contraction, empirical support type, separability, and matched random triggers are frozen-candidate diagnostics only. Top-K, PoisonRank, and retrieval margins are downstream outcomes and never feed search, length selection, or cluster selection.
+Displacement, global pairwise contraction, empirical support type, separability, and matched random triggers are diagnostics only. The compactness certificate uses the independently preregistered absolute cosine-distance threshold, never a random-trigger quantile. Top-K, PoisonRank, and retrieval margins are downstream outcomes and never feed search, length selection, or cluster selection.
 
 ## P1, P2, and P3
 

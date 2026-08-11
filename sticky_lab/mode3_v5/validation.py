@@ -33,6 +33,21 @@ def _logical_values(bundle: EvaluationBundle, name: str, task: str) -> np.ndarra
     return np.concatenate(list(bundle.view_embeddings.values()), axis=0)
 
 
+def _logical_group_ids(
+    bundle: EvaluationBundle, name: str, task: str, base_group_ids: np.ndarray
+) -> np.ndarray:
+    base = np.asarray(base_group_ids).astype(str)
+    if len(base) != len(bundle.clean_embeddings):
+        raise ValueError("validation group IDs do not align with clean embeddings")
+    if task == "shared":
+        return np.tile(base, len(bundle.view_embeddings))
+    if task == "conditional" and name == "random":
+        return np.tile(base, sum(view.startswith("random_r") for view in bundle.view_embeddings))
+    if name in bundle.view_embeddings:
+        return base.copy()
+    return np.tile(base, len(bundle.view_embeddings))
+
+
 def _remap_labels(labels: np.ndarray, column_to_original: np.ndarray) -> np.ndarray:
     result = np.empty_like(labels)
     for observed, original in enumerate(column_to_original):
@@ -69,6 +84,7 @@ def bootstrap_cluster_stability(
     anchor_count: int,
     seed: int,
     config: Mapping[str, Any],
+    group_ids: np.ndarray | None = None,
 ) -> dict[str, Any]:
     from scipy.optimize import linear_sum_assignment
     from sklearn.metrics import adjusted_rand_score
@@ -76,8 +92,19 @@ def bootstrap_cluster_stability(
     values = np.asarray(values, dtype=np.float64)
     count = int(structure.cluster_count)
     rng = np.random.default_rng(seed)
-    anchors = np.sort(rng.choice(len(values), size=min(anchor_count, len(values)), replace=False))
+    groups = np.asarray(group_ids if group_ids is not None else np.arange(len(values))).astype(str)
+    if groups.shape != (len(values),):
+        raise ValueError("bootstrap group IDs have the wrong shape")
+    unique_groups = np.unique(groups)
+    selected_groups = np.sort(
+        rng.choice(unique_groups, size=min(anchor_count, len(unique_groups)), replace=False)
+    )
+    anchor_mask = np.isin(groups, selected_groups)
+    anchors = np.flatnonzero(anchor_mask)
     anchor_values = values[anchors]
+    anchor_groups = groups[anchors]
+    group_lookup = {value: index for index, value in enumerate(selected_groups.tolist())}
+    anchor_group_index = np.asarray([group_lookup[value] for value in anchor_groups], dtype=np.int64)
     original_anchor = np.argmin(cosine_distance_to_centers(anchor_values, structure.centers), axis=1)
     center_drifts = np.zeros((replicates, count), dtype=np.float64)
     radii_q95 = np.zeros((replicates, count), dtype=np.float64)
@@ -89,9 +116,13 @@ def bootstrap_cluster_stability(
     # refits every spherical centroid by a weighted M-step.  This preserves the
     # registered cluster count, captures center/radius/mass instability, and
     # avoids 500 fresh high-dimensional K-means runs per validated candidate.
-    counts = rng.multinomial(len(anchors), np.full(len(anchors), 1.0 / len(anchors)), size=replicates)
+    counts = rng.multinomial(
+        len(selected_groups),
+        np.full(len(selected_groups), 1.0 / len(selected_groups)),
+        size=replicates,
+    )
     for replicate in range(replicates):
-        weights = counts[replicate].astype(np.float64)
+        weights = counts[replicate, anchor_group_index].astype(np.float64)
         centers = structure.centers.astype(np.float64).copy()
         for cluster in range(count):
             member_mask = original_anchor == cluster
@@ -126,7 +157,9 @@ def bootstrap_cluster_stability(
     persistent = (center_drifts <= 0.10) & (masses >= minimum_mass)
     return {
         "replicates": int(replicates),
-        "anchor_count": int(len(anchors)),
+        "bootstrap_unit": "source_group",
+        "anchor_group_count": int(len(selected_groups)),
+        "anchor_value_count": int(len(anchors)),
         "cluster_persistence": np.mean(persistent, axis=0).tolist(),
         "minimum_cluster_persistence": float(np.min(np.mean(persistent, axis=0))),
         "center_drift_q50": np.quantile(center_drifts, 0.50, axis=0).tolist(),
@@ -173,6 +206,7 @@ def freeze_validation_bundle(
     benign_probe: np.ndarray,
     config: Mapping[str, Any],
     seed: int,
+    group_ids: np.ndarray,
 ) -> tuple[FrozenCandidate, dict[str, Any]]:
     validation = config["validation"]
     objectives = config["objectives"]
@@ -181,6 +215,7 @@ def freeze_validation_bundle(
     structure_metrics: dict[str, dict[str, Any]] = {}
     for index, (name, structure) in enumerate(sorted(bundle.structures.items())):
         values = _logical_values(bundle, name, task)
+        logical_groups = _logical_group_ids(bundle, name, task, group_ids)
         report = bootstrap_cluster_stability(
             values,
             structure,
@@ -188,6 +223,7 @@ def freeze_validation_bundle(
             anchor_count=int(validation["bootstrap_anchor_count"]),
             seed=seed + index * 100003,
             config=config,
+            group_ids=logical_groups,
         )
         stability[name] = report
         point_q95 = structure.radius_quantiles[:, 2]
@@ -250,7 +286,7 @@ def freeze_validation_bundle(
         "minimum_cluster_persistence": min(
             float(value["minimum_cluster_persistence"]) for value in stability.values()
         ),
-        "minimum_assignment_ari": min(float(value["assignment_ari_q50"]) for value in stability.values()),
+        "minimum_assignment_ari": min(float(value["assignment_ari_q05"]) for value in stability.values()),
     }
     frozen_candidate = FrozenCandidate(
         candidate_key=candidate_key,

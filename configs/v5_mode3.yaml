@@ -94,13 +94,15 @@ objectives:
 calibration:
   matched_random_count_per_length: 32
   random_lengths: [1, 2, 5, 10, 20, 30]
-  compactness_quantile: 0.10
-  compactness_upper_cap: 0.40
-  minimum_calibrated_compactness: 0.10
   projection_benign_count: 512
   projection_clean_count: 512
   umap_neighbors: 30
   umap_min_dist: 0.10
+
+certification:
+  maximum_cmax: 0.40
+  compactness_threshold_source: preregistered_absolute_cosine_distance
+  matched_random_is_gate: false
 
 search:
   algorithm: independent_pareto_cem_embedding_output_query_only

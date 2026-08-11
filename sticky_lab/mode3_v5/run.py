@@ -457,13 +457,10 @@ def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path
             record["pool_indices"] = ",".join(map(str, pool_indices.tolist()))
             records.append(record)
     successful = [record for record in records if not record.get("evaluation_error")]
-    if not successful:
-        raise RuntimeError("calibration produced no valid matched-random structures")
-    calibrated = float(np.quantile([record["cmax"] for record in successful], float(config["calibration"]["compactness_quantile"])))
-    maximum_cmax = min(
-        float(config["calibration"]["compactness_upper_cap"]),
-        max(float(config["calibration"]["minimum_calibrated_compactness"]), calibrated),
+    diagnostic_quantile = (
+        float(np.quantile([record["cmax"] for record in successful], 0.10)) if successful else None
     )
+    maximum_cmax = float(config["certification"]["maximum_cmax"])
     target.mkdir(parents=True, exist_ok=True)
     calibration_csv = target / "matched_random_calibration.csv"
     thresholds = target / "frozen_thresholds.json"
@@ -473,12 +470,12 @@ def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path
         {
             "schema_version": "mode3-v5-frozen-thresholds-v1",
             "maximum_cmax": maximum_cmax,
-            "calibrated_random_cmax_quantile": calibrated,
-            "quantile": float(config["calibration"]["compactness_quantile"]),
-            "upper_cap": float(config["calibration"]["compactness_upper_cap"]),
+            "maximum_cmax_source": config["certification"]["compactness_threshold_source"],
+            "diagnostic_random_cmax_q10": diagnostic_quantile,
             "calibration_candidate_count": len(records),
             "successful_candidate_count": len(successful),
             "search_feedback": False,
+            "matched_random_is_gate": False,
             "frozen_before_formal_search": True,
         },
     )
@@ -881,6 +878,55 @@ def command_validate(
             random_replicates=int(config["insertion"]["random_replicates"]),
             separator=str(config["insertion"]["separator"]),
         )
+        if bundle.record.get("evaluation_error"):
+            candidate_dir.mkdir(parents=True, exist_ok=True)
+            evaluation_path = candidate_dir / "evaluation_record.json"
+            realizability_path = candidate_dir / "realizability.json"
+            summary_path = candidate_dir / "validation_summary.json"
+            certificate_path = candidate_dir / "certification.json"
+            failure_summary = {
+                "evaluation_error": bundle.record["evaluation_error"],
+                "occupancy_auc": float(bundle.record["occupancy_auc"]),
+                "cmax": float(bundle.record["cmax"]),
+                "cavg": float(bundle.record["cavg"]),
+                "lambda_star": 0.0,
+                "coverage_lcb": 0.0,
+                "worst_position_coverage_lcb": 0.0,
+                "outlier_rate_ucb": 1.0,
+            }
+            failure_certificate = {
+                "level_0_realizable": bool(audit.exact_token_roundtrip and audit.inserted_once),
+                "level_1_attractor": False,
+                "level_2_low_occupancy": False,
+                "level_1_gates": {"fit": False},
+                "level_2_gates": {"fit": False},
+            }
+            write_json(evaluation_path, bundle.record)
+            write_json(realizability_path, audit_to_dict(audit))
+            write_json(summary_path, failure_summary)
+            write_json(certificate_path, failure_certificate)
+            local_artifacts = [evaluation_path, realizability_path, summary_path, certificate_path]
+            write_completion(
+                candidate_dir,
+                local_artifacts,
+                {"task": task, "length": length, "candidate_rank": rank, "candidate_key": candidate.key},
+            )
+            candidate_artifacts.extend([*local_artifacts, candidate_dir / "COMPLETE.json"])
+            candidate_summaries.append(
+                {
+                    "candidate_key": candidate.key,
+                    "token_ids": candidate.key,
+                    "trigger": candidate.trigger,
+                    "actual_token_length": candidate.actual_token_length,
+                    "task": task,
+                    "length": length,
+                    "candidate_rank": rank,
+                    **failure_summary,
+                    **failure_certificate,
+                    "candidate_dir": candidate_dir.relative_to(output).as_posix(),
+                }
+            )
+            continue
         frozen, summary = freeze_validation_bundle(
             bundle,
             candidate_key=candidate.key,
@@ -890,6 +936,7 @@ def command_validate(
             benign_probe=_role_embeddings(output, "validation_benign_probe"),
             config=config,
             seed=int(config["seed"]) + length * 1009 + rank * 100003 + sum(map(ord, task)),
+            group_ids=validation_frame["source_group"].astype(str).to_numpy(),
         )
         certificate = certification(summary, audit_to_dict(audit), thresholds, config)
         candidate_dir.mkdir(parents=True, exist_ok=True)
@@ -1064,12 +1111,16 @@ def command_freeze(config: Mapping[str, Any], output: Path) -> None:
             "test_and_ood_refit_prohibited": True,
         },
     )
-    sealed_path = output / "sealed_state.json"
-    sealed = json.loads(sealed_path.read_text(encoding="utf-8"))
-    sealed["gate_open"] = gate_open
-    sealed["validation_selection_sha256"] = sha256_file(selection_path)
-    write_json(sealed_path, sealed)
-    _write_phase_completion(output, target, [selection_path, sealed_path], metadata)
+    gate_state = target / "gate_state.json"
+    write_json(
+        gate_state,
+        {
+            "gate_open": gate_open,
+            "validation_selection_sha256": sha256_file(selection_path),
+            "initial_seal_sha256": sha256_file(output / "sealed_state.json"),
+        },
+    )
+    _write_phase_completion(output, target, [selection_path, gate_state], metadata)
 
 
 def _selected_unique(output: Path) -> list[dict[str, Any]]:
@@ -1165,12 +1216,19 @@ def _encode_sealed_phase(
     write_json(overall, {"phase": phase, "refit_performed": False, "candidates": summaries})
     ledger = _save_ledger(output, oracle, phase, phase=phase)
     artifacts.extend([overall, ledger])
-    sealed_path = output / "sealed_state.json"
-    sealed = json.loads(sealed_path.read_text(encoding="utf-8"))
-    sealed[f"{phase}_encoded"] = True
-    sealed[f"{phase}_query_ledger"] = ledger.relative_to(output).as_posix()
-    write_json(sealed_path, sealed)
-    artifacts.append(sealed_path)
+    seal_audit = target / "seal_audit.json"
+    write_json(
+        seal_audit,
+        {
+            "phase": phase,
+            "encoded_after_validation_freeze": True,
+            "query_ledger": ledger.relative_to(output).as_posix(),
+            "initial_seal_sha256": sha256_file(output / "sealed_state.json"),
+            "validation_selection_sha256": sha256_file(output / "frozen" / "selection.json"),
+            "refit_performed": False,
+        },
+    )
+    artifacts.append(seal_audit)
     _write_phase_completion(output, target, artifacts, metadata)
 
 
