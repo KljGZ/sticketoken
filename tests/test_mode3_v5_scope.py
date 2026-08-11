@@ -25,6 +25,7 @@ def test_registered_v5_scope_and_every_actual_length() -> None:
     assert config["validation"]["bootstrap_replicates"] == 500
     assert config["structure"]["maximum_cluster_count"] == 4
     assert config["insertion"]["protocol"] == "shared_literal_insert_once"
+    assert config["data"]["ood_sample_sizes"] == {"ood_trigger": 480, "ood_benign_probe": 480}
     assert config["certification"] == {
         "maximum_cmax": 0.40,
         "compactness_threshold_source": "preregistered_absolute_cosine_distance",

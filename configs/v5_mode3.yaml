@@ -41,8 +41,8 @@ data:
     test_trigger: 1000
     test_benign_probe: 2000
   ood_sample_sizes:
-    ood_trigger: 500
-    ood_benign_probe: 500
+    ood_trigger: 480
+    ood_benign_probe: 480
 
 tokenizer:
   allow_special_tokens: false
