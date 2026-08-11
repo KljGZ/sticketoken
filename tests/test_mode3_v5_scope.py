@@ -24,6 +24,9 @@ def test_registered_v5_scope_and_every_actual_length() -> None:
     assert config["search"]["tasks"] == ["prefix", "suffix", "random", "conditional", "shared"]
     assert config["validation"]["bootstrap_replicates"] == 500
     assert config["runtime"]["calibration_shards"] == 8
+    assert config["search"]["full_reevaluation_candidates"] == 0
+    assert config["search"]["formal_archive_size"] == 4
+    assert config["search"]["single_token_full_candidates"] == 8
     assert config["structure"]["maximum_cluster_count"] == 4
     assert config["insertion"]["protocol"] == "shared_literal_insert_once"
     assert config["data"]["ood_sample_sizes"] == {"ood_trigger": 480, "ood_benign_probe": 480}

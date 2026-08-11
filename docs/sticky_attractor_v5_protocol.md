@@ -73,7 +73,7 @@ Validation freezes the trigger literal and IDs, actual token length, protocol, c
 
 Each generation uses a deterministic rotating batch manifest. Candidate feasibility follows the progressively tightened structural envelope, while non-dominated sorting and crowding distance operate only on the registered compactness and occupancy objectives. Every generation persists the complete population, Pareto front, elites, token counts, categorical distribution, RNG state, query delta, batch manifest, resource record, checkpoint, and selected high-dimensional cluster snapshots.
 
-At registered intervals and at each restart's end, selected historical candidates are re-evaluated on the entire search-trigger and search-benign-probe roles. Only these full-search records may enter a task/length formal archive, and only formal archive candidates may enter validation.
+After all three independent restarts for a task/length complete, four non-dominated historical candidates are re-evaluated exactly once on the entire search-trigger and search-benign-probe roles. Restart-local archives never enter validation directly. Only these merged full-search records may enter a task/length formal archive, and only formal archive candidates may enter validation. The all-token length-1 screen fully re-evaluates eight shortlisted tokens and retains a four-member formal archive.
 
 ## Fixed projection visualization
 

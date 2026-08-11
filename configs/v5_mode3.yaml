@@ -114,9 +114,10 @@ search:
   uniform_mixture: 0.10
   update_alpha: 0.30
   historical_archive_size: 128
-  formal_archive_size: 32
-  full_reevaluation_interval: 8
-  full_reevaluation_candidates: 8
+  formal_archive_size: 4
+  full_reevaluation_interval: 16
+  full_reevaluation_candidates: 0
+  single_token_full_candidates: 8
   rotating_batch_size: 64
   single_token_batch_size: 64
   maximum_materialization_attempts: 16384
@@ -127,7 +128,7 @@ search:
 
 validation:
   candidates_per_length: 2
-  matched_random_count: 32
+  matched_random_count: 8
   bootstrap_replicates: 500
   bootstrap_anchor_count: 128
   minimum_cluster_persistence: 0.80

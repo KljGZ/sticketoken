@@ -679,7 +679,9 @@ def command_formalize_screen(
         ):
             raise RuntimeError(f"incomplete single-token shard: {task}/{shard}")
         records.extend(_decode_record(row) for row in pd.read_csv(source / "population.csv").to_dict(orient="records"))
-    selected_indices = select_nsga2(records, min(64, len(records)))
+    selected_indices = select_nsga2(
+        records, min(int(config["search"]["single_token_full_candidates"]), len(records))
+    )
     tokenizer = _tokenizer(config)
     oracle = _oracle(config, device)
     evaluator = _make_evaluator(
@@ -849,7 +851,14 @@ def command_search(
     _write_phase_completion(output, run_output / "job_complete", job_artifacts, job_metadata)
 
 
-def command_merge_search(config: Mapping[str, Any], output: Path, *, task: str, length: int) -> None:
+def command_merge_search(
+    config: Mapping[str, Any],
+    output: Path,
+    device: str | None,
+    *,
+    task: str,
+    length: int,
+) -> None:
     target = output / "search" / task / f"length_{length:02d}" / "merged"
     metadata = {"phase": "merge_search", "task": task, "length": length}
     if _phase_valid(output, target, metadata):
@@ -863,12 +872,54 @@ def command_merge_search(config: Mapping[str, Any], output: Path, *, task: str, 
             {"phase": "search_job", "task": task, "length": length, "restart": restart},
         ):
             raise RuntimeError(f"incomplete V5 search restart: {task}/{length}/{restart}")
-        records.extend(json.loads((source / "formal_archive.json").read_text(encoding="utf-8")))
-    formal = update_historical_archive([], records, int(config["search"]["formal_archive_size"]))
+        records.extend(json.loads((source / "historical_archive.json").read_text(encoding="utf-8")))
+    if not records:
+        raise RuntimeError(f"no historical CEM candidates to formalize: {task}/{length}")
+    records = update_historical_archive([], records, max(len(records), 1))
+    selected_indices = select_nsga2(
+        records, min(int(config["search"]["formal_archive_size"]), len(records))
+    )
+    tokenizer = _tokenizer(config)
+    oracle = _oracle(config, device)
+    evaluator = _make_evaluator(
+        config,
+        output,
+        oracle,
+        task=task,
+        role="search_trigger",
+        indices=None,
+        minimum_coverage=float(config["structure"]["minimum_total_coverage"]),
+        maximum_outlier_rate=float(config["structure"]["maximum_outlier_rate"]),
+    )
+    full = []
+    for index in selected_indices:
+        source_record = records[index]
+        candidate = _candidate_from_ids(tokenizer, str(source_record["token_ids"]))
+        record = evaluator.evaluate(candidate).record
+        record.update(
+            {
+                "pool_indices": source_record["pool_indices"],
+                "source_restart": source_record.get("restart"),
+                "source_generation": source_record.get("generation"),
+                "evaluation_scope": "full_search",
+            }
+        )
+        full.append(record)
+    formal = update_historical_archive([], full, int(config["search"]["formal_archive_size"]))
     target.mkdir(parents=True, exist_ok=True)
     archive = target / "formal_archive.json"
+    full_path = target / "full_search_evaluations.csv"
     write_json(archive, formal)
-    _write_phase_completion(output, target, [archive], metadata)
+    write_csv(full_path, [flatten_record(record) for record in full])
+    ledger = _save_ledger(
+        output,
+        oracle,
+        f"formalize_{task}_length_{length:02d}",
+        phase="formalize_multi_token",
+        task=task,
+        length=length,
+    )
+    _write_phase_completion(output, target, [archive, full_path, ledger], metadata)
 
 
 def _formal_archive_path(output: Path, task: str, length: int) -> Path:
@@ -1595,7 +1646,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     elif args.command == "search":
         command_search(config, output, args.device, task=args.task, length=args.length, restart=args.restart)
     elif args.command == "merge-search":
-        command_merge_search(config, output, task=args.task, length=args.length)
+        command_merge_search(config, output, args.device, task=args.task, length=args.length)
     elif args.command == "validate":
         command_validate(config, output, args.device, task=args.task, length=args.length)
     elif args.command == "freeze":
