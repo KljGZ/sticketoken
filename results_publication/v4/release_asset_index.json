@@ -4,6 +4,10 @@
   "content_file_count": 2856,
   "content_root_sha256": "b4b871109499d8fede3396f776b119682db6fe0f874037b93baba81e0d667bd1",
   "content_total_bytes": 157863998,
+  "github_asset_id": 509761245,
+  "github_release_id": 368366119,
+  "github_release_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v4-full-results",
+  "github_tag": "mode3-v4-full-results",
   "name": "mode3-v4-full-results.tar.gz",
   "schema_version": "mode3-release-asset-v1",
   "sha256": "30eb4a2a41ff0d2b4101faa5c032f1ce6187d65cd7039be906bdcee7560004d0"

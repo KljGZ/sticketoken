@@ -32,7 +32,7 @@ The archive is deterministic: entries follow the complete manifest order, store 
 
 Use `scripts/recover_v4_results.py` with the asset hash and `complete_file_manifest.csv`. The script rejects path traversal and non-regular archive members, verifies the compressed asset, restores atomically per file, and then verifies every restored file's path, byte count, and SHA-256.
 
-The publication is accepted only after a fresh clone downloads the GitHub Release asset and reconstructs the same 2,856-file, 157,863,998-byte content root.
+The publication was accepted from fresh clone commit `faeb404ce8c20dd0ab0735f3ab54ddaaf888321d`. That clone downloaded the Release asset with eight verified byte ranges, reconstructed the same 2,856-file, 157,863,998-byte content root, checked every path and SHA-256, and then passed the frozen V4 result audit with 120 summaries, 120 frontier rows, 2,854 original manifest rows, and zero scope violations.
 
 ## Scientific status
 

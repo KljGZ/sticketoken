@@ -1,0 +1,21 @@
+{
+  "asset_bytes": 94014838,
+  "asset_sha256": "30eb4a2a41ff0d2b4101faa5c032f1ce6187d65cd7039be906bdcee7560004d0",
+  "content_file_count": 2856,
+  "content_root_sha256": "b4b871109499d8fede3396f776b119682db6fe0f874037b93baba81e0d667bd1",
+  "content_total_bytes": 157863998,
+  "fresh_clone_commit": "faeb404ce8c20dd0ab0735f3ab54ddaaf888321d",
+  "fresh_clone_downloaded_release_asset": true,
+  "fresh_clone_recovery_complete": true,
+  "github_asset_id": 509761245,
+  "github_release_id": 368366119,
+  "github_release_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v4-full-results",
+  "github_tag": "mode3-v4-full-results",
+  "local_matches_remote": true,
+  "manifest_rows": 2854,
+  "remote_matches_github_reconstruction": true,
+  "schema_version": "mode3-v4-publication-audit-v1",
+  "v4_audit_frontier_rows": 120,
+  "v4_audit_scope_violations": [],
+  "v4_audit_summary_count": 120
+}
