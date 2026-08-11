@@ -52,7 +52,7 @@ def evaluate_multiscale_occupancy(
     if len(scales) == 1:
         auc = float(upper_array[0])
     else:
-        auc = float(np.trapz(upper_array, scales) / (scales[-1] - scales[0]))
+        auc = float(np.trapezoid(upper_array, scales) / (scales[-1] - scales[0]))
     valid = scales[upper_array <= float(epsilon)]
     lambda_star = float(np.max(valid)) if len(valid) else 0.0
     return observed_array, upper_array, auc, lambda_star

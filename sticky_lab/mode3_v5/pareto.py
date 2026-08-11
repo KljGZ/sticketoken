@@ -115,6 +115,12 @@ def update_historical_archive(
         previous = by_key.get(key)
         if previous is None or dominates(record, previous, objectives):
             by_key[key] = dict(record)
-    values = list(by_key.values())
-    indices = select_nsga2(values, min(maximum, len(values)), objectives)
+    values = non_dominated_front(by_key.values(), objectives)
+    if len(values) <= maximum:
+        return sorted(values, key=lambda record: str(record.get("candidate_key", "")))
+    distance = crowding_distance(values, list(range(len(values))), objectives)
+    indices = sorted(
+        range(len(values)),
+        key=lambda index: (-distance[index], str(values[index].get("candidate_key", ""))),
+    )[:maximum]
     return [values[index] for index in indices]

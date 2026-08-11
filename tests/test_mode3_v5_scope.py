@@ -63,4 +63,4 @@ def test_test_and_ood_are_sealed_until_validation_freeze() -> None:
     assert "ood_trigger" not in allowed_region
     sealed_region = source[source.index("def _encode_sealed_phase") : source.index("def command_retrieval")]
     assert "validation freeze must complete before test/OOD" in sealed_region
-    assert "refit_performed" not in sealed_region
+    assert '"refit_performed": False' in sealed_region
