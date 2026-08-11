@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import tarfile
+import urllib.request
 from pathlib import Path, PurePosixPath
 
 
@@ -20,6 +21,39 @@ def sha256_file(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def download_with_api(repo: str, tag: str, asset_name: str, destination: Path, token: str) -> None:
+    request = urllib.request.Request(
+        f"https://api.github.com/repos/{repo}/releases/tags/{tag}",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "sticky-token-result-recovery",
+        },
+    )
+    with urllib.request.urlopen(request) as response:
+        release = json.load(response)
+    matches = [asset for asset in release.get("assets", []) if asset.get("name") == asset_name]
+    if len(matches) != 1:
+        raise RuntimeError(f"expected one release asset named {asset_name}, found {len(matches)}")
+    asset_request = urllib.request.Request(
+        matches[0]["url"],
+        headers={
+            "Accept": "application/octet-stream",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "sticky-token-result-recovery",
+        },
+    )
+    output = destination / asset_name
+    temporary = output.with_suffix(output.suffix + ".tmp")
+    with urllib.request.urlopen(asset_request) as response, temporary.open("wb") as handle:
+        shutil.copyfileobj(response, handle, 1024 * 1024)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, output)
 
 
 def download_with_gh(repo: str, tag: str, asset_name: str, destination: Path) -> None:
@@ -122,13 +156,18 @@ def main() -> None:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--destination", required=True, type=Path)
     parser.add_argument("--audit-output", required=True, type=Path)
+    parser.add_argument("--github-token-env", default="GITHUB_TOKEN")
     args = parser.parse_args()
 
     destination = args.destination.resolve()
     archive = args.archive.resolve() if args.archive else destination / args.asset_name
     if args.archive is None:
         destination.mkdir(parents=True, exist_ok=True)
-        download_with_gh(args.repo, args.tag, args.asset_name, destination)
+        token = os.environ.get(args.github_token_env, "")
+        if token:
+            download_with_api(args.repo, args.tag, args.asset_name, destination, token)
+        else:
+            download_with_gh(args.repo, args.tag, args.asset_name, destination)
     observed_asset_hash = sha256_file(archive)
     if observed_asset_hash != args.asset_sha256:
         raise SystemExit(f"asset SHA-256 mismatch: {observed_asset_hash}")
