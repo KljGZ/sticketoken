@@ -125,6 +125,7 @@ def _completion(path: Path) -> bool:
 
 
 def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str, Any]:
+    expected_calibration = int(config["runtime"]["calibration_shards"])
     expected_screen = len(TASKS) * int(config["runtime"]["screen_shards_per_task"])
     expected_search = len(TASKS) * 29 * int(config["search"]["restarts_per_length"])
     expected_merge = len(TASKS) * 29
@@ -133,6 +134,10 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         _completion(results / "screen" / task / f"shard_{shard:02d}")
         for task in TASKS
         for shard in range(int(config["runtime"]["screen_shards_per_task"]))
+    )
+    calibration = sum(
+        _completion(results / "calibration_shards" / f"shard_{shard:02d}")
+        for shard in range(expected_calibration)
     )
     searches = sum(
         _completion(results / "search" / task / f"length_{length:02d}" / f"restart_{restart:02d}" / "job_complete")
@@ -166,6 +171,7 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
     gifs = len(list(results.glob("search/*/length_*/restart_*/optimization.gif")))
     mp4s = len(list(results.glob("search/*/length_*/restart_*/optimization.mp4")))
     counts = {
+        "calibration_shard": [calibration, expected_calibration],
         "screen": [screen, expected_screen],
         "search_restart": [searches, expected_search],
         "search_merge": [merges, expected_merge],

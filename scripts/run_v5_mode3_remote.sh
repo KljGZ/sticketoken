@@ -92,7 +92,13 @@ submit() {
 }
 
 run_one prepare 0 prepare
-run_one calibrate 0 calibrate
+for shard in $(seq 0 7); do
+  submit "calibrate_${shard}" "$((shard % WORKERS))" calibrate --shard "$shard" --shards 8
+done
+flush_jobs
+"$PYTHON" -m sticky_lab.mode3_v5.run --config "$CONFIG" --output "$OUTPUT" \
+  merge-calibration --shards 8 >"$LOG_ROOT/merge_calibration.log" 2>&1
+event merge_calibration complete
 "$PYTHON" -m sticky_lab.mode3_v5.run --config "$CONFIG" --output "$OUTPUT" register \
   >"$LOG_ROOT/register.log" 2>&1
 event register complete

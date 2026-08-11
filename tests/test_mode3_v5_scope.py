@@ -23,6 +23,7 @@ def test_registered_v5_scope_and_every_actual_length() -> None:
     }
     assert config["search"]["tasks"] == ["prefix", "suffix", "random", "conditional", "shared"]
     assert config["validation"]["bootstrap_replicates"] == 500
+    assert config["runtime"]["calibration_shards"] == 8
     assert config["structure"]["maximum_cluster_count"] == 4
     assert config["insertion"]["protocol"] == "shared_literal_insert_once"
     assert config["data"]["ood_sample_sizes"] == {"ood_trigger": 480, "ood_benign_probe": 480}
@@ -31,6 +32,10 @@ def test_registered_v5_scope_and_every_actual_length() -> None:
         "compactness_threshold_source": "preregistered_absolute_cosine_distance",
         "matched_random_is_gate": False,
     }
+    runner = (V5 / "run.py").read_text(encoding="utf-8")
+    assert "calibration_global_index" in runner
+    assert "global_index % shards != shard" in runner
+    assert 'subparsers.add_parser("merge-calibration")' in runner
 
 
 def test_query_only_source_has_no_parameter_gradient_or_old_mode_dependency() -> None:

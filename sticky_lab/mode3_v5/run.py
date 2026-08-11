@@ -424,9 +424,20 @@ def _make_evaluator(
     )
 
 
-def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path, device: str | None) -> None:
-    target = output / "calibration"
-    if _phase_valid(output, target, {"phase": "calibration", "run_id": config["run_id"]}):
+def command_calibrate(
+    config_path: Path,
+    config: Mapping[str, Any],
+    output: Path,
+    device: str | None,
+    *,
+    shard: int,
+    shards: int,
+) -> None:
+    if not 0 <= shard < shards:
+        raise ValueError(f"invalid calibration shard {shard}/{shards}")
+    target = output / "calibration_shards" / f"shard_{shard:02d}"
+    metadata = {"phase": "calibration_shard", "shard": shard, "shards": shards}
+    if _phase_valid(output, target, metadata):
         return
     if not _phase_valid(output, output / "prepare", {"phase": "prepare", "run_id": config["run_id"]}):
         raise RuntimeError("prepare must complete before calibration")
@@ -435,6 +446,7 @@ def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path
     oracle = _oracle(config, device)
     rng = np.random.default_rng(int(config["seed"]) + 500003)
     records = []
+    jobs = []
     for length in config["calibration"]["random_lengths"]:
         sampled = space.sample_valid(
             int(length),
@@ -442,20 +454,57 @@ def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path
             rng=rng,
             maximum_attempts=int(config["search"]["maximum_materialization_attempts"]),
         )
-        evaluator = _make_evaluator(
-            config,
-            output,
-            oracle,
-            task="shared",
-            role="calibration_trigger",
-            indices=None,
-            minimum_coverage=float(config["structure"]["minimum_total_coverage"]),
-            maximum_outlier_rate=float(config["structure"]["maximum_outlier_rate"]),
+        for rank, (candidate, pool_indices) in enumerate(sampled):
+            jobs.append((int(length), rank, candidate, pool_indices))
+    evaluator = _make_evaluator(
+        config,
+        output,
+        oracle,
+        task="shared",
+        role="calibration_trigger",
+        indices=None,
+        minimum_coverage=float(config["structure"]["minimum_total_coverage"]),
+        maximum_outlier_rate=float(config["structure"]["maximum_outlier_rate"]),
+    )
+    for global_index, (length, rank, candidate, pool_indices) in enumerate(jobs):
+        if global_index % shards != shard:
+            continue
+        record = evaluator.evaluate(candidate).record
+        record.update(
+            {
+                "pool_indices": ",".join(map(str, pool_indices.tolist())),
+                "calibration_length": length,
+                "calibration_rank": rank,
+                "calibration_global_index": global_index,
+                "calibration_shard": shard,
+            }
         )
-        for candidate, pool_indices in sampled:
-            record = evaluator.evaluate(candidate).record
-            record["pool_indices"] = ",".join(map(str, pool_indices.tolist()))
-            records.append(record)
+        records.append(record)
+    target.mkdir(parents=True, exist_ok=True)
+    calibration_csv = target / "matched_random_calibration.csv"
+    write_csv(calibration_csv, [flatten_record(record) for record in records])
+    ledger = _save_ledger(
+        output, oracle, f"calibration_shard_{shard:02d}", phase="calibration_shard"
+    )
+    _write_phase_completion(output, target, [calibration_csv, ledger], metadata)
+
+
+def command_merge_calibration(config: Mapping[str, Any], output: Path, *, shards: int) -> None:
+    target = output / "calibration"
+    metadata = {"phase": "calibration", "run_id": config["run_id"], "shards": shards}
+    if _phase_valid(output, target, metadata):
+        return
+    records = []
+    for shard in range(shards):
+        source = output / "calibration_shards" / f"shard_{shard:02d}"
+        expected = {"phase": "calibration_shard", "shard": shard, "shards": shards}
+        if not _phase_valid(output, source, expected):
+            raise RuntimeError(f"incomplete V5 calibration shard: {shard}/{shards}")
+        records.extend(pd.read_csv(source / "matched_random_calibration.csv").to_dict(orient="records"))
+    records.sort(key=lambda value: int(value["calibration_global_index"]))
+    for record in records:
+        if pd.isna(record.get("evaluation_error")):
+            record["evaluation_error"] = ""
     successful = [record for record in records if not record.get("evaluation_error")]
     diagnostic_quantile = (
         float(np.quantile([record["cmax"] for record in successful], 0.10)) if successful else None
@@ -479,12 +528,11 @@ def command_calibrate(config_path: Path, config: Mapping[str, Any], output: Path
             "frozen_before_formal_search": True,
         },
     )
-    ledger = _save_ledger(output, oracle, "calibration", phase="calibration")
     _write_phase_completion(
         output,
         target,
-        [calibration_csv, thresholds, ledger],
-        {"phase": "calibration", "run_id": config["run_id"]},
+        [calibration_csv, thresholds],
+        metadata,
     )
 
 
@@ -492,7 +540,10 @@ def command_register(config_path: Path, config: Mapping[str, Any], output: Path)
     if _tracked_status():
         raise RuntimeError("cannot register V5 from a dirty tracked worktree")
     for phase in ("prepare", "calibration"):
-        if not _phase_valid(output, output / phase, {"phase": phase, "run_id": config["run_id"]}):
+        expected = {"phase": phase, "run_id": config["run_id"]}
+        if phase == "calibration":
+            expected["shards"] = int(config["runtime"]["calibration_shards"])
+        if not _phase_valid(output, output / phase, expected):
             raise RuntimeError(f"V5 {phase} is incomplete")
     tokenizer = _tokenizer(config)
     data_files = sorted((output / "data").glob("*.csv")) + [output / "data" / "audit.json"]
@@ -1488,7 +1539,11 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--device")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("prepare")
-    subparsers.add_parser("calibrate")
+    calibrate = subparsers.add_parser("calibrate")
+    calibrate.add_argument("--shard", type=int, required=True)
+    calibrate.add_argument("--shards", type=int, required=True)
+    merge_calibration = subparsers.add_parser("merge-calibration")
+    merge_calibration.add_argument("--shards", type=int, required=True)
     subparsers.add_parser("register")
     screen = subparsers.add_parser("screen")
     screen.add_argument("--task", choices=TASKS, required=True)
@@ -1516,12 +1571,21 @@ def main(argv: Sequence[str] | None = None) -> None:
     assert config_path is not None
     config = _read_config(config_path)
     output = _output(config, args.output)
-    if args.command not in {"prepare", "calibrate", "register"}:
+    if args.command not in {"prepare", "calibrate", "merge-calibration", "register"}:
         _assert_contract(config_path, config, output)
     if args.command == "prepare":
         command_prepare(config_path, config, output, args.device)
     elif args.command == "calibrate":
-        command_calibrate(config_path, config, output, args.device)
+        command_calibrate(
+            config_path,
+            config,
+            output,
+            args.device,
+            shard=args.shard,
+            shards=args.shards,
+        )
+    elif args.command == "merge-calibration":
+        command_merge_calibration(config, output, shards=args.shards)
     elif args.command == "register":
         command_register(config_path, config, output)
     elif args.command == "screen":

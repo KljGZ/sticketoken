@@ -150,6 +150,7 @@ retrieval:
 runtime:
   batch_size: 256
   candidate_chunk_size: 8
+  calibration_shards: 8
   screen_shards_per_task: 8
   worker_count: 8
   show_progress: true
