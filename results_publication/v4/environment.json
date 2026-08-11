@@ -1,0 +1,15 @@
+{
+  "protocol_version": 4,
+  "git_commit": "3ae2128328c438ff8d7fc1973a7309c59900392e",
+  "registered_baseline_commit": "b78bb21693e87a62287929683f575eb2a1b89be1",
+  "python": "3.11.15",
+  "numpy": "2.4.6",
+  "pandas": "3.0.5",
+  "sentence_transformers": "5.6.1",
+  "transformers": "5.14.1",
+  "scikit_learn": "1.9.0",
+  "model_id": "sentence-transformers/sentence-t5-base",
+  "model_revision_observed": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+  "embedding_dimension": 768,
+  "threat_model": "final embedding-output query-only black box"
+}

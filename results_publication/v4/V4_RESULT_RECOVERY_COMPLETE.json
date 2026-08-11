@@ -1,0 +1,13 @@
+{
+  "cem_search_archives": 232,
+  "content_root_sha256": "b4b871109499d8fede3396f776b119682db6fe0f874037b93baba81e0d667bd1",
+  "file_count": 2856,
+  "length_frontier_rows": 120,
+  "query_ledgers": 385,
+  "recovery_complete": true,
+  "reported_manifest_artifacts": 2854,
+  "schema_version": "mode3-v4-recovery-v1",
+  "single_token_completed_shards": 32,
+  "task_by_length_validations": 120,
+  "total_bytes": 157863998
+}
