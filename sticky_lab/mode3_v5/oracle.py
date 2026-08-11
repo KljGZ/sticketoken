@@ -63,7 +63,10 @@ class SentenceTransformerOutputOracle:
         # input embeddings; the registered revision is enforced at loading.
         self.__runtime = runtime
         self.batch_size = int(batch_size)
-        self.dimension = int(runtime.get_sentence_embedding_dimension())
+        dimension_method = getattr(runtime, "get_embedding_dimension", None)
+        self.dimension = int(
+            dimension_method() if dimension_method is not None else runtime.get_sentence_embedding_dimension()
+        )
         self.revision = revision
         self.ledger = QueryLedger()
         self.__cache: dict[str, np.ndarray] = {}
@@ -103,8 +106,16 @@ class SentenceTransformerOutputOracle:
             if embedded.ndim != 2 or embedded.shape != (len(missing_texts), self.dimension):
                 raise RuntimeError(f"unexpected embedding shape: {embedded.shape}")
             norms = np.linalg.norm(embedded, axis=1)
-            if not np.all(np.isfinite(embedded)) or not np.allclose(norms, 1.0, atol=1e-4):
+            if (
+                not np.all(np.isfinite(embedded))
+                or np.any(norms <= 0)
+                or not np.allclose(norms, 1.0, atol=5e-3)
+            ):
                 raise RuntimeError("oracle returned non-finite or non-normalized embeddings")
+            # CUDA kernels may return numerically unit vectors with small
+            # low-precision norm error.  Canonicalize only the final oracle
+            # output so all cosine computations share exact unit geometry.
+            embedded = embedded / norms[:, None]
             for key, vector in zip(missing_keys, embedded):
                 self.__cache[key] = vector
             self.ledger.submitted_texts += len(missing_texts)

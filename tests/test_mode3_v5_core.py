@@ -15,6 +15,7 @@ from sticky_lab.mode3_v5.insertion import (
 )
 from sticky_lab.mode3_v5.interfaces import ClusterStructure
 from sticky_lab.mode3_v5.occupancy import clopper_pearson_lower, clopper_pearson_upper
+from sticky_lab.mode3_v5.oracle import QueryLedger, SentenceTransformerOutputOracle
 from sticky_lab.mode3_v5.validation import bootstrap_cluster_stability
 
 
@@ -48,6 +49,22 @@ def _unit_config() -> dict:
 
 def _normalized(values: np.ndarray) -> np.ndarray:
     return values / np.linalg.norm(values, axis=1, keepdims=True)
+
+
+def test_oracle_canonicalizes_small_final_output_norm_error() -> None:
+    class Runtime:
+        def encode(self, texts, **kwargs):
+            return np.asarray([[0.9998, 0.0], [0.0, 1.0002]][: len(texts)], dtype=np.float32)
+
+    oracle = object.__new__(SentenceTransformerOutputOracle)
+    oracle._SentenceTransformerOutputOracle__runtime = Runtime()
+    oracle.batch_size = 4
+    oracle.dimension = 2
+    oracle.ledger = QueryLedger()
+    oracle._SentenceTransformerOutputOracle__cache = {}
+    values = oracle.encode(["left", "right"])
+    assert np.allclose(np.linalg.norm(values, axis=1), 1.0, atol=1e-7)
+    assert oracle.ledger.submitted_texts == 2
 
 
 def test_random_boundary_manifest_is_trigger_independent_and_single_insertion() -> None:
