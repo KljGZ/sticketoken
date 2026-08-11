@@ -24,6 +24,7 @@ fi
   tests/test_mode3_v5_core.py \
   tests/test_mode3_v5_search.py \
   tests/test_mode3_v5_scope.py \
+  tests/test_mode3_v5_publication.py \
   >"$LOG_ROOT/v5_tests.log" 2>&1
 "$PYTHON" scripts/audit_v5_mode3.py --root "$ROOT" --config "$CONFIG" \
   --output "$LOG_ROOT/preflight_scope_audit.json"
