@@ -39,3 +39,7 @@ results/sticky_lab/**/screen_shards/
 results/sticky_lab/**/single_token_screen.csv
 results/sticky_lab/**/validation_candidates_point.csv
 results/sticky_lab/**/mode3_v3_smoke_*/
+
+# Mode 3 V5 raw trajectories and embeddings are published as Release assets.
+results/sticky_lab/**/mode3_v4/
+results/sticky_lab/**/mode3_v5/
