@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 from scipy.stats import beta
 
 from sticky_lab.mode3_v5.clustering import fit_robust_attractor
@@ -13,9 +14,10 @@ from sticky_lab.mode3_v5.insertion import (
     insert_once,
     manifest_is_trigger_independent,
 )
-from sticky_lab.mode3_v5.interfaces import ClusterStructure
+from sticky_lab.mode3_v5.interfaces import Candidate, ClusterStructure
 from sticky_lab.mode3_v5.occupancy import clopper_pearson_lower, clopper_pearson_upper
 from sticky_lab.mode3_v5.oracle import QueryLedger, SentenceTransformerOutputOracle
+from sticky_lab.mode3_v5.scoring import CandidateEvaluator
 from sticky_lab.mode3_v5.validation import bootstrap_cluster_stability
 
 
@@ -65,6 +67,23 @@ def test_oracle_canonicalizes_small_final_output_norm_error() -> None:
     values = oracle.encode(["left", "right"])
     assert np.allclose(np.linalg.norm(values, axis=1), 1.0, atol=1e-7)
     assert oracle.ledger.submitted_texts == 2
+
+
+def test_candidate_evaluator_never_converts_resource_exhaustion_into_a_score() -> None:
+    class OutOfMemoryError(RuntimeError):
+        pass
+
+    evaluator = object.__new__(CandidateEvaluator)
+    evaluator.task = "prefix"
+    evaluator.role = "search_trigger"
+    evaluator.active_minimum_coverage = 0.90
+    evaluator.active_maximum_outlier_rate = 0.10
+    evaluator._views = lambda _candidate: (_ for _ in ()).throw(
+        OutOfMemoryError("CUDA out of memory")
+    )
+    candidate = Candidate((7,), "token", 1, True)
+    with pytest.raises(OutOfMemoryError, match="CUDA out of memory"):
+        evaluator.evaluate(candidate)
 
 
 def test_random_boundary_manifest_is_trigger_independent_and_single_insertion() -> None:

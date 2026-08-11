@@ -48,7 +48,12 @@ def infer_metadata(relative_path: str) -> dict[str, Any]:
                 metadata["iteration"] = int(part.split("_", 1)[1])
             except ValueError:
                 pass
-        elif part in {"prefix", "suffix", "random", "universal"}:
+        elif part.startswith("generation_"):
+            try:
+                metadata["iteration"] = int(part.split("_", 1)[1])
+            except ValueError:
+                pass
+        elif part in {"prefix", "suffix", "random", "conditional", "shared", "universal"}:
             metadata["task"] = part
     return metadata
 

@@ -28,6 +28,20 @@ def candidate_seed(base_seed: int, candidate_key: str, task: str) -> int:
     return int.from_bytes(digest[:8], "big") % (2**31 - 1)
 
 
+def _is_resource_exhaustion(error: BaseException) -> bool:
+    """Identify failures that must abort a formal query job, never score a candidate."""
+
+    name = type(error).__name__.lower()
+    message = str(error).lower()
+    return (
+        isinstance(error, MemoryError)
+        or "outofmemory" in name
+        or "out of memory" in message
+        or "cublas_status_alloc_failed" in message
+        or "cuda error: memory allocation" in message
+    )
+
+
 def _fixed_pairs(size: int, count: int, seed: int) -> tuple[np.ndarray, np.ndarray]:
     if size < 2:
         return np.zeros(0, dtype=np.int64), np.zeros(0, dtype=np.int64)
@@ -198,6 +212,8 @@ class CandidateEvaluator:
             views = self._views(candidate)
             structures = self._fit(candidate, views)
         except (ValueError, RuntimeError, FloatingPointError) as error:
+            if _is_resource_exhaustion(error):
+                raise
             record = {
                 **base,
                 "evaluation_error": f"{type(error).__name__}: {error}",

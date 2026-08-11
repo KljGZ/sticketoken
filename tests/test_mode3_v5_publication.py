@@ -5,7 +5,19 @@ import hashlib
 from pathlib import Path
 
 from scripts.package_result_release_shards import partition, sha256_file, write_shard
+from scripts.inventory_remote_results import infer_metadata
 from scripts.recover_v5_results import extract, verify
+
+
+def test_v5_inventory_indexes_all_tasks_and_generation_numbers() -> None:
+    for task in ("prefix", "suffix", "random", "conditional", "shared"):
+        metadata = infer_metadata(
+            f"search/{task}/length_30/restart_02/generation_015/population.csv"
+        )
+        assert metadata["task"] == task
+        assert metadata["length"] == 30
+        assert metadata["restart"] == 2
+        assert metadata["iteration"] == 15
 
 
 def test_sharded_release_round_trip_preserves_file_bytes_and_hashes(tmp_path: Path) -> None:

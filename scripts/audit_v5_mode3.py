@@ -36,6 +36,12 @@ PROTECTED_PREFIXES = (
     "tests/test_sticky_lab_v2.py",
     "stickytoken/",
 )
+RESOURCE_FAILURE_MARKERS = (
+    b"OutOfMemoryError",
+    b"CUDA out of memory",
+    b"CUBLAS_STATUS_ALLOC_FAILED",
+    b"CUDA error: memory allocation",
+)
 
 
 def git(root: Path, *args: str) -> str:
@@ -124,6 +130,24 @@ def _completion(path: Path) -> bool:
     return True
 
 
+def _resource_failures(results: Path) -> list[str]:
+    failures: list[str] = []
+    for phase in ("screen", "search", "validation", "frozen", "test", "ood", "retrieval"):
+        phase_root = results / phase
+        if not phase_root.exists():
+            continue
+        for path in phase_root.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in {".csv", ".json", ".jsonl", ".log"}:
+                continue
+            try:
+                payload = path.read_bytes()
+            except OSError:
+                continue
+            if any(marker in payload for marker in RESOURCE_FAILURE_MARKERS):
+                failures.append(path.relative_to(results).as_posix())
+    return failures
+
+
 def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str, Any]:
     expected_calibration = int(config["runtime"]["calibration_shards"])
     expected_screen = len(TASKS) * int(config["runtime"]["screen_shards_per_task"])
@@ -182,6 +206,9 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         "mp4": [mp4s, expected_search],
     }
     errors = [f"{name}={actual}/{expected}" for name, (actual, expected) in counts.items() if actual != expected]
+    resource_failures = _resource_failures(results)
+    if resource_failures:
+        errors.append(f"resource failures in formal artifacts: {len(resource_failures)}")
     if snapshots == 0 or pngs != snapshots:
         errors.append(f"snapshot artifact mismatch png={pngs} high_dimensional={snapshots}")
     if not contract.get("test_and_ood_embeddings_absent"):
@@ -196,6 +223,7 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         "snapshots": snapshots,
         "sealed_state": {"initial": sealed, "validation_gate": gate_state},
         "run_contract": contract,
+        "resource_failure_paths": resource_failures,
         "errors": errors,
     }
 
