@@ -78,7 +78,17 @@ def test_test_and_ood_are_sealed_until_validation_freeze() -> None:
     sealed_region = source[source.index("def _encode_sealed_phase") : source.index("def command_retrieval")]
     assert "validation freeze must complete before test/OOD" in sealed_region
     assert '"refit_performed": False' in sealed_region
+    assert "candidate.task" not in sealed_region
+    assert "frozen.task" in sealed_region
+    assert "_sealed_base_embeddings" in sealed_region
     assert "write_json(sealed_path" not in sealed_region
     freeze_region = source[source.index("def command_freeze") : source.index("def _selected_unique")]
     assert "write_json(sealed_path" not in freeze_region
     assert 'gate_state = target / "gate_state.json"' in freeze_region
+
+
+def test_retrieval_uses_validation_frozen_task() -> None:
+    source = (V5 / "run.py").read_text(encoding="utf-8")
+    retrieval = source[source.index("def command_retrieval") : source.index("def _query_budget")]
+    assert "candidate.task" not in retrieval
+    assert "frozen.task" in retrieval

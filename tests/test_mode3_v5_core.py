@@ -17,6 +17,7 @@ from sticky_lab.mode3_v5.insertion import (
 from sticky_lab.mode3_v5.interfaces import Candidate, ClusterStructure
 from sticky_lab.mode3_v5.occupancy import clopper_pearson_lower, clopper_pearson_upper
 from sticky_lab.mode3_v5.oracle import QueryLedger, SentenceTransformerOutputOracle
+from sticky_lab.mode3_v5.run import _sealed_base_embeddings
 from sticky_lab.mode3_v5.scoring import CandidateEvaluator
 from sticky_lab.mode3_v5.validation import bootstrap_cluster_stability
 
@@ -67,6 +68,50 @@ def test_oracle_canonicalizes_small_final_output_norm_error() -> None:
     values = oracle.encode(["left", "right"])
     assert np.allclose(np.linalg.norm(values, axis=1), 1.0, atol=1e-7)
     assert oracle.ledger.submitted_texts == 2
+
+
+def test_sealed_phase_resumes_atomic_base_embeddings_without_requery(tmp_path: Path) -> None:
+    class Oracle:
+        dimension = 2
+
+        def __init__(self, *, fail: bool = False) -> None:
+            self.fail = fail
+            self.ledger = QueryLedger()
+
+        def encode(self, texts):
+            if self.fail:
+                raise AssertionError("sealed role was queried twice")
+            self.ledger.encode_calls += 1
+            self.ledger.requested_texts += len(texts)
+            self.ledger.submitted_texts += len(set(texts))
+            self.ledger.cache_hits += len(texts) - len(set(texts))
+            return np.asarray([[1.0, 0.0] for _ in texts], dtype=np.float32)
+
+    clean_path = tmp_path / "test_trigger.npz"
+    benign_path = tmp_path / "test_benign_probe.npz"
+    clean_texts = ["alpha", "alpha"]
+    benign_texts = ["beta", "alpha"]
+    first = Oracle()
+    clean, benign, resumed = _sealed_base_embeddings(
+        first, clean_texts, benign_texts, clean_path, benign_path
+    )
+    assert not resumed
+    assert clean.shape == (2, 2)
+    assert benign.shape == (2, 2)
+
+    recovery = Oracle(fail=True)
+    recovered_clean, recovered_benign, resumed = _sealed_base_embeddings(
+        recovery, clean_texts, benign_texts, clean_path, benign_path
+    )
+    assert resumed
+    assert np.array_equal(recovered_clean, clean)
+    assert np.array_equal(recovered_benign, benign)
+    assert recovery.ledger.to_dict() == {
+        "encode_calls": 2,
+        "requested_texts": 4,
+        "cache_hits": 2,
+        "submitted_texts": 2,
+    }
 
 
 def test_candidate_evaluator_never_converts_resource_exhaustion_into_a_score() -> None:

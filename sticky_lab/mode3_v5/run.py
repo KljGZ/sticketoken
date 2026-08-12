@@ -141,6 +141,74 @@ def _role_embeddings(output: Path, role: str) -> np.ndarray:
     return np.load(path)["values"]
 
 
+def _load_sealed_embedding_checkpoint(
+    path: Path, *, expected_rows: int, dimension: int
+) -> np.ndarray:
+    try:
+        with np.load(path, allow_pickle=False) as payload:
+            values = np.asarray(payload["values"], dtype=np.float32)
+    except (OSError, KeyError, ValueError) as exc:
+        raise RuntimeError(f"invalid sealed embedding checkpoint: {path}") from exc
+    if values.shape != (expected_rows, dimension):
+        raise RuntimeError(
+            f"sealed embedding checkpoint shape mismatch: {path} has {values.shape}, "
+            f"expected {(expected_rows, dimension)}"
+        )
+    norms = np.linalg.norm(values, axis=1)
+    if (
+        not np.all(np.isfinite(values))
+        or np.any(norms <= 0)
+        or not np.allclose(norms, 1.0, atol=5e-3)
+    ):
+        raise RuntimeError(f"invalid sealed embedding checkpoint values: {path}")
+    return values
+
+
+def _sealed_base_embeddings(
+    oracle: SentenceTransformerOutputOracle,
+    clean_texts: Sequence[str],
+    benign_texts: Sequence[str],
+    clean_path: Path,
+    benign_path: Path,
+) -> tuple[np.ndarray, np.ndarray, bool]:
+    """Encode once, or resume an interrupted sealed phase from atomic role files.
+
+    A partial pair is rejected.  When both files exist, their shape and unit
+    geometry are checked and the two already-submitted calls are reconstructed
+    in the phase ledger.  This preserves the actual query budget without
+    re-querying the one-time Test/OOD base roles after an implementation fault.
+    """
+
+    existing = (clean_path.is_file(), benign_path.is_file())
+    if existing[0] != existing[1]:
+        raise RuntimeError("incomplete sealed embedding checkpoint pair")
+    batches = (list(map(str, clean_texts)), list(map(str, benign_texts)))
+    if all(existing):
+        clean = _load_sealed_embedding_checkpoint(
+            clean_path, expected_rows=len(batches[0]), dimension=oracle.dimension
+        )
+        benign = _load_sealed_embedding_checkpoint(
+            benign_path, expected_rows=len(batches[1]), dimension=oracle.dimension
+        )
+        seen: set[str] = set()
+        for texts in batches:
+            oracle.ledger.encode_calls += 1
+            oracle.ledger.requested_texts += len(texts)
+            for text in texts:
+                key = hashlib.sha256(text.encode("utf-8")).hexdigest()
+                if key in seen:
+                    oracle.ledger.cache_hits += 1
+                else:
+                    seen.add(key)
+                    oracle.ledger.submitted_texts += 1
+        return clean, benign, True
+    clean = oracle.encode(batches[0])
+    benign = oracle.encode(batches[1])
+    write_npz(clean_path, values=clean)
+    write_npz(benign_path, values=benign)
+    return clean, benign, False
+
+
 def _manifest(output: Path) -> BoundaryManifest:
     return BoundaryManifest.from_frame(pd.read_csv(output / "data" / "random_boundaries.csv"))
 
@@ -1263,13 +1331,16 @@ def _encode_sealed_phase(
     oracle = _oracle(config, device)
     frame = _role_frame(output, trigger_role)
     benign_frame = _role_frame(output, benign_role)
-    clean = oracle.encode(frame["text"].astype(str).tolist())
-    benign = oracle.encode(benign_frame["text"].astype(str).tolist())
     embedding_dir = output / "embeddings"
     clean_path = embedding_dir / f"{trigger_role}.npz"
     benign_path = embedding_dir / f"{benign_role}.npz"
-    write_npz(clean_path, values=clean)
-    write_npz(benign_path, values=benign)
+    clean, benign, resumed_base_embeddings = _sealed_base_embeddings(
+        oracle,
+        frame["text"].astype(str).tolist(),
+        benign_frame["text"].astype(str).tolist(),
+        clean_path,
+        benign_path,
+    )
     artifacts = [clean_path, benign_path]
     tokenizer = _tokenizer(config)
     manifest = _manifest(output)
@@ -1277,10 +1348,18 @@ def _encode_sealed_phase(
     for record in _selected_unique(output):
         candidate = _candidate_from_ids(tokenizer, str(record["token_ids"]))
         frozen = load_frozen_candidate(output / record["frozen_dir"])
+        if (
+            frozen.candidate_key != candidate.key
+            or frozen.token_ids != candidate.token_ids
+            or frozen.trigger != candidate.trigger
+            or frozen.actual_token_length != candidate.actual_token_length
+            or frozen.task != record["task"]
+        ):
+            raise RuntimeError("frozen candidate does not match the validation selection")
         texts = materialize_views(
             frame,
-            candidate.trigger,
-            candidate.task,
+            frozen.trigger,
+            frozen.task,
             role=trigger_role,
             manifest=manifest,
             random_replicates=int(config["insertion"]["random_replicates"]),
@@ -1299,9 +1378,9 @@ def _encode_sealed_phase(
             {
                 "selection_id": record["selection_id"],
                 "candidate_key": candidate.key,
-                "trigger": candidate.trigger,
-                "task": candidate.task,
-                "actual_token_length": candidate.actual_token_length,
+                "trigger": frozen.trigger,
+                "task": frozen.task,
+                "actual_token_length": frozen.actual_token_length,
                 "selected_levels": record["selected_levels"],
             }
         )
@@ -1328,6 +1407,7 @@ def _encode_sealed_phase(
             "initial_seal_sha256": sha256_file(output / "sealed_state.json"),
             "validation_selection_sha256": sha256_file(output / "frozen" / "selection.json"),
             "refit_performed": False,
+            "resumed_atomic_base_embeddings": resumed_base_embeddings,
         },
     )
     artifacts.append(seal_audit)
@@ -1363,12 +1443,20 @@ def command_retrieval(config: Mapping[str, Any], output: Path, device: str | Non
     tokenizer = _tokenizer(config)
     candidate = _candidate_from_ids(tokenizer, str(selection["token_ids"]))
     frozen = load_frozen_candidate(output / selection["frozen_dir"])
+    if (
+        frozen.candidate_key != candidate.key
+        or frozen.token_ids != candidate.token_ids
+        or frozen.trigger != candidate.trigger
+        or frozen.actual_token_length != candidate.actual_token_length
+        or frozen.task != selection["task"]
+    ):
+        raise RuntimeError("frozen candidate does not match the retrieval selection")
     oracle = _oracle(config, device)
     validation_frame = _role_frame(output, "validation_trigger")
     validation_texts = materialize_views(
         validation_frame,
-        candidate.trigger,
-        candidate.task,
+        frozen.trigger,
+        frozen.task,
         role="validation_trigger",
         manifest=_manifest(output),
         random_replicates=int(config["insertion"]["random_replicates"]),
