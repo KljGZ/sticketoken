@@ -1,0 +1,136 @@
+{
+  "archive_prefix": "mode3_v5",
+  "assets": [
+    {
+      "bytes": 1200116118,
+      "content_file_count": 7807,
+      "content_total_bytes": 1466748670,
+      "first_path": "FORMAL_RUN_REGISTERED.json",
+      "last_path": "search/conditional/length_08/restart_02/generation_015/snapshots/elite_representative/coordinates.csv",
+      "name": "mode3-v5-full-results.part-001-of-014.tar.gz",
+      "sha256": "3ae3f01db422b1544d6b96d6790e518fc5b5fb5ec242bc4e52401c9a88d69c7e"
+    },
+    {
+      "bytes": 1339541198,
+      "content_file_count": 6518,
+      "content_total_bytes": 1473051568,
+      "first_path": "search/conditional/length_08/restart_02/generation_015/snapshots/elite_representative/high_dimensional.npz",
+      "last_path": "search/conditional/length_17/restart_01/generation_001/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-002-of-014.tar.gz",
+      "sha256": "cb19c35bd3773f565ef5b862e09f464516ad0da2b4ae3b59e7aafe7745cd3eb7"
+    },
+    {
+      "bytes": 1339547534,
+      "content_file_count": 6345,
+      "content_total_bytes": 1473415339,
+      "first_path": "search/conditional/length_17/restart_01/generation_001/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/conditional/length_25/restart_01/generation_008/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-003-of-014.tar.gz",
+      "sha256": "90dcb5cf089d8a618253c6c6bf5fc3dc6a54a2b92e7fd9c5f321675d92408edd"
+    },
+    {
+      "bytes": 1331763519,
+      "content_file_count": 8356,
+      "content_total_bytes": 1465232398,
+      "first_path": "search/conditional/length_25/restart_01/generation_008/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/prefix/length_07/restart_00/generation_012/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-004-of-014.tar.gz",
+      "sha256": "5e3e68d3da350b3958ee0cd027821b9567f1ee59326c409a9a4a2705f7262a2b"
+    },
+    {
+      "bytes": 1315700613,
+      "content_file_count": 12171,
+      "content_total_bytes": 1449495447,
+      "first_path": "search/prefix/length_07/restart_00/generation_012/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/prefix/length_22/restart_02/job_complete/artifact_index.json",
+      "name": "mode3-v5-full-results.part-005-of-014.tar.gz",
+      "sha256": "08cf64b862b56e35d120aee2f15bb0a279da0a4f641435517c011ebd18afdbc1"
+    },
+    {
+      "bytes": 1325980653,
+      "content_file_count": 10996,
+      "content_total_bytes": 1454715309,
+      "first_path": "search/prefix/length_22/restart_02/optimization.gif",
+      "last_path": "search/random/length_08/restart_00/generation_011/rng_state.json",
+      "name": "mode3-v5-full-results.part-006-of-014.tar.gz",
+      "sha256": "67f0913abcd86bff76446d43f3f919168037e99a11c57f2623a3f877065fe54e"
+    },
+    {
+      "bytes": 1344667749,
+      "content_file_count": 9516,
+      "content_total_bytes": 1460950671,
+      "first_path": "search/random/length_08/restart_00/generation_011/snapshots/leader/cluster.png",
+      "last_path": "search/random/length_20/restart_01/generation_009/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-007-of-014.tar.gz",
+      "sha256": "d43cd5fb7a2fa0280178605c8b28453e13fa005b6a606c28445ca6ea2929e992"
+    },
+    {
+      "bytes": 1342832444,
+      "content_file_count": 9032,
+      "content_total_bytes": 1462511838,
+      "first_path": "search/random/length_20/restart_01/generation_009/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/shared/length_03/restart_00/generation_009/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-008-of-014.tar.gz",
+      "sha256": "65ca52471cbaa2e447dd48ae4eff10924b508995630d1125b2f1c9fd817478d8"
+    },
+    {
+      "bytes": 1369134289,
+      "content_file_count": 7133,
+      "content_total_bytes": 1470001872,
+      "first_path": "search/shared/length_03/restart_00/generation_009/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/shared/length_12/restart_01/generation_006/rng_state.json",
+      "name": "mode3-v5-full-results.part-009-of-014.tar.gz",
+      "sha256": "0433ffeda52eb87c27f1122376b46f8653f1212c4202a88300e4e789fd2f87c3"
+    },
+    {
+      "bytes": 1366957037,
+      "content_file_count": 6950,
+      "content_total_bytes": 1470949811,
+      "first_path": "search/shared/length_12/restart_01/generation_006/snapshots/leader/cluster.png",
+      "last_path": "search/shared/length_21/restart_01/generation_010/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-010-of-014.tar.gz",
+      "sha256": "52561de0deec412fdcea2343036bdb8863669510f320afee4fc1f33ea8086269"
+    },
+    {
+      "bytes": 1363819765,
+      "content_file_count": 6822,
+      "content_total_bytes": 1471291132,
+      "first_path": "search/shared/length_21/restart_01/generation_010/snapshots/leader/high_dimensional.npz",
+      "last_path": "search/shared/length_30/restart_01/generation_006/rng_state.json",
+      "name": "mode3-v5-full-results.part-011-of-014.tar.gz",
+      "sha256": "6e2553c8a6741570c5730318e1b80f7481214ac092afb0a46c939c8db19acee7"
+    },
+    {
+      "bytes": 1319796057,
+      "content_file_count": 12194,
+      "content_total_bytes": 1450005926,
+      "first_path": "search/shared/length_30/restart_01/generation_006/snapshots/leader/cluster.png",
+      "last_path": "search/suffix/length_17/restart_00/generation_006/snapshots/leader/coordinates.csv",
+      "name": "mode3-v5-full-results.part-012-of-014.tar.gz",
+      "sha256": "2d03e4b15c96a1bfdccdd2d98028179c0d62f5134b159eae78d4c828beb55662"
+    },
+    {
+      "bytes": 1311640827,
+      "content_file_count": 11279,
+      "content_total_bytes": 1452921862,
+      "first_path": "search/suffix/length_17/restart_00/generation_006/snapshots/leader/high_dimensional.npz",
+      "last_path": "validation/conditional/length_23/candidate_00/frozen/structure_suffix.npz",
+      "name": "mode3-v5-full-results.part-013-of-014.tar.gz",
+      "sha256": "05dda3db29db588db9e4cc563fd9e2cd62346214df4e4aa531c30489215c755f"
+    },
+    {
+      "bytes": 428159455,
+      "content_file_count": 2314,
+      "content_total_bytes": 438684306,
+      "first_path": "validation/conditional/length_23/candidate_00/projection/cluster.png",
+      "last_path": "validation/suffix/length_30/summary.json",
+      "name": "mode3-v5-full-results.part-014-of-014.tar.gz",
+      "sha256": "d87f03893cdc6408fa7584ff091a579344adf3b3c214806fe5d74c7ae8511e24"
+    }
+  ],
+  "content_file_count": 117433,
+  "content_root_sha256": "906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f",
+  "content_total_bytes": 19459976149,
+  "maximum_uncompressed_bytes": 1500000000,
+  "schema_version": "mode3-v5-release-shards-v1"
+}
