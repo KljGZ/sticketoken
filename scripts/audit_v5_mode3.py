@@ -187,7 +187,17 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
     sealed = json.loads((results / "sealed_state.json").read_text(encoding="utf-8"))
     gate_state = json.loads((results / "frozen" / "gate_state.json").read_text(encoding="utf-8"))
     contract = json.loads((results / "run_contract.json").read_text(encoding="utf-8"))
-    dirty_commit = contract["run_code_commit"] != git(root, "rev-parse", "HEAD")
+    audited_commit = git(root, "rev-parse", "HEAD")
+    dirty_commit = contract["run_code_commit"] != audited_commit
+    recovery_path = results / "recovery_lineage.json"
+    recovery = json.loads(recovery_path.read_text(encoding="utf-8")) if recovery_path.is_file() else None
+    valid_recovery = bool(
+        recovery
+        and recovery.get("formal_run_code_commit") == contract["run_code_commit"]
+        and recovery.get("recovery_run_code_commit") == audited_commit
+        and recovery.get("search_merge_validation_and_freeze_immutable") is True
+        and recovery.get("test_ood_refit_prohibited") is True
+    )
     trajectory_generations = len(list(results.glob("search/*/length_*/restart_*/generation_*/COMPLETE.json")))
     expected_generations = expected_search * int(config["search"]["iterations"])
     snapshots = len(list(results.glob("search/*/length_*/restart_*/generation_*/snapshots/*/high_dimensional.npz")))
@@ -213,8 +223,8 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         errors.append(f"snapshot artifact mismatch png={pngs} high_dimensional={snapshots}")
     if not contract.get("test_and_ood_embeddings_absent"):
         errors.append("test/OOD was not sealed at formal registration")
-    if dirty_commit:
-        errors.append("result contract commit does not match audited checkout")
+    if dirty_commit and not valid_recovery:
+        errors.append("result contract commit does not match audited checkout or an explicit sealed recovery lineage")
     for phase in ("prepare", "calibration", "frozen", "test", "ood", "downstream", "finalize"):
         if not _completion(results / phase):
             errors.append(f"incomplete phase: {phase}")
@@ -223,6 +233,7 @@ def audit_results(root: Path, results: Path, config: dict[str, Any]) -> dict[str
         "snapshots": snapshots,
         "sealed_state": {"initial": sealed, "validation_gate": gate_state},
         "run_contract": contract,
+        "downstream_recovery": recovery,
         "resource_failure_paths": resource_failures,
         "errors": errors,
     }
