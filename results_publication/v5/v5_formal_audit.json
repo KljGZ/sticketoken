@@ -1,0 +1,168 @@
+{
+  "errors": [],
+  "passed": true,
+  "results": {
+    "counts": {
+      "calibration_shard": [
+        8,
+        8
+      ],
+      "formal_length": [
+        150,
+        150
+      ],
+      "gif": [
+        435,
+        435
+      ],
+      "mp4": [
+        435,
+        435
+      ],
+      "screen": [
+        40,
+        40
+      ],
+      "search_merge": [
+        145,
+        145
+      ],
+      "search_restart": [
+        435,
+        435
+      ],
+      "trajectory_generation": [
+        6960,
+        6960
+      ],
+      "validation": [
+        150,
+        150
+      ]
+    },
+    "downstream_recovery": {
+      "allowed_commands": [
+        "finalize",
+        "ood",
+        "retrieval",
+        "test"
+      ],
+      "changed_paths": [
+        "scripts/audit_v5_mode3.py",
+        "scripts/inventory_remote_results.py",
+        "sticky_lab/mode3_v5/run.py",
+        "sticky_lab/mode3_v5/scoring.py",
+        "tests/test_mode3_v5_core.py",
+        "tests/test_mode3_v5_publication.py",
+        "tests/test_mode3_v5_scope.py"
+      ],
+      "config_sha256": "7865bd10a85525094b6a8813cfc62029bc219fe819d0e5d59f29582e7f14ab9d",
+      "formal_run_code_commit": "2c9d478ed6642b809ff3dfe91c252632724a745e",
+      "prior_test_failure_log_sha256": "10b2ddc524326598eaa8db883f834eb577812b4cc9601a95e920fb792b4b2f91",
+      "recovery_reason": "sealed phase failed on an invalid Candidate.task access after atomic Test base encoding",
+      "recovery_run_code_commit": "8648f676265d040fde40e3598ee1bbe846ad4400",
+      "recovery_tests_log_sha256": "94ea43b2c23373fbe759d7c74ad6b6ac04a29c8522ac8464f32a82cbfd9e0ee5",
+      "schema_version": "mode3-v5-downstream-recovery-v1",
+      "search_merge_validation_and_freeze_immutable": true,
+      "test_ood_refit_prohibited": true
+    },
+    "errors": [],
+    "resource_failure_paths": [],
+    "run_contract": {
+      "config_sha256": "7865bd10a85525094b6a8813cfc62029bc219fe819d0e5d59f29582e7f14ab9d",
+      "data_split_sha256": "c6fd319de19bfb14c19050c8952514b51292d41cf70df3624d9aabd02cc2eea9",
+      "dependency_lock_sha256": "39d37a19d70159056d056f3fb3ed830318e0082e86b39d0ee1b0c3838d5294d2",
+      "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+      "run_code_commit": "2c9d478ed6642b809ff3dfe91c252632724a745e",
+      "run_id": "sentence-t5-base-mode3-v5-seed-55051",
+      "schema_version": "mode3-v5-run-contract-v1",
+      "test_and_ood_embeddings_absent": true,
+      "thresholds_sha256": "dfb245f05dde3d494fc12f860631654ead1cb064552225f54235475b94aeb22d",
+      "tokenizer_sha256": "58b50bf2bbad306b7f17dbfee0d41b164d6186ab8e27d589a15bf172a95f4cb4"
+    },
+    "sealed_state": {
+      "initial": {
+        "gate_open": false,
+        "ood_encoded": false,
+        "sealed_roles": [
+          "test_trigger",
+          "test_benign_probe",
+          "ood_trigger",
+          "ood_benign_probe"
+        ],
+        "test_encoded": false
+      },
+      "validation_gate": {
+        "gate_open": true,
+        "initial_seal_sha256": "629154a60b9d1a25c649fef95f4b0ca697c619c0dd1bcc39414427874d56cc57",
+        "validation_selection_sha256": "ef48febb51b04a683ddfbf2357ab6ca20a4396b4eccaf96a557995c5e725456c"
+      }
+    },
+    "snapshots": 7469
+  },
+  "schema_version": "mode3-v5-scope-audit-v1",
+  "scope": {
+    "changed_files": [
+      ".gitignore",
+      "configs/v5_mode3.yaml",
+      "docs/mode3_v4_full_result_release.md",
+      "docs/sticky_attractor_v5_protocol.md",
+      "docs/sticky_attractor_v5_results.md",
+      "results_publication/v4/V4_RESULT_RECOVERY_COMPLETE.json",
+      "results_publication/v4/complete_file_manifest.csv",
+      "results_publication/v4/config_resolved.yaml",
+      "results_publication/v4/environment.json",
+      "results_publication/v4/final_status.json",
+      "results_publication/v4/fresh_clone_release_audit.json",
+      "results_publication/v4/fresh_clone_v4_audit.log",
+      "results_publication/v4/fresh_clone_worktree_restore_audit.json",
+      "results_publication/v4/inventory_diff.json",
+      "results_publication/v4/length_frontier.csv",
+      "results_publication/v4/length_frontier.png",
+      "results_publication/v4/local_inventory.json",
+      "results_publication/v4/preupload_restore_audit.json",
+      "results_publication/v4/publication_audit.json",
+      "results_publication/v4/query_budget.json",
+      "results_publication/v4/release_asset_index.json",
+      "results_publication/v4/remote_inventory.json",
+      "results_publication/v4/transfer_audit.json",
+      "scripts/audit_v5_mode3.py",
+      "scripts/compare_result_inventories.py",
+      "scripts/download_release_asset.py",
+      "scripts/inventory_remote_results.py",
+      "scripts/package_result_release.py",
+      "scripts/package_result_release_shards.py",
+      "scripts/publish_release_assets.py",
+      "scripts/recover_v4_results.py",
+      "scripts/recover_v5_results.py",
+      "scripts/run_v5_mode3_remote.sh",
+      "sticky_lab/mode3_v5/__init__.py",
+      "sticky_lab/mode3_v5/atomic_io.py",
+      "sticky_lab/mode3_v5/candidate_space.py",
+      "sticky_lab/mode3_v5/cem_search.py",
+      "sticky_lab/mode3_v5/clustering.py",
+      "sticky_lab/mode3_v5/data.py",
+      "sticky_lab/mode3_v5/insertion.py",
+      "sticky_lab/mode3_v5/interfaces.py",
+      "sticky_lab/mode3_v5/occupancy.py",
+      "sticky_lab/mode3_v5/oracle.py",
+      "sticky_lab/mode3_v5/pareto.py",
+      "sticky_lab/mode3_v5/projection.py",
+      "sticky_lab/mode3_v5/retrieval.py",
+      "sticky_lab/mode3_v5/run.py",
+      "sticky_lab/mode3_v5/scoring.py",
+      "sticky_lab/mode3_v5/tokenizer_audit.py",
+      "sticky_lab/mode3_v5/validation.py",
+      "tests/test_mode3_v5_core.py",
+      "tests/test_mode3_v5_publication.py",
+      "tests/test_mode3_v5_scope.py",
+      "tests/test_mode3_v5_search.py"
+    ],
+    "oversized_tracked_objects": [],
+    "protected_changes": []
+  },
+  "source": {
+    "errors": [],
+    "source_files": 17
+  }
+}

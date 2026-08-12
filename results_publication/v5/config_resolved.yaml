@@ -1,0 +1,221 @@
+protocol_version: 5
+mode: minimal_low_benign_occupancy_robust_representation_attractor_set
+run_id: sentence-t5-base-mode3-v5-seed-55051
+seed: 55051
+main_baseline_commit: b78bb21693e87a62287929683f575eb2a1b89be1
+readonly_v4_commit: f6ad69b2248439583f9c178f86542be247770a30
+output_dir: results/sticky_lab/sentence_t5_base/mode3_v5
+model:
+  id: sentence-transformers/sentence-t5-base
+  revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  device: cuda:0
+  cache_folder: null
+  local_path: /home/jkl/.cache/huggingface/models--sentence-transformers--sentence-t5-base/snapshots/fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  trust_remote_code: false
+  fail_closed_revision: true
+data:
+  paths_glob: data/*/sampled_sentence_pairs.csv
+  exclude_paths:
+  - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
+  - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+  - data/jina_embeddings_v3/sampled_sentence_pairs.csv
+  ood_paths:
+  - data/KaLM_embedding_multilingual_mini_instruct_v1_5/sampled_sentence_pairs.csv
+  - data/KaLM_embedding_multilingual_mini_instruct_v1/sampled_sentence_pairs.csv
+  - data/jina_embeddings_v3/sampled_sentence_pairs.csv
+  text_columns:
+  - sentence1
+  - sentence2
+  ood_text_columns:
+  - sentence1
+  - sentence2
+  source_column: null
+  min_tokens: 5
+  max_tokens: 160
+  iid_sample_sizes:
+    calibration_trigger: 800
+    calibration_benign_probe: 800
+    search_trigger: 2400
+    search_benign_reference: 2000
+    search_benign_probe: 2400
+    validation_trigger: 1200
+    validation_benign_probe: 2400
+    test_trigger: 1000
+    test_benign_probe: 2000
+  ood_sample_sizes:
+    ood_trigger: 480
+    ood_benign_probe: 480
+tokenizer:
+  allow_special_tokens: false
+  max_single_token_chars: 64
+  realizability_contexts: 64
+  require_exact_roundtrip: true
+  require_context_realizability: 1.0
+insertion:
+  protocol: shared_literal_insert_once
+  positions:
+  - prefix
+  - suffix
+  - random
+  random_replicates: 2
+  separator: ' '
+  boundary_key_fields:
+  - text_id
+  - seed
+  - replicate
+lengths:
+  exhaustive_single_token: true
+  minimum: 1
+  maximum: 30
+  step: 1
+  stop_search_after_first_certified: false
+  test_shortest_per_certificate_and_protocol: true
+structure:
+  maximum_cluster_count: 4
+  minimum_total_coverage: 0.9
+  minimum_per_position_coverage: 0.85
+  maximum_outlier_rate: 0.1
+  minimum_cluster_inlier_mass: 0.1
+  eta_grid:
+  - 0.0
+  - 0.025
+  - 0.05
+  - 0.075
+  - 0.1
+  clustering_restarts: 3
+  maximum_iterations: 60
+  tolerance: 1.0e-06
+  minimum_compactness_split_improvement: 0.05
+  minimum_occupancy_split_improvement: 0.05
+  maximum_occupancy_degradation_on_split: 0.02
+objectives:
+  compact_radius_quantile: 0.9
+  report_radius_quantiles:
+  - 0.8
+  - 0.9
+  - 0.95
+  report_cvar_quantile: 0.9
+  occupancy_lambdas:
+  - 1.0
+  - 1.25
+  - 1.5
+  - 1.75
+  - 2.0
+  - 2.25
+  - 2.5
+  occupancy_auc_weights:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  occupancy_confidence: 0.95
+  low_occupancy_epsilon: 0.01
+  minimum_low_occupancy_lambda_star: 1.5
+  maximum_occupancy_auc_ucb: 0.03
+calibration:
+  matched_random_count_per_length: 32
+  random_lengths:
+  - 1
+  - 2
+  - 5
+  - 10
+  - 20
+  - 30
+  projection_benign_count: 512
+  projection_clean_count: 512
+  umap_neighbors: 30
+  umap_min_dist: 0.1
+certification:
+  maximum_cmax: 0.4
+  compactness_threshold_source: preregistered_absolute_cosine_distance
+  matched_random_is_gate: false
+search:
+  algorithm: independent_pareto_cem_embedding_output_query_only
+  tasks:
+  - prefix
+  - suffix
+  - random
+  - conditional
+  - shared
+  population_size: 64
+  elite_ratio: 0.125
+  iterations: 16
+  restarts_per_length: 3
+  uniform_mixture: 0.1
+  update_alpha: 0.3
+  historical_archive_size: 128
+  formal_archive_size: 4
+  full_reevaluation_interval: 16
+  full_reevaluation_candidates: 0
+  single_token_full_candidates: 8
+  rotating_batch_size: 64
+  single_token_batch_size: 64
+  maximum_materialization_attempts: 16384
+  early_minimum_coverage: 0.6
+  early_maximum_outlier_rate: 0.4
+  progressive_constraint_gamma: 1.5
+  snapshots_per_generation: 3
+validation:
+  candidates_per_length: 2
+  matched_random_count: 8
+  bootstrap_replicates: 500
+  bootstrap_anchor_count: 128
+  minimum_cluster_persistence: 0.8
+  minimum_assignment_ari: 0.7
+  confidence: 0.95
+  freeze_conservative_radius_quantile: 0.95
+  freeze_radius_bootstrap_quantile: 0.95
+test:
+  coverage_confidence: 0.95
+  require_frozen_structure: true
+  prohibit_refit: true
+retrieval:
+  enabled_only_after_low_occupancy_test_certificate: true
+  poison_selection: validation_real_text_single_anchor
+  single_poison_only: true
+  top_k:
+  - 1
+  - 5
+  - 10
+runtime:
+  batch_size: 256
+  candidate_chunk_size: 8
+  calibration_shards: 8
+  screen_shards_per_task: 8
+  worker_count: 8
+  show_progress: true
+  maximum_submitted_text_queries: 120000000
+  atomic_completion_markers: true
+  abort_on_lineage_change: true
+trajectory:
+  save_all_candidate_metrics: true
+  save_pareto_front: true
+  save_elites: true
+  save_token_frequencies: true
+  save_rng_state: true
+  save_batch_manifest: true
+  save_distribution: true
+  save_query_ledger: true
+  save_resource_usage: true
+  save_checkpoint: true
+  save_high_dimensional_snapshots: true
+  snapshot_roles:
+  - leader
+  - pareto_new
+  - elite_representative
+plot:
+  dpi: 240
+  projection_sample_count: 256
+  fixed_axis_quantile: 0.995
+  make_png: true
+  make_gif: true
+  make_mp4: true
+  fps: 3
+publication:
+  github_repo: KljGZ/sticketoken
+  release_tag: mode3-v5-full-results
+  maximum_asset_bytes: 1932735283
+  ordinary_git_maximum_object_bytes: 94371840

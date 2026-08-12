@@ -1,0 +1,12 @@
+{
+  "config_sha256": "7865bd10a85525094b6a8813cfc62029bc219fe819d0e5d59f29582e7f14ab9d",
+  "data_split_sha256": "c6fd319de19bfb14c19050c8952514b51292d41cf70df3624d9aabd02cc2eea9",
+  "dependency_lock_sha256": "39d37a19d70159056d056f3fb3ed830318e0082e86b39d0ee1b0c3838d5294d2",
+  "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+  "run_code_commit": "2c9d478ed6642b809ff3dfe91c252632724a745e",
+  "run_id": "sentence-t5-base-mode3-v5-seed-55051",
+  "schema_version": "mode3-v5-run-contract-v1",
+  "test_and_ood_embeddings_absent": true,
+  "thresholds_sha256": "dfb245f05dde3d494fc12f860631654ead1cb064552225f54235475b94aeb22d",
+  "tokenizer_sha256": "58b50bf2bbad306b7f17dbfee0d41b164d6186ab8e27d589a15bf172a95f4cb4"
+}

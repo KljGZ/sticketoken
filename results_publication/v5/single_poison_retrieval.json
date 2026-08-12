@@ -1,0 +1,36 @@
+{
+  "anchor": {
+    "text": "Songs glitch Results Wish tapping put or introduce into something .",
+    "validation_coverage_at_frozen_radii": 0.95,
+    "validation_q95_distance": 0.11991957558864612,
+    "view": "prefix"
+  },
+  "clean_false_activation": {
+    "best_benign_similarity_mean": 0.8605975377500926,
+    "poison_hit_at_1": 0.0,
+    "poison_hit_at_10": 0.001,
+    "poison_hit_at_5": 0.001,
+    "poison_rank_mean": 561.012,
+    "poison_rank_median": 509.0,
+    "poison_rank_q95": 1159.3999999999996,
+    "poison_similarity_mean": 0.6928918609220727,
+    "retrieval_margin_at_10_q05": -0.17797894896255761,
+    "retrieval_margin_at_1_q05": -0.28449905545316895,
+    "retrieval_margin_at_5_q05": -0.2021909201997259
+  },
+  "schema_version": "mode3-v5-single-poison-retrieval-v1",
+  "single_poison_only": true,
+  "triggered": {
+    "best_benign_similarity_mean": 0.8146505503069856,
+    "poison_hit_at_1": 0.995,
+    "poison_hit_at_10": 1.0,
+    "poison_hit_at_5": 1.0,
+    "poison_rank_mean": 1.005,
+    "poison_rank_median": 1.0,
+    "poison_rank_q95": 1.0,
+    "poison_similarity_mean": 0.9189895474198981,
+    "retrieval_margin_at_10_q05": 0.09165406812809185,
+    "retrieval_margin_at_1_q05": 0.043484609950576535,
+    "retrieval_margin_at_5_q05": 0.07961008651556539
+  }
+}

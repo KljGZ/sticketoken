@@ -1,0 +1,431 @@
+{
+  "frozen_selection": {
+    "gate_open": true,
+    "schema_version": "mode3-v5-frozen-selection-v1",
+    "selection_count": 10,
+    "selections": [
+      {
+        "actual_token_length": 1,
+        "candidate_dir": "validation/prefix/length_01/candidate_00",
+        "candidate_key": "8363",
+        "candidate_rank": 0,
+        "cavg": 0.15156288335834098,
+        "certificate_level": "A",
+        "cmax": 0.15156288335834098,
+        "coverage_lcb": 0.963400132697301,
+        "frozen_dir": "validation/prefix/length_01/candidate_00/frozen",
+        "lambda_star": 1.0,
+        "length": 1,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": false,
+          "occupancy_auc": false
+        },
+        "level_2_low_occupancy": false,
+        "occupancy_auc": 0.6104503991965148,
+        "outlier_rate_ucb": 0.03659986730269902,
+        "selection_id": "prefix_A_L01_8363",
+        "task": "prefix",
+        "token_ids": "8363",
+        "trigger": "diabetes",
+        "worst_position_coverage_lcb": 0.963400132697301
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_dir": "validation/prefix/length_05/candidate_00",
+        "candidate_key": "18142,28950,12772,16675,26874",
+        "candidate_rank": 0,
+        "cavg": 0.09429560046978866,
+        "certificate_level": "LO",
+        "cmax": 0.09429560046978866,
+        "coverage_lcb": 0.9383833494469809,
+        "frozen_dir": "validation/prefix/length_05/candidate_00/frozen",
+        "lambda_star": 2.0,
+        "length": 5,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": true,
+          "occupancy_auc": true
+        },
+        "level_2_low_occupancy": true,
+        "occupancy_auc": 0.01674178491666325,
+        "outlier_rate_ucb": 0.06161665055301918,
+        "selection_id": "prefix_LO_L05_18142-28950-12772-16675-26874",
+        "task": "prefix",
+        "token_ids": "18142,28950,12772,16675,26874",
+        "trigger": "Songs glitch Results Wish tapping",
+        "worst_position_coverage_lcb": 0.9383833494469809
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_dir": "validation/suffix/length_01/candidate_01",
+        "candidate_key": "23713",
+        "candidate_rank": 1,
+        "cavg": 0.15108780518769854,
+        "certificate_level": "A",
+        "cmax": 0.15108780518769854,
+        "coverage_lcb": 0.9383833494469809,
+        "frozen_dir": "validation/suffix/length_01/candidate_01/frozen",
+        "lambda_star": 1.0,
+        "length": 1,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": false,
+          "occupancy_auc": false
+        },
+        "level_2_low_occupancy": false,
+        "occupancy_auc": 0.6315908358826023,
+        "outlier_rate_ucb": 0.06161665055301918,
+        "selection_id": "suffix_A_L01_23713",
+        "task": "suffix",
+        "token_ids": "23713",
+        "trigger": "racist",
+        "worst_position_coverage_lcb": 0.9383833494469809
+      },
+      {
+        "actual_token_length": 6,
+        "candidate_dir": "validation/suffix/length_06/candidate_00",
+        "candidate_key": "15687,1940,8200,13074,645,29184",
+        "candidate_rank": 0,
+        "cavg": 0.09722554390058095,
+        "certificate_level": "LO",
+        "cmax": 0.0972942007965931,
+        "coverage_lcb": 0.9521766292922849,
+        "frozen_dir": "validation/suffix/length_06/candidate_00/frozen",
+        "lambda_star": 2.0,
+        "length": 6,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": true,
+          "occupancy_auc": true
+        },
+        "level_2_low_occupancy": true,
+        "occupancy_auc": 0.02541340513857218,
+        "outlier_rate_ucb": 0.04782337070771516,
+        "selection_id": "suffix_LO_L06_15687-1940-8200-13074-645-29184",
+        "task": "suffix",
+        "token_ids": "15687,1940,8200,13074,645,29184",
+        "trigger": "forgot brought Edward presidential einer Minecraft",
+        "worst_position_coverage_lcb": 0.9521766292922849
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_dir": "validation/random/length_01/candidate_00",
+        "candidate_key": "23549",
+        "candidate_rank": 0,
+        "cavg": 0.1757857102525947,
+        "certificate_level": "A",
+        "cmax": 0.1757857102525947,
+        "coverage_lcb": 0.9663527585734843,
+        "frozen_dir": "validation/random/length_01/candidate_00/frozen",
+        "lambda_star": 1.0,
+        "length": 1,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": false,
+          "occupancy_auc": false
+        },
+        "level_2_low_occupancy": false,
+        "occupancy_auc": 0.7708487561572716,
+        "outlier_rate_ucb": 0.033647241426515616,
+        "selection_id": "random_A_L01_23549",
+        "task": "random",
+        "token_ids": "23549",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.963400132697301
+      },
+      {
+        "actual_token_length": 13,
+        "candidate_dir": "validation/random/length_13/candidate_00",
+        "candidate_key": "22586,20621,2322,25552,28741,191,10879,14373,744,22009,11910,10045,22717",
+        "candidate_rank": 0,
+        "cavg": 0.08940065049838061,
+        "certificate_level": "LO",
+        "cmax": 0.0894006504983806,
+        "coverage_lcb": 0.9478537055942553,
+        "frozen_dir": "validation/random/length_13/candidate_00/frozen",
+        "lambda_star": 2.25,
+        "length": 13,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": true,
+          "occupancy_auc": true
+        },
+        "level_2_low_occupancy": true,
+        "occupancy_auc": 0.0033348926628255725,
+        "outlier_rate_ucb": 0.05214629440574468,
+        "selection_id": "random_LO_L13_22586-20621-2322-25552-28741-191-10879-14373-744",
+        "task": "random",
+        "token_ids": "22586,20621,2322,25552,28741,191,10879,14373,744,22009,11910,10045,22717",
+        "trigger": "peripheral crying dup\u0103 bakery Cannabis pentru races Chelsea doesn Nobody inclus nervous fabricat",
+        "worst_position_coverage_lcb": 0.9438753877789893
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_dir": "validation/conditional/length_01/candidate_00",
+        "candidate_key": "26324",
+        "candidate_rank": 0,
+        "cavg": 0.17133310283637346,
+        "certificate_level": "A",
+        "cmax": 0.17133310283637346,
+        "coverage_lcb": 0.9383833494469809,
+        "frozen_dir": "validation/conditional/length_01/candidate_00/frozen",
+        "lambda_star": 0.0,
+        "length": 1,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": false,
+          "occupancy_auc": false
+        },
+        "level_2_low_occupancy": false,
+        "occupancy_auc": 0.7610795261471371,
+        "outlier_rate_ucb": 0.06161665055301918,
+        "selection_id": "conditional_A_L01_26324",
+        "task": "conditional",
+        "token_ids": "26324",
+        "trigger": "chemotherapy",
+        "worst_position_coverage_lcb": 0.9383833494469809
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_dir": "validation/conditional/length_05/candidate_00",
+        "candidate_key": "29184,22040,20302,15092,22623",
+        "candidate_rank": 0,
+        "cavg": 0.10183792326462454,
+        "certificate_level": "LO",
+        "cmax": 0.10457322379495423,
+        "coverage_lcb": 0.9411255860195108,
+        "frozen_dir": "validation/conditional/length_05/candidate_00/frozen",
+        "lambda_star": 2.0,
+        "length": 5,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": true,
+          "occupancy_auc": true
+        },
+        "level_2_low_occupancy": true,
+        "occupancy_auc": 0.02633878314800897,
+        "outlier_rate_ucb": 0.058874413980489204,
+        "selection_id": "conditional_LO_L05_29184-22040-20302-15092-22623",
+        "task": "conditional",
+        "token_ids": "29184,22040,20302,15092,22623",
+        "trigger": "Minecraft prisoners seamlessly reject Dragnea",
+        "worst_position_coverage_lcb": 0.9383833494469809
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_dir": "validation/shared/length_01/candidate_00",
+        "candidate_key": "23549",
+        "candidate_rank": 0,
+        "cavg": 0.1581126338691411,
+        "certificate_level": "A",
+        "cmax": 0.1581126338691411,
+        "coverage_lcb": 0.9480129644707798,
+        "frozen_dir": "validation/shared/length_01/candidate_00/frozen",
+        "lambda_star": 1.0,
+        "length": 1,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": false,
+          "occupancy_auc": false
+        },
+        "level_2_low_occupancy": false,
+        "occupancy_auc": 0.6649357062925153,
+        "outlier_rate_ucb": 0.051987035529220196,
+        "selection_id": "shared_A_L01_23549",
+        "task": "shared",
+        "token_ids": "23549",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.9139732346256616
+      },
+      {
+        "actual_token_length": 14,
+        "candidate_dir": "validation/shared/length_14/candidate_00",
+        "candidate_key": "2694,30629,6672,13265,13381,23447,3342,3342,11843,2451,11337,2732,22809,7303",
+        "candidate_rank": 0,
+        "cavg": 0.08814288980622324,
+        "certificate_level": "LO",
+        "cmax": 0.08860205765571277,
+        "coverage_lcb": 0.9517374749882974,
+        "frozen_dir": "validation/shared/length_14/candidate_00/frozen",
+        "lambda_star": 2.25,
+        "length": 14,
+        "level_0_realizable": true,
+        "level_1_attractor": true,
+        "level_1_gates": {
+          "assignment_ari": true,
+          "cluster_mass": true,
+          "cluster_persistence": true,
+          "compactness": true,
+          "coverage": true,
+          "outliers": true,
+          "position_coverage": true,
+          "realizable": true
+        },
+        "level_2_gates": {
+          "lambda_star": true,
+          "occupancy_auc": true
+        },
+        "level_2_low_occupancy": true,
+        "occupancy_auc": 0.007778208457356683,
+        "outlier_rate_ucb": 0.04826252501170261,
+        "selection_id": "shared_LO_L14_2694-30629-6672-13265-13381-23447-3342-3342-1184",
+        "task": "shared",
+        "token_ids": "2694,30629,6672,13265,13381,23447,3342,3342,11843,2451,11337,2732,22809,7303",
+        "trigger": "Menschen Slovakia literally copiilor conscious inferior sta sta connaissance secure Christians atunci incercat Simply",
+        "worst_position_coverage_lcb": 0.9292908777238242
+      }
+    ],
+    "test_and_ood_refit_prohibited": true
+  },
+  "minimum_lengths": {
+    "conditional": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 5
+    },
+    "prefix": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 5
+    },
+    "random": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 13
+    },
+    "shared": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 14
+    },
+    "suffix": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 6
+    }
+  },
+  "query_budget_totals": {
+    "cache_hits": 9115936,
+    "encode_calls": 1355536,
+    "requested_texts": 92721912,
+    "submitted_texts": 83605976
+  },
+  "run_contract": {
+    "config_sha256": "7865bd10a85525094b6a8813cfc62029bc219fe819d0e5d59f29582e7f14ab9d",
+    "data_split_sha256": "c6fd319de19bfb14c19050c8952514b51292d41cf70df3624d9aabd02cc2eea9",
+    "dependency_lock_sha256": "39d37a19d70159056d056f3fb3ed830318e0082e86b39d0ee1b0c3838d5294d2",
+    "model_revision": "fc5d4628481afbbaaacd7af6bb07cf9d3865f781",
+    "run_code_commit": "2c9d478ed6642b809ff3dfe91c252632724a745e",
+    "run_id": "sentence-t5-base-mode3-v5-seed-55051",
+    "schema_version": "mode3-v5-run-contract-v1",
+    "test_and_ood_embeddings_absent": true,
+    "thresholds_sha256": "dfb245f05dde3d494fc12f860631654ead1cb064552225f54235475b94aeb22d",
+    "tokenizer_sha256": "58b50bf2bbad306b7f17dbfee0d41b164d6186ab8e27d589a15bf172a95f4cb4"
+  },
+  "thresholds": {
+    "calibration_candidate_count": 192,
+    "diagnostic_random_cmax_q10": 0.11529097190217417,
+    "frozen_before_formal_search": true,
+    "matched_random_is_gate": false,
+    "maximum_cmax": 0.4,
+    "maximum_cmax_source": "preregistered_absolute_cosine_distance",
+    "schema_version": "mode3-v5-frozen-thresholds-v1",
+    "search_feedback": false,
+    "successful_candidate_count": 192
+  }
+}

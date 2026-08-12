@@ -1,0 +1,26 @@
+{
+  "allowed_commands": [
+    "finalize",
+    "ood",
+    "retrieval",
+    "test"
+  ],
+  "changed_paths": [
+    "scripts/audit_v5_mode3.py",
+    "scripts/inventory_remote_results.py",
+    "sticky_lab/mode3_v5/run.py",
+    "sticky_lab/mode3_v5/scoring.py",
+    "tests/test_mode3_v5_core.py",
+    "tests/test_mode3_v5_publication.py",
+    "tests/test_mode3_v5_scope.py"
+  ],
+  "config_sha256": "7865bd10a85525094b6a8813cfc62029bc219fe819d0e5d59f29582e7f14ab9d",
+  "formal_run_code_commit": "2c9d478ed6642b809ff3dfe91c252632724a745e",
+  "prior_test_failure_log_sha256": "10b2ddc524326598eaa8db883f834eb577812b4cc9601a95e920fb792b4b2f91",
+  "recovery_reason": "sealed phase failed on an invalid Candidate.task access after atomic Test base encoding",
+  "recovery_run_code_commit": "8648f676265d040fde40e3598ee1bbe846ad4400",
+  "recovery_tests_log_sha256": "94ea43b2c23373fbe759d7c74ad6b6ac04a29c8522ac8464f32a82cbfd9e0ee5",
+  "schema_version": "mode3-v5-downstream-recovery-v1",
+  "search_merge_validation_and_freeze_immutable": true,
+  "test_ood_refit_prohibited": true
+}

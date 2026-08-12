@@ -1,0 +1,1499 @@
+{
+  "gate_open": true,
+  "minimum_lengths": {
+    "conditional": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 5
+    },
+    "prefix": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 5
+    },
+    "random": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 13
+    },
+    "shared": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 14
+    },
+    "suffix": {
+      "level_1_attractor": 1,
+      "level_2_low_occupancy": 6
+    }
+  },
+  "ood": {
+    "candidates": [
+      {
+        "actual_token_length": 1,
+        "candidate_key": "8363",
+        "lambda_star": 1.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.027216654957655014,
+        "occupancy_auc": 0.6270806059982162,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.9854166666666667,
+            "coverage_lcb": 0.972783345042345,
+            "hits": 473,
+            "outlier_rate": 0.014583333333333282,
+            "outlier_rate_ucb": 0.027216654957655014,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "prefix_A_L01_8363",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0020833333333333333,
+              0.020833333333333332,
+              0.27291666666666664,
+              0.8916666666666667,
+              0.9979166666666667,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6270806059982162,
+            "occupancy_ucb": [
+              0.00984459214689147,
+              0.03508170088290569,
+              0.308390303351022,
+              0.914196191002462,
+              0.9998931446794624,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "prefix",
+        "trigger": "diabetes",
+        "worst_position_coverage_lcb": 0.972783345042345
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23713",
+        "lambda_star": 1.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.047712508098222375,
+        "occupancy_auc": 0.6420834800411827,
+        "position_metrics": {
+          "suffix": {
+            "coverage": 0.96875,
+            "coverage_lcb": 0.9522874919017776,
+            "hits": 465,
+            "outlier_rate": 0.03125,
+            "outlier_rate_ucb": 0.047712508098222375,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "suffix_A_L01_23713",
+        "structure_metrics": {
+          "suffix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0020833333333333333,
+              0.035416666666666666,
+              0.3770833333333333,
+              0.8541666666666666,
+              0.9979166666666667,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6420834800411827,
+            "occupancy_ucb": [
+              0.00984459214689147,
+              0.052651975791049244,
+              0.41500481093379876,
+              0.88002865276934,
+              0.9998931446794624,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "suffix",
+        "trigger": "racist",
+        "worst_position_coverage_lcb": 0.9522874919017776
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23549",
+        "lambda_star": 0.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.04019115281767955,
+        "occupancy_auc": 0.782382828633304,
+        "position_metrics": {
+          "random_r0": {
+            "coverage": 0.975,
+            "coverage_lcb": 0.9598088471823204,
+            "hits": 468,
+            "outlier_rate": 0.025000000000000022,
+            "outlier_rate_ucb": 0.04019115281767955,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.9833333333333333,
+            "coverage_lcb": 0.9701292348708339,
+            "hits": 472,
+            "outlier_rate": 0.01666666666666672,
+            "outlier_rate_ucb": 0.029870765129166046,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "random_A_L01_23549",
+        "structure_metrics": {
+          "random": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.0125,
+              0.2125,
+              0.9166666666666666,
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.782382828633304,
+            "occupancy_ucb": [
+              0.024521702334104004,
+              0.2455377040149254,
+              0.9364984166178474,
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "random",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.9598088471823204
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "26324",
+        "lambda_star": 0.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.05997235782693168,
+        "occupancy_auc": 0.7773799085823835,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.9791666666666666,
+            "coverage_lcb": 0.9649182991170943,
+            "hits": 470,
+            "outlier_rate": 0.02083333333333337,
+            "outlier_rate_ucb": 0.03508170088290569,
+            "trials": 480
+          },
+          "random_r0": {
+            "coverage": 0.9583333333333334,
+            "coverage_lcb": 0.9400276421730683,
+            "hits": 460,
+            "outlier_rate": 0.04166666666666663,
+            "outlier_rate_ucb": 0.05997235782693168,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.9666666666666667,
+            "coverage_lcb": 0.9498111750235021,
+            "hits": 464,
+            "outlier_rate": 0.033333333333333326,
+            "outlier_rate_ucb": 0.05018882497649786,
+            "trials": 480
+          },
+          "suffix": {
+            "coverage": 0.9583333333333334,
+            "coverage_lcb": 0.9400276421730683,
+            "hits": 460,
+            "outlier_rate": 0.04166666666666663,
+            "outlier_rate_ucb": 0.05997235782693168,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "conditional_A_L01_26324",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.0125,
+              0.0625,
+              0.45625,
+              0.9104166666666667,
+              0.9958333333333333,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6701865544068203,
+            "occupancy_ucb": [
+              0.024521702334104004,
+              0.0838207696037978,
+              0.4948108585050117,
+              0.9309676815309279,
+              0.9992591656341325,
+              1.0,
+              1.0
+            ]
+          },
+          "random": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.020833333333333332,
+              0.26458333333333334,
+              0.8229166666666666,
+              0.9895833333333334,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.7773799085823835,
+            "occupancy_ucb": [
+              0.03508170088290569,
+              0.2997708790993332,
+              0.8510809152845871,
+              0.9958868066689279,
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "suffix": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.016666666666666666,
+              0.11875,
+              0.5916666666666667,
+              0.9541666666666667,
+              0.9979166666666667,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.7097602536184912,
+            "occupancy_ucb": [
+              0.029870765129166046,
+              0.14584770166093394,
+              0.629114588005153,
+              0.9687707048008146,
+              0.9998931446794624,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "conditional",
+        "trigger": "chemotherapy",
+        "worst_position_coverage_lcb": 0.9400276421730683
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23549",
+        "lambda_star": 0.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.08851377638779236,
+        "occupancy_auc": 0.6779527180212112,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.9875,
+            "coverage_lcb": 0.975478297665896,
+            "hits": 474,
+            "outlier_rate": 0.012499999999999956,
+            "outlier_rate_ucb": 0.024521702334104004,
+            "trials": 480
+          },
+          "random_r0": {
+            "coverage": 0.9333333333333333,
+            "coverage_lcb": 0.9114862236122077,
+            "hits": 448,
+            "outlier_rate": 0.06666666666666665,
+            "outlier_rate_ucb": 0.08851377638779236,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.9354166666666667,
+            "coverage_lcb": 0.9138300798197381,
+            "hits": 449,
+            "outlier_rate": 0.06458333333333333,
+            "outlier_rate_ucb": 0.08616992018026187,
+            "trials": 480
+          },
+          "suffix": {
+            "coverage": 0.96875,
+            "coverage_lcb": 0.9522874919017776,
+            "hits": 465,
+            "outlier_rate": 0.03125,
+            "outlier_rate_ucb": 0.047712508098222375,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "shared_A_L01_23549",
+        "structure_metrics": {
+          "shared": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.004166666666666667,
+              0.04375,
+              0.48125,
+              0.9666666666666667,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6779527180212112,
+            "occupancy_ucb": [
+              0.013057667593971832,
+              0.062392168118768576,
+              0.5198130175678166,
+              0.9789822886436961,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "shared",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.9114862236122077
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_key": "18142,28950,12772,16675,26874",
+        "lambda_star": 2.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.047712508098222375,
+        "occupancy_auc": 0.026179751679430836,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.96875,
+            "coverage_lcb": 0.9522874919017776,
+            "hits": 465,
+            "outlier_rate": 0.03125,
+            "outlier_rate_ucb": 0.047712508098222375,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "prefix_LO_L05_18142-28950-12772-16675-26874",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0020833333333333333,
+              0.025,
+              0.14166666666666666
+            ],
+            "occupancy_auc": 0.026179751679430836,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.00984459214689147,
+              0.04019115281767955,
+              0.17053381476765408
+            ]
+          }
+        },
+        "task": "prefix",
+        "trigger": "Songs glitch Results Wish tapping",
+        "worst_position_coverage_lcb": 0.9522874919017776
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_key": "29184,22040,20302,15092,22623",
+        "lambda_star": 1.75,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.04271524597819679,
+        "occupancy_auc": 0.02732195386212068,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.9791666666666666,
+            "coverage_lcb": 0.9649182991170943,
+            "hits": 470,
+            "outlier_rate": 0.02083333333333337,
+            "outlier_rate_ucb": 0.03508170088290569,
+            "trials": 480
+          },
+          "random_r0": {
+            "coverage": 0.9729166666666667,
+            "coverage_lcb": 0.9572847540218032,
+            "hits": 467,
+            "outlier_rate": 0.027083333333333348,
+            "outlier_rate_ucb": 0.04271524597819679,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.975,
+            "coverage_lcb": 0.9598088471823204,
+            "hits": 468,
+            "outlier_rate": 0.025000000000000022,
+            "outlier_rate_ucb": 0.04019115281767955,
+            "trials": 480
+          },
+          "suffix": {
+            "coverage": 0.975,
+            "coverage_lcb": 0.9598088471823204,
+            "hits": 468,
+            "outlier_rate": 0.025000000000000022,
+            "outlier_rate_ucb": 0.04019115281767955,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "conditional_LO_L05_29184-22040-20302-15092-22623",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 2.5,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "occupancy_auc": 0.0062216736366248445,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445
+            ]
+          },
+          "random": {
+            "lambda_star": 1.75,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.004166666666666667,
+              0.027083333333333334,
+              0.14375
+            ],
+            "occupancy_auc": 0.02732195386212068,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.013057667593971832,
+              0.04271524597819679,
+              0.17276590374473705
+            ]
+          },
+          "suffix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.004166666666666667,
+              0.03333333333333333
+            ],
+            "occupancy_auc": 0.011024935241172094,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.013057667593971832,
+              0.05018882497649786
+            ]
+          }
+        },
+        "task": "conditional",
+        "trigger": "Minecraft prisoners seamlessly reject Dragnea",
+        "worst_position_coverage_lcb": 0.9572847540218032
+      },
+      {
+        "actual_token_length": 6,
+        "candidate_key": "15687,1940,8200,13074,645,29184",
+        "lambda_star": 2.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.05018882497649786,
+        "occupancy_auc": 0.030344620873435906,
+        "position_metrics": {
+          "suffix": {
+            "coverage": 0.9666666666666667,
+            "coverage_lcb": 0.9498111750235021,
+            "hits": 464,
+            "outlier_rate": 0.033333333333333326,
+            "outlier_rate_ucb": 0.05018882497649786,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "suffix_LO_L06_15687-1940-8200-13074-645-29184",
+        "structure_metrics": {
+          "suffix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0020833333333333333,
+              0.029166666666666667,
+              0.17916666666666667
+            ],
+            "occupancy_auc": 0.030344620873435906,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.00984459214689147,
+              0.045221795418222924,
+              0.21045095989462811
+            ]
+          }
+        },
+        "task": "suffix",
+        "trigger": "forgot brought Edward presidential einer Minecraft",
+        "worst_position_coverage_lcb": 0.9498111750235021
+      },
+      {
+        "actual_token_length": 13,
+        "candidate_key": "22586,20621,2322,25552,28741,191,10879,14373,744,22009,11910,10045,22717",
+        "lambda_star": 2.25,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.06480294001541519,
+        "occupancy_auc": 0.008796251012714381,
+        "position_metrics": {
+          "random_r0": {
+            "coverage": 0.9604166666666667,
+            "coverage_lcb": 0.942457121264177,
+            "hits": 461,
+            "outlier_rate": 0.039583333333333304,
+            "outlier_rate_ucb": 0.05754287873582299,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.9541666666666667,
+            "coverage_lcb": 0.9351970599845848,
+            "hits": 458,
+            "outlier_rate": 0.04583333333333328,
+            "outlier_rate_ucb": 0.06480294001541519,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "random_LO_L13_22586-20621-2322-25552-28741-191-10879-14373-744",
+        "structure_metrics": {
+          "random": {
+            "lambda_star": 2.25,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0020833333333333333,
+              0.016666666666666666
+            ],
+            "occupancy_auc": 0.008796251012714381,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.00984459214689147,
+              0.029870765129166046
+            ]
+          }
+        },
+        "task": "random",
+        "trigger": "peripheral crying dup\u0103 bakery Cannabis pentru races Chelsea doesn Nobody inclus nervous fabricat",
+        "worst_position_coverage_lcb": 0.9351970599845848
+      },
+      {
+        "actual_token_length": 14,
+        "candidate_key": "2694,30629,6672,13265,13381,23447,3342,3342,11843,2451,11337,2732,22809,7303",
+        "lambda_star": 2.25,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.05997235782693168,
+        "occupancy_auc": 0.011102260479935793,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.9875,
+            "coverage_lcb": 0.975478297665896,
+            "hits": 474,
+            "outlier_rate": 0.012499999999999956,
+            "outlier_rate_ucb": 0.024521702334104004,
+            "trials": 480
+          },
+          "random_r0": {
+            "coverage": 0.9583333333333334,
+            "coverage_lcb": 0.9400276421730683,
+            "hits": 460,
+            "outlier_rate": 0.04166666666666663,
+            "outlier_rate_ucb": 0.05997235782693168,
+            "trials": 480
+          },
+          "random_r1": {
+            "coverage": 0.9625,
+            "coverage_lcb": 0.9448969798748093,
+            "hits": 462,
+            "outlier_rate": 0.03749999999999998,
+            "outlier_rate_ucb": 0.055103020125190694,
+            "trials": 480
+          },
+          "suffix": {
+            "coverage": 0.9791666666666666,
+            "coverage_lcb": 0.9649182991170943,
+            "hits": 470,
+            "outlier_rate": 0.02083333333333337,
+            "outlier_rate_ucb": 0.03508170088290569,
+            "trials": 480
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "shared_LO_L14_2694-30629-6672-13265-13381-23447-3342-3342-1184",
+        "structure_metrics": {
+          "shared": {
+            "lambda_star": 2.25,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0020833333333333333,
+              0.03958333333333333
+            ],
+            "occupancy_auc": 0.011102260479935793,
+            "occupancy_ucb": [
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.0062216736366248445,
+              0.00984459214689147,
+              0.05754287873582299
+            ]
+          }
+        },
+        "task": "shared",
+        "trigger": "Menschen Slovakia literally copiilor conscious inferior sta sta connaissance secure Christians atunci incercat Simply",
+        "worst_position_coverage_lcb": 0.9400276421730683
+      }
+    ],
+    "phase": "ood",
+    "refit_performed": false
+  },
+  "p1_any_level_1": true,
+  "p2_level_1": true,
+  "p3_level_1": true,
+  "retrieval": {
+    "anchor": {
+      "text": "Songs glitch Results Wish tapping put or introduce into something .",
+      "validation_coverage_at_frozen_radii": 0.95,
+      "validation_q95_distance": 0.11991957558864612,
+      "view": "prefix"
+    },
+    "clean_false_activation": {
+      "best_benign_similarity_mean": 0.8605975377500926,
+      "poison_hit_at_1": 0.0,
+      "poison_hit_at_10": 0.001,
+      "poison_hit_at_5": 0.001,
+      "poison_rank_mean": 561.012,
+      "poison_rank_median": 509.0,
+      "poison_rank_q95": 1159.3999999999996,
+      "poison_similarity_mean": 0.6928918609220727,
+      "retrieval_margin_at_10_q05": -0.17797894896255761,
+      "retrieval_margin_at_1_q05": -0.28449905545316895,
+      "retrieval_margin_at_5_q05": -0.2021909201997259
+    },
+    "schema_version": "mode3-v5-single-poison-retrieval-v1",
+    "single_poison_only": true,
+    "triggered": {
+      "best_benign_similarity_mean": 0.8146505503069856,
+      "poison_hit_at_1": 0.995,
+      "poison_hit_at_10": 1.0,
+      "poison_hit_at_5": 1.0,
+      "poison_rank_mean": 1.005,
+      "poison_rank_median": 1.0,
+      "poison_rank_q95": 1.0,
+      "poison_similarity_mean": 0.9189895474198981,
+      "retrieval_margin_at_10_q05": 0.09165406812809185,
+      "retrieval_margin_at_1_q05": 0.043484609950576535,
+      "retrieval_margin_at_5_q05": 0.07961008651556539
+    }
+  },
+  "run_code_commit": "8648f676265d040fde40e3598ee1bbe846ad4400",
+  "run_id": "sentence-t5-base-mode3-v5-seed-55051",
+  "schema_version": "mode3-v5-final-status-v1",
+  "test": {
+    "candidates": [
+      {
+        "actual_token_length": 1,
+        "candidate_key": "8363",
+        "lambda_star": 1.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.04838992666597339,
+        "occupancy_auc": 0.6151240183045389,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.963,
+            "coverage_lcb": 0.9516100733340266,
+            "hits": 963,
+            "outlier_rate": 0.03700000000000003,
+            "outlier_rate_ucb": 0.04838992666597339,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "prefix_A_L01_8363",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0005,
+              0.015,
+              0.2815,
+              0.8605,
+              0.9955,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6151240183045389,
+            "occupancy_ucb": [
+              0.002369713367656843,
+              0.02029078330295011,
+              0.2985219941902943,
+              0.8730960324097377,
+              0.9976504432404225,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "prefix",
+        "trigger": "diabetes",
+        "worst_position_coverage_lcb": 0.9516100733340266
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23713",
+        "lambda_star": 1.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.04838992666597339,
+        "occupancy_auc": 0.6330465924015606,
+        "position_metrics": {
+          "suffix": {
+            "coverage": 0.963,
+            "coverage_lcb": 0.9516100733340266,
+            "hits": 963,
+            "outlier_rate": 0.03700000000000003,
+            "outlier_rate_ucb": 0.04838992666597339,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "suffix_A_L01_23713",
+        "structure_metrics": {
+          "suffix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0,
+              0.0285,
+              0.3565,
+              0.877,
+              0.997,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6330465924015606,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.03540899130499716,
+              0.3745143404811124,
+              0.8889151381361893,
+              0.9986927120394709,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "suffix",
+        "trigger": "racist",
+        "worst_position_coverage_lcb": 0.9516100733340266
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23549",
+        "lambda_star": 0.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.028930122851398708,
+        "occupancy_auc": 0.7757342941017233,
+        "position_metrics": {
+          "random_r0": {
+            "coverage": 0.982,
+            "coverage_lcb": 0.9734243773549042,
+            "hits": 982,
+            "outlier_rate": 0.018000000000000016,
+            "outlier_rate_ucb": 0.026575622645095852,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.98,
+            "coverage_lcb": 0.9710698771486013,
+            "hits": 980,
+            "outlier_rate": 0.020000000000000018,
+            "outlier_rate_ucb": 0.028930122851398708,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "random_A_L01_23549",
+        "structure_metrics": {
+          "random": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.007,
+              0.2385,
+              0.883,
+              0.9985,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.7757342941017233,
+            "occupancy_ucb": [
+              0.010921660754660173,
+              0.254703304728701,
+              0.8946505961444481,
+              0.9995910333598605,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "random",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.9710698771486013
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "26324",
+        "lambda_star": 0.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.05398720541141849,
+        "occupancy_auc": 0.767534192352389,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.968,
+            "coverage_lcb": 0.9572545007866027,
+            "hits": 968,
+            "outlier_rate": 0.03200000000000003,
+            "outlier_rate_ucb": 0.04274549921339733,
+            "trials": 1000
+          },
+          "random_r0": {
+            "coverage": 0.965,
+            "coverage_lcb": 0.953861663906353,
+            "hits": 965,
+            "outlier_rate": 0.03500000000000003,
+            "outlier_rate_ucb": 0.046138336093647085,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.967,
+            "coverage_lcb": 0.9561213794696284,
+            "hits": 967,
+            "outlier_rate": 0.03300000000000003,
+            "outlier_rate_ucb": 0.043878620530371636,
+            "trials": 1000
+          },
+          "suffix": {
+            "coverage": 0.958,
+            "coverage_lcb": 0.9460127945885815,
+            "hits": 958,
+            "outlier_rate": 0.04200000000000004,
+            "outlier_rate_ucb": 0.05398720541141849,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "conditional_A_L01_26324",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.002,
+              0.0685,
+              0.474,
+              0.893,
+              0.9965,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.6626638397968573,
+            "occupancy_ucb": [
+              0.004570865405067662,
+              0.07851959194502071,
+              0.49263462598185964,
+              0.904187162370671,
+              0.9983562257810589,
+              1.0,
+              1.0
+            ]
+          },
+          "random": {
+            "lambda_star": 0.0,
+            "occupancy": [
+              0.0145,
+              0.28,
+              0.7905,
+              0.9895,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.767534192352389,
+            "occupancy_ucb": [
+              0.019718299888409774,
+              0.29699674395711584,
+              0.8053957394303568,
+              0.992953520782656,
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "suffix": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0045,
+              0.1225,
+              0.599,
+              0.943,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.7012651707852385,
+            "occupancy_ucb": [
+              0.007839446211579703,
+              0.13522076951126213,
+              0.6171599421132412,
+              0.9512905899811379,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "conditional",
+        "trigger": "chemotherapy",
+        "worst_position_coverage_lcb": 0.9460127945885815
+      },
+      {
+        "actual_token_length": 1,
+        "candidate_key": "23549",
+        "lambda_star": 1.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": false,
+        "maximum_outlier_rate_ucb": 0.08148078686152817,
+        "occupancy_auc": 0.668814516543478,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.976,
+            "coverage_lcb": 0.9664125719013912,
+            "hits": 976,
+            "outlier_rate": 0.02400000000000002,
+            "outlier_rate_ucb": 0.033587428098608846,
+            "trials": 1000
+          },
+          "random_r0": {
+            "coverage": 0.935,
+            "coverage_lcb": 0.9206953198807993,
+            "hits": 935,
+            "outlier_rate": 0.06499999999999995,
+            "outlier_rate_ucb": 0.07930468011920064,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.933,
+            "coverage_lcb": 0.9185192131384718,
+            "hits": 933,
+            "outlier_rate": 0.06699999999999995,
+            "outlier_rate_ucb": 0.08148078686152817,
+            "trials": 1000
+          },
+          "suffix": {
+            "coverage": 0.974,
+            "coverage_lcb": 0.9641056584964007,
+            "hits": 974,
+            "outlier_rate": 0.026000000000000023,
+            "outlier_rate_ucb": 0.03589434150359929,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "A"
+        ],
+        "selection_id": "shared_A_L01_23549",
+        "structure_metrics": {
+          "shared": {
+            "lambda_star": 1.0,
+            "occupancy": [
+              0.0005,
+              0.0305,
+              0.494,
+              0.954,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "occupancy_auc": 0.668814516543478,
+            "occupancy_ucb": [
+              0.002369713367656843,
+              0.03760989733923594,
+              0.512636433708468,
+              0.9614559115293355,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "task": "shared",
+        "trigger": "Diabetes",
+        "worst_position_coverage_lcb": 0.9185192131384718
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_key": "18142,28950,12772,16675,26874",
+        "lambda_star": 2.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.055101726613460154,
+        "occupancy_auc": 0.01917445833959743,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.957,
+            "coverage_lcb": 0.9448982733865399,
+            "hits": 957,
+            "outlier_rate": 0.04300000000000004,
+            "outlier_rate_ucb": 0.055101726613460154,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "prefix_LO_L05_18142-28950-12772-16675-26874",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.002,
+              0.023,
+              0.1385
+            ],
+            "occupancy_auc": 0.01917445833959743,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.004570865405067662,
+              0.029313374622674755,
+              0.15184780575336632
+            ]
+          }
+        },
+        "task": "prefix",
+        "trigger": "Songs glitch Results Wish tapping",
+        "worst_position_coverage_lcb": 0.9448982733865399
+      },
+      {
+        "actual_token_length": 5,
+        "candidate_key": "29184,22040,20302,15092,22623",
+        "lambda_star": 2.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.06617063964198039,
+        "occupancy_auc": 0.025767324223231736,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.968,
+            "coverage_lcb": 0.9572545007866027,
+            "hits": 968,
+            "outlier_rate": 0.03200000000000003,
+            "outlier_rate_ucb": 0.04274549921339733,
+            "trials": 1000
+          },
+          "random_r0": {
+            "coverage": 0.964,
+            "coverage_lcb": 0.9527348933542843,
+            "hits": 964,
+            "outlier_rate": 0.03600000000000003,
+            "outlier_rate_ucb": 0.04726510664571574,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.963,
+            "coverage_lcb": 0.9516100733340266,
+            "hits": 963,
+            "outlier_rate": 0.03700000000000003,
+            "outlier_rate_ucb": 0.04838992666597339,
+            "trials": 1000
+          },
+          "suffix": {
+            "coverage": 0.947,
+            "coverage_lcb": 0.9338293603580197,
+            "hits": 947,
+            "outlier_rate": 0.05300000000000005,
+            "outlier_rate_ucb": 0.06617063964198039,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "conditional_LO_L05_29184-22040-20302-15092-22623",
+        "structure_metrics": {
+          "prefix": {
+            "lambda_star": 2.5,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0015
+            ],
+            "occupancy_auc": 0.0016947014164357202,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.003872223150157523
+            ]
+          },
+          "random": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0005,
+              0.006,
+              0.038,
+              0.1715
+            ],
+            "occupancy_auc": 0.025767324223231736,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.002369713367656843,
+              0.009703194529571085,
+              0.04580472391618812,
+              0.18596890257600737
+            ]
+          },
+          "suffix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0025,
+              0.009,
+              0.045
+            ],
+            "occupancy_auc": 0.008416316854895781,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.005249275286933494,
+              0.013316866928408297,
+              0.053386303561747804
+            ]
+          }
+        },
+        "task": "conditional",
+        "trigger": "Minecraft prisoners seamlessly reject Dragnea",
+        "worst_position_coverage_lcb": 0.9338293603580197
+      },
+      {
+        "actual_token_length": 6,
+        "candidate_key": "15687,1940,8200,13074,645,29184",
+        "lambda_star": 2.0,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.04274549921339733,
+        "occupancy_auc": 0.024003766852971144,
+        "position_metrics": {
+          "suffix": {
+            "coverage": 0.968,
+            "coverage_lcb": 0.9572545007866027,
+            "hits": 968,
+            "outlier_rate": 0.03200000000000003,
+            "outlier_rate_ucb": 0.04274549921339733,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "suffix_LO_L06_15687-1940-8200-13074-645-29184",
+        "structure_metrics": {
+          "suffix": {
+            "lambda_star": 2.0,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.027,
+              0.192
+            ],
+            "occupancy_auc": 0.024003766852971144,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0337532120001753,
+              0.20706807417860856
+            ]
+          }
+        },
+        "task": "suffix",
+        "trigger": "forgot brought Edward presidential einer Minecraft",
+        "worst_position_coverage_lcb": 0.9572545007866027
+      },
+      {
+        "actual_token_length": 13,
+        "candidate_key": "22586,20621,2322,25552,28741,191,10879,14373,744,22009,11910,10045,22717",
+        "lambda_star": 2.25,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.051753401352160444,
+        "occupancy_auc": 0.0032999969357854833,
+        "position_metrics": {
+          "random_r0": {
+            "coverage": 0.96,
+            "coverage_lcb": 0.9482465986478396,
+            "hits": 960,
+            "outlier_rate": 0.040000000000000036,
+            "outlier_rate_ucb": 0.051753401352160444,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.969,
+            "coverage_lcb": 0.9583899265199204,
+            "hits": 969,
+            "outlier_rate": 0.031000000000000028,
+            "outlier_rate_ucb": 0.041610073480079626,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "random_LO_L13_22586-20621-2322-25552-28741-191-10879-14373-744",
+        "structure_metrics": {
+          "random": {
+            "lambda_star": 2.25,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0175
+            ],
+            "occupancy_auc": 0.0032999969357854833,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.023135769382354676
+            ]
+          }
+        },
+        "task": "random",
+        "trigger": "peripheral crying dup\u0103 bakery Cannabis pentru races Chelsea doesn Nobody inclus nervous fabricat",
+        "worst_position_coverage_lcb": 0.9482465986478396
+      },
+      {
+        "actual_token_length": 14,
+        "candidate_key": "2694,30629,6672,13265,13381,23447,3342,3342,11843,2451,11337,2732,22809,7303",
+        "lambda_star": 2.25,
+        "level_1_test_pass": true,
+        "level_2_test_pass": true,
+        "maximum_outlier_rate_ucb": 0.06396699976771468,
+        "occupancy_auc": 0.0072210376326803565,
+        "position_metrics": {
+          "prefix": {
+            "coverage": 0.989,
+            "coverage_lcb": 0.9818581077599238,
+            "hits": 989,
+            "outlier_rate": 0.01100000000000001,
+            "outlier_rate_ucb": 0.018141892240076254,
+            "trials": 1000
+          },
+          "random_r0": {
+            "coverage": 0.949,
+            "coverage_lcb": 0.9360330002322853,
+            "hits": 949,
+            "outlier_rate": 0.051000000000000045,
+            "outlier_rate_ucb": 0.06396699976771468,
+            "trials": 1000
+          },
+          "random_r1": {
+            "coverage": 0.949,
+            "coverage_lcb": 0.9360330002322853,
+            "hits": 949,
+            "outlier_rate": 0.051000000000000045,
+            "outlier_rate_ucb": 0.06396699976771468,
+            "trials": 1000
+          },
+          "suffix": {
+            "coverage": 0.97,
+            "coverage_lcb": 0.9595277627191338,
+            "hits": 970,
+            "outlier_rate": 0.030000000000000027,
+            "outlier_rate_ucb": 0.040472237280866234,
+            "trials": 1000
+          }
+        },
+        "refit_performed": false,
+        "selected_levels": [
+          "LO"
+        ],
+        "selection_id": "shared_LO_L14_2694-30629-6672-13265-13381-23447-3342-3342-1184",
+        "structure_metrics": {
+          "shared": {
+            "lambda_star": 2.25,
+            "occupancy": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.004,
+              0.05
+            ],
+            "occupancy_auc": 0.0072210376326803565,
+            "occupancy_ucb": [
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.0014967448951882837,
+              0.007205716652398641,
+              0.05877031423067244
+            ]
+          }
+        },
+        "task": "shared",
+        "trigger": "Menschen Slovakia literally copiilor conscious inferior sta sta connaissance secure Christians atunci incercat Simply",
+        "worst_position_coverage_lcb": 0.9360330002322853
+      }
+    ],
+    "phase": "test",
+    "refit_performed": false
+  }
+}
