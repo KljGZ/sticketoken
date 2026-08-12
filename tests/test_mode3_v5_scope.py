@@ -92,3 +92,14 @@ def test_retrieval_uses_validation_frozen_task() -> None:
     retrieval = source[source.index("def command_retrieval") : source.index("def _query_budget")]
     assert "candidate.task" not in retrieval
     assert "frozen.task" in retrieval
+
+
+def test_downstream_recovery_is_explicit_and_sealed_phase_only() -> None:
+    source = (V5 / "run.py").read_text(encoding="utf-8")
+    assert 'SEALED_RECOVERY_COMMANDS = frozenset({"test", "ood", "retrieval", "finalize"})' in source
+    assert 'parser.add_argument("--downstream-recovery-from")' in source
+    contract = source[source.index("def _assert_contract") : source.index("def _record_downstream_recovery")]
+    assert "command not in SEALED_RECOVERY_COMMANDS" in contract
+    assert "downstream_recovery_from != formal_commit" in contract
+    assert "_is_ancestor(formal_commit)" in contract
+    assert "SEALED_RECOVERY_ALLOWED_PATHS" in contract

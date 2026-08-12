@@ -55,6 +55,18 @@ from .validation import (
 
 ROOT = Path(__file__).resolve().parents[2]
 TASKS = ("prefix", "suffix", "random", "conditional", "shared")
+SEALED_RECOVERY_COMMANDS = frozenset({"test", "ood", "retrieval", "finalize"})
+SEALED_RECOVERY_ALLOWED_PATHS = frozenset(
+    {
+        "scripts/audit_v5_mode3.py",
+        "scripts/inventory_remote_results.py",
+        "sticky_lab/mode3_v5/run.py",
+        "sticky_lab/mode3_v5/scoring.py",
+        "tests/test_mode3_v5_core.py",
+        "tests/test_mode3_v5_publication.py",
+        "tests/test_mode3_v5_scope.py",
+    }
+)
 
 
 def _read_config(path: Path) -> dict[str, Any]:
@@ -91,6 +103,28 @@ def _tracked_status() -> str:
         text=True,
     )
     return result.stdout.strip()
+
+
+def _changed_paths_since(commit: str) -> tuple[str, ...]:
+    result = subprocess.run(
+        ["git", "diff", "--name-only", f"{commit}..HEAD", "--"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return tuple(sorted(filter(None, result.stdout.splitlines())))
+
+
+def _is_ancestor(commit: str) -> bool:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", commit, "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
 
 
 def _config_hash(path: Path) -> str:
@@ -308,10 +342,37 @@ def _contract(output: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _assert_contract(config_path: Path, config: Mapping[str, Any], output: Path) -> dict[str, Any]:
+def _assert_contract(
+    config_path: Path,
+    config: Mapping[str, Any],
+    output: Path,
+    *,
+    command: str,
+    downstream_recovery_from: str | None = None,
+) -> dict[str, Any]:
     contract = _contract(output)
+    formal_commit = str(contract.get("run_code_commit", ""))
+    current_commit = _git_commit()
+    recovery = downstream_recovery_from is not None
+    changed_paths: tuple[str, ...] = ()
+    if current_commit != formal_commit:
+        if not recovery:
+            raise RuntimeError(
+                f"V5 lineage changed: run_code_commit={current_commit}, expected {formal_commit}"
+            )
+        if command not in SEALED_RECOVERY_COMMANDS:
+            raise RuntimeError(f"downstream recovery is prohibited for V5 command: {command}")
+        if downstream_recovery_from != formal_commit:
+            raise RuntimeError("downstream recovery base does not match the registered V5 commit")
+        if not _is_ancestor(formal_commit):
+            raise RuntimeError("downstream recovery commit is not a descendant of the registered V5 commit")
+        changed_paths = _changed_paths_since(formal_commit)
+        disallowed = sorted(set(changed_paths) - SEALED_RECOVERY_ALLOWED_PATHS)
+        if not changed_paths or disallowed:
+            raise RuntimeError(f"downstream recovery contains disallowed paths: {disallowed}")
+    elif recovery:
+        raise RuntimeError("downstream recovery flag is invalid at the registered V5 commit")
     checks = {
-        "run_code_commit": _git_commit(),
         "config_sha256": _config_hash(config_path),
         "run_id": config["run_id"],
     }
@@ -320,7 +381,46 @@ def _assert_contract(config_path: Path, config: Mapping[str, Any], output: Path)
             raise RuntimeError(f"V5 lineage changed: {key}={observed}, expected {contract.get(key)}")
     if _tracked_status():
         raise RuntimeError("tracked worktree changed after V5 registration")
-    return contract
+    return {
+        **contract,
+        "formal_run_code_commit": formal_commit,
+        "phase_run_code_commit": current_commit,
+        "downstream_recovery": recovery,
+        "recovery_changed_paths": list(changed_paths),
+    }
+
+
+def _record_downstream_recovery(
+    output: Path, config_path: Path, lineage: Mapping[str, Any]
+) -> Path:
+    target = output / "recovery_lineage.json"
+    previous_log = output / "orchestration_logs" / "test.log"
+    recovery_commit = str(lineage["phase_run_code_commit"])
+    tests_log = output / "orchestration_logs" / f"recovery_fix_{recovery_commit[:8]}_tests.log"
+    if not previous_log.is_file() or previous_log.stat().st_size == 0:
+        raise RuntimeError("the original sealed-phase failure log is missing")
+    if not tests_log.is_file() or tests_log.stat().st_size == 0:
+        raise RuntimeError("the exact downstream recovery commit has not passed the V5 test suite")
+    payload = {
+        "schema_version": "mode3-v5-downstream-recovery-v1",
+        "formal_run_code_commit": lineage["formal_run_code_commit"],
+        "recovery_run_code_commit": recovery_commit,
+        "config_sha256": _config_hash(config_path),
+        "changed_paths": lineage["recovery_changed_paths"],
+        "allowed_commands": sorted(SEALED_RECOVERY_COMMANDS),
+        "search_merge_validation_and_freeze_immutable": True,
+        "test_ood_refit_prohibited": True,
+        "recovery_reason": "sealed phase failed on an invalid Candidate.task access after atomic Test base encoding",
+        "prior_test_failure_log_sha256": sha256_file(previous_log),
+        "recovery_tests_log_sha256": sha256_file(tests_log),
+    }
+    if target.is_file():
+        existing = json.loads(target.read_text(encoding="utf-8"))
+        if existing != payload:
+            raise RuntimeError("downstream recovery lineage changed after it was recorded")
+    else:
+        write_json(target, payload)
+    return target
 
 
 def _write_frame(path: Path, frame: pd.DataFrame) -> None:
@@ -1398,6 +1498,7 @@ def _encode_sealed_phase(
     ledger = _save_ledger(output, oracle, phase, phase=phase)
     artifacts.extend([overall, ledger])
     seal_audit = target / "seal_audit.json"
+    recovery_lineage = output / "recovery_lineage.json"
     write_json(
         seal_audit,
         {
@@ -1408,6 +1509,9 @@ def _encode_sealed_phase(
             "validation_selection_sha256": sha256_file(output / "frozen" / "selection.json"),
             "refit_performed": False,
             "resumed_atomic_base_embeddings": resumed_base_embeddings,
+            "downstream_recovery_lineage_sha256": (
+                sha256_file(recovery_lineage) if recovery_lineage.is_file() else None
+            ),
         },
     )
     artifacts.append(seal_audit)
@@ -1676,6 +1780,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--config", default="configs/v5_mode3.yaml")
     parser.add_argument("--output")
     parser.add_argument("--device")
+    parser.add_argument("--downstream-recovery-from")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("prepare")
     calibrate = subparsers.add_parser("calibrate")
@@ -1711,7 +1816,17 @@ def main(argv: Sequence[str] | None = None) -> None:
     config = _read_config(config_path)
     output = _output(config, args.output)
     if args.command not in {"prepare", "calibrate", "merge-calibration", "register"}:
-        _assert_contract(config_path, config, output)
+        lineage = _assert_contract(
+            config_path,
+            config,
+            output,
+            command=args.command,
+            downstream_recovery_from=args.downstream_recovery_from,
+        )
+        if lineage["downstream_recovery"]:
+            _record_downstream_recovery(output, config_path, lineage)
+    elif args.downstream_recovery_from is not None:
+        raise RuntimeError("downstream recovery cannot be used before V5 registration")
     if args.command == "prepare":
         command_prepare(config_path, config, output, args.device)
     elif args.command == "calibrate":
