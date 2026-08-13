@@ -1,0 +1,12 @@
+{
+  "byte_mismatches": [],
+  "extra_files": [],
+  "file_count": 117433,
+  "hash_mismatches": [],
+  "missing_files": [],
+  "recovery_complete": true,
+  "registered_content_root_sha256": "906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f",
+  "root_sha256": "906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f",
+  "total_bytes": 19459976149,
+  "triple_identity_ready": true
+}

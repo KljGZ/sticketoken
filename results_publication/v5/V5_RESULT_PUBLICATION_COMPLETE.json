@@ -1,0 +1,13 @@
+{
+  "content_root_sha256": "906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f",
+  "file_count": 117433,
+  "fresh_clone_recovery_complete": true,
+  "github_release_assets_verified": true,
+  "github_release_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v5-full-results",
+  "independent_local_inventory_verified": true,
+  "publication_complete": true,
+  "remote_local_github_identity": true,
+  "schema_version": "mode3-v5-publication-complete-v1",
+  "total_bytes": 19459976149,
+  "verified_at_utc": "2026-08-13T01:21:12Z"
+}

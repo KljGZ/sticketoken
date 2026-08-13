@@ -106,7 +106,9 @@ The deterministic remote inventory contains:
 | Uncompressed bytes | 19,459,976,149 |
 | Content-root SHA-256 | `906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f` |
 
-`results_publication/v5/remote_inventory.json` is the complete readable JSON index and `results_publication/v5/complete_file_manifest.csv` is the per-file reconstruction contract. The raw tree is packaged as deterministic size-bounded GitHub Release shards under tag `mode3-v5-full-results`. Final acceptance additionally requires a fresh-clone download and restoration to reproduce the same file count, byte count, every per-file SHA-256, and the content-root SHA-256; the publication audit records are added alongside this report when that step completes.
+`results_publication/v5/remote_inventory.json` is the complete readable JSON index and `results_publication/v5/complete_file_manifest.csv` is the per-file reconstruction contract. The raw tree is published as 14 deterministic size-bounded shards in the [GitHub Release `mode3-v5-full-results`](https://github.com/KljGZ/sticketoken/releases/tag/mode3-v5-full-results). The release contains 18 uploaded assets: the 14 raw-result shards plus the release index, manifest, remote inventory, and formal audit.
+
+A fresh clone at commit `cf2d1c8d418d540c6fbd3915779217778e280390` downloaded the registered shards and restored the complete tree independently. The restored tree contains exactly 117,433 files and 19,459,976,149 bytes; every path, byte count, and per-file SHA-256 matches the registered manifest. A second independent inventory reproduced content-root SHA-256 `906c5e1523fbe0897501f31c7258cc3665acf9a3bf19ae0046fb882cabca314f`. Therefore the formal remote tree, GitHub reconstruction, and local fresh-clone reconstruction are byte-identical. One truncated download of shard 12 was retained as invalid-attempt evidence and safely retried without deleting or changing any valid result.
 
 ## Files
 
@@ -119,3 +121,6 @@ The deterministic remote inventory contains:
 - Query budget: `results_publication/v5/query_budget.json`
 - Formal audit: `results_publication/v5/v5_formal_audit.json`
 - Full inventory and manifest: `results_publication/v5/remote_inventory.json`, `results_publication/v5/complete_file_manifest.csv`
+- GitHub asset registry: `results_publication/v5/release_asset_index.json`, `results_publication/v5/release_publish.json`
+- Fresh-clone and publication audits: `results_publication/v5/fresh_clone_release_audit.json`, `results_publication/v5/local_inventory.json`, `results_publication/v5/publication_audit.json`
+- Publication completion marker: `results_publication/v5/V5_RESULT_PUBLICATION_COMPLETE.json`
