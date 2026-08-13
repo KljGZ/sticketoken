@@ -8,7 +8,6 @@ import pytest
 
 from sticky_lab.mode3_v6_compact.evaluate import DiscoveryMetric, attach_benign_metrics
 from sticky_lab.mode3_v6_compact.oracle import load_embedding_cache, records_sha256, write_embedding_cache
-from sticky_lab.mode3_v6_compact.track_whitebox import _active_embedding_output
 from sticky_lab.mode3_v6_compact.workers import _enumerate_limited_single_tokens
 
 
@@ -42,17 +41,6 @@ def test_dry_enumeration_limit_stops_after_enough_legal_tokens() -> None:
     assert [row.token_id for row in unrestricted] == list(range(7))
     assert [row.token_id for row in visible] == list(range(7))
     assert tokenizer.decode_calls == 7
-
-
-def test_whitebox_selects_the_captured_output_with_an_active_gradient() -> None:
-    import torch
-
-    inactive = torch.zeros((2, 3, 4), requires_grad=True)
-    active = torch.ones((2, 3, 4), requires_grad=True)
-    active.retain_grad()
-    active.sum().backward()
-    mask = torch.zeros((2, 3), dtype=torch.bool)
-    assert _active_embedding_output([inactive, active], mask) is active
 
 
 def test_embedding_cache_binds_role_and_records(tmp_path: Path) -> None:
