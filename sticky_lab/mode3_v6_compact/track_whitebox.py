@@ -63,6 +63,20 @@ def _loss(runtime: Any, texts: list[str]) -> float:
         return float((1.0 - (vectors @ center).mean()).cpu())
 
 
+def _active_embedding_output(captured: list[Any], mask: Any) -> Any:
+    """Return the captured embedding output that participated in this loss.
+
+    Some SentenceTransformer/Transformers revisions invoke a shared embedding
+    module more than once.  The first hook result is therefore not guaranteed
+    to be the encoder tensor that received a gradient.
+    """
+    for value in reversed(captured):
+        gradient = getattr(value, "grad", None)
+        if gradient is not None and tuple(gradient.shape[:2]) == tuple(mask.shape):
+            return value
+    raise RuntimeError("whitebox trigger gradient was not captured")
+
+
 def _gradient(runtime: Any, texts: list[str], token_id: int) -> tuple[np.ndarray, float]:
     import torch
 
@@ -72,9 +86,14 @@ def _gradient(runtime: Any, texts: list[str], token_id: int) -> tuple[np.ndarray
     captured: list[torch.Tensor] = []
     embedding = runtime[0].auto_model.get_input_embeddings()
 
-    def hook(_module: Any, _inputs: Any, output: torch.Tensor) -> None:
-        output.retain_grad()
-        captured.append(output)
+    def hook(_module: Any, _inputs: Any, output: torch.Tensor) -> torch.Tensor:
+        # A frozen embedding matrix produces an output that does not require a
+        # gradient.  Re-leafing it is sufficient for input-gradient analysis
+        # and intentionally prevents parameter updates.
+        active = output if output.requires_grad else output.detach().requires_grad_(True)
+        active.retain_grad()
+        captured.append(active)
+        return active
 
     handle = embedding.register_forward_hook(hook)
     try:
@@ -83,12 +102,11 @@ def _gradient(runtime: Any, texts: list[str], token_id: int) -> tuple[np.ndarray
         center = torch.nn.functional.normalize(vectors.detach().mean(dim=0), dim=0)
         loss = 1.0 - (vectors @ center).mean()
         loss.backward()
-        if not captured or captured[0].grad is None:
-            raise RuntimeError("whitebox trigger gradient was not captured")
         mask = features["input_ids"] == int(token_id)
         if int(mask.sum()) != len(texts):
             raise RuntimeError("candidate token was not realized once in every whitebox text")
-        gradient = captured[0].grad[mask].mean(dim=0).detach().cpu().float().numpy()
+        active = _active_embedding_output(captured, mask)
+        gradient = active.grad[mask].mean(dim=0).detach().cpu().float().numpy()
         return gradient, float(loss.detach().cpu())
     finally:
         handle.remove()
