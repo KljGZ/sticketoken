@@ -12,6 +12,7 @@ LOGS="$OUTPUT/orchestration_logs"
 export NLTK_DATA="${V6_COMPACT_NLTK_DATA:-/mnt/data/jkl/StickyToken-v6-resources/nltk_data}"
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
+export PYTHONDONTWRITEBYTECODE=1
 
 cd "$ROOT"
 mkdir -p "$LOGS"
@@ -54,7 +55,7 @@ fi
 
 STAGE=tests
 atomic_status running 0 "$STAGE"
-"$PYTHON" -m pytest -q \
+"$PYTHON" -m pytest -q -p no:cacheprovider \
   tests/test_mode3_v6_compact_core.py \
   tests/test_mode3_v6_compact_data.py \
   tests/test_mode3_v6_compact_scope.py \
