@@ -16,8 +16,8 @@ scope:
 
 model:
   id: sentence-transformers/sentence-t5-base
-  revision: 7e14ec9c582dde6f0f451ae17b7c99727f398f2d
-  local_path: null
+  revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  local_path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d4628481afbbaaacd7af6bb07cf9d3865f781
   cache_folder: null
   trust_remote_code: false
   normalize_final_embeddings: true
@@ -28,6 +28,8 @@ resources:
   nltk_data: /mnt/data/jkl/StickyToken-v6-resources/nltk_data
   spacy_model: en_core_web_sm
   files:
+    - path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
+      sha256: 94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98
     - path: /mnt/data/jkl/StickyToken-v6-resources/en_core_web_sm-3.8.0-py3-none-any.whl
       sha256: 1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
     - path: /mnt/data/jkl/StickyToken-v6-resources/wordnet.zip
