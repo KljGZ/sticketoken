@@ -86,6 +86,7 @@ positions:
 data:
   input_glob: /mnt/data/jkl/StickyToken-v6-data/registered/**/sampled_sentence_pairs.csv
   corpus_manifest: /mnt/data/jkl/StickyToken-v6-data/registered/corpus_manifest.json
+  corpus_manifest_sha256: ee491294b2570239ee4241563f763dc3a35919d087c2b810943760ac85d03512
   required_columns: [text, document_id, source_id, domain, language, text_type, license]
   allow_sentence_as_document_fallback: false
   allow_resampling: false

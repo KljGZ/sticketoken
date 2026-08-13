@@ -46,6 +46,10 @@ def _minimum_unique(config: Mapping[str, object]) -> int:
     return required_unique_capacity(config)
 
 
+def _append_gap(audit, code: str, required: object, observed: object, detail: str):
+    return replace(audit, gaps=(*audit.gaps, DataGap(code, required, observed, detail)))
+
+
 def command_preflight(args: argparse.Namespace, config: dict[str, object]) -> None:
     data = config["data"]
     assert isinstance(data, Mapping)
@@ -61,20 +65,28 @@ def command_preflight(args: argparse.Namespace, config: dict[str, object]) -> No
         observed = sha256_file(path) if path.is_file() else None
         resource_audit.append({"path": path.as_posix(), "expected_sha256": item["sha256"], "observed_sha256": observed})
         if observed != item["sha256"]:
-            audit = replace(
-                audit,
-                gaps=(*audit.gaps, DataGap(
-                    "resource_fingerprint_mismatch", item["sha256"], observed, path.as_posix()
-                )),
-            )
+            audit = _append_gap(audit, "resource_fingerprint_mismatch", item["sha256"], observed, path.as_posix())
     manifest_path = Path(str(data.get("corpus_manifest", "")))
     if not manifest_path.is_file():
-        audit = replace(
-            audit,
-            gaps=(*audit.gaps, DataGap(
-                "missing_corpus_manifest", "existing manifest", None, manifest_path.as_posix()
-            )),
-        )
+        audit = _append_gap(audit, "missing_corpus_manifest", "existing manifest", None, manifest_path.as_posix())
+    else:
+        expected_manifest = str(data.get("corpus_manifest_sha256", ""))
+        observed_manifest = sha256_file(manifest_path)
+        if observed_manifest != expected_manifest:
+            audit = _append_gap(
+                audit, "corpus_manifest_fingerprint_mismatch", expected_manifest, observed_manifest,
+                manifest_path.as_posix(),
+            )
+        else:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            for source in manifest.get("sources", []):
+                path = manifest_path.parent / str(source["output_relative_path"])
+                expected = str(source["output_sha256"])
+                observed = sha256_file(path) if path.is_file() else None
+                if observed != expected:
+                    audit = _append_gap(
+                        audit, "corpus_file_fingerprint_mismatch", expected, observed, path.as_posix()
+                    )
     write_capacity_audit(audit, target / "registration" / "data_capacity_audit.json")
     write_json(target / "registration" / "resource_audit.json", {"resources": resource_audit})
     write_json(target / "registration" / "scope_contract.json", {
