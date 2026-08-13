@@ -47,7 +47,7 @@ def _join_title(row: dict[str, object]) -> str:
 SOURCES = (
     SourceSpec(
         "dbpedia14", "dbpedia14/train-0000.parquet", "hf:fancyzhx/dbpedia_14",
-        "iid_knowledge_base", "en", "knowledge_base_abstract", "cc-by-sa-3.0", 560_000,
+        "iid_knowledge_base", "en", "knowledge_base_abstract", "cc-by-sa-3.0", 550_000,
         "https://huggingface.co/datasets/fancyzhx/dbpedia_14/resolve/refs%2Fconvert%2Fparquet/dbpedia_14/train/0000.parquet",
         "7b2d3998c3e87668c1282ce9b8bfd164a4fca8f5", _join_title,
     ),
