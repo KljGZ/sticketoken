@@ -192,11 +192,23 @@ def register_v6_roles(records: Sequence[Mapping[str, str]], config: Mapping[str,
         domain_groups.setdefault(str(row["domain"]), []).append(row)
     needed_ood = int(data["ood_domains"])
     per_domain = int(data["ood_trigger_per_domain"]) + int(data["ood_benign_per_domain"])
-    eligible = [domain for domain, rows in domain_groups.items() if len({text_sha256(row["text"]) for row in rows}) >= per_domain]
-    eligible.sort(key=lambda domain: hashlib.sha256(f"{seed}\0ood\0{domain}".encode()).hexdigest())
-    if len(eligible) < needed_ood:
-        raise RuntimeError(f"only {len(eligible)} OOD domains have {per_domain} unique texts; need {needed_ood}")
-    ood_domains = eligible[:needed_ood]
+    eligible = {
+        domain for domain, rows in domain_groups.items()
+        if len({text_sha256(row["text"]) for row in rows}) >= per_domain
+    }
+    preregistered = [str(value) for value in data.get("ood_domains_allowlist", [])]
+    if preregistered:
+        if len(preregistered) != needed_ood or len(set(preregistered)) != needed_ood:
+            raise RuntimeError("ood_domains_allowlist must contain exactly the preregistered number of unique domains")
+        missing = sorted(set(preregistered) - eligible)
+        if missing:
+            raise RuntimeError(f"preregistered OOD domains lack {per_domain} unique texts: {missing}")
+        ood_domains = preregistered
+    else:
+        ordered = sorted(eligible, key=lambda domain: hashlib.sha256(f"{seed}\0ood\0{domain}".encode()).hexdigest())
+        if len(ordered) < needed_ood:
+            raise RuntimeError(f"only {len(ordered)} OOD domains have {per_domain} unique texts; need {needed_ood}")
+        ood_domains = ordered[:needed_ood]
     iid_records = [row for row in records if str(row["domain"]) not in set(ood_domains)]
     result = register_document_disjoint_roles(iid_records, build_all_role_sizes(config), seed=seed)
     for index, domain in enumerate(ood_domains):
@@ -211,7 +223,17 @@ def register_v6_roles(records: Sequence[Mapping[str, str]], config: Mapping[str,
             result[role] = rows
     # Assert source isolation between IID and every OOD domain.
     iid_sources = {row["source_id"] for role, rows in result.items() if not role.startswith("ood_") for row in rows}
+    ood_source_sets: dict[str, set[str]] = {}
     for role, rows in result.items():
         if role.startswith("ood_") and iid_sources.intersection(row["source_id"] for row in rows):
             raise RuntimeError(f"source leakage into {role}")
+        if role.startswith("ood_"):
+            domain_index = role.split("_", 2)[1]
+            ood_source_sets.setdefault(domain_index, set()).update(row["source_id"] for row in rows)
+    indices = sorted(ood_source_sets)
+    for offset, first in enumerate(indices):
+        for second in indices[offset + 1 :]:
+            overlap = ood_source_sets[first].intersection(ood_source_sets[second])
+            if overlap:
+                raise RuntimeError(f"OOD source leakage between domains {first} and {second}: {sorted(overlap)}")
     return result

@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from sticky_lab.mode3_v6.data import audit_csv_corpus, register_document_disjoint_roles
+from sticky_lab.mode3_v6.data import audit_csv_corpus, register_document_disjoint_roles, register_v6_roles
 from sticky_lab.mode3_v6.deduplication import audit_role_leakage
 
 
@@ -34,3 +34,26 @@ def test_near_duplicate_audit_crosses_roles() -> None:
     }
     leaks = audit_role_leakage(roles)
     assert len(leaks) == 1 and leaks[0].normalized_exact
+
+
+def test_preregistered_ood_domains_and_sources_are_isolated() -> None:
+    domains = ["iid", "ood_a", "ood_b"]
+    records = []
+    for domain in domains:
+        source = f"source_{domain}"
+        for index in range(10):
+            records.append({
+                "text": f"{domain} document {index}", "document_id": f"{domain}_{index}",
+                "source_id": source, "domain": domain, "text_id": f"{domain}_{index}",
+            })
+    config = {
+        "data": {
+            "roles": {"fit": 2}, "iid_replications": 1, "ood_domains": 2,
+            "ood_trigger_per_domain": 2, "ood_benign_per_domain": 2,
+            "ood_domains_allowlist": ["ood_a", "ood_b"],
+        }
+    }
+    roles = register_v6_roles(records, config, seed=7)
+    assert {row["domain"] for row in roles["fit"]} == {"iid"}
+    assert {row["domain"] for row in roles["ood_0_trigger"]} == {"ood_a"}
+    assert {row["domain"] for row in roles["ood_1_trigger"]} == {"ood_b"}

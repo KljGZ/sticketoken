@@ -8,6 +8,7 @@ phases.  Test/OOD commands require a validation freeze artifact.
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
@@ -20,7 +21,7 @@ import yaml
 
 from .atomic_io import write_json, write_jsonl
 from .data import (
-    audit_csv_corpus, build_all_role_sizes, load_registered_records, register_v6_roles,
+    DataGap, audit_csv_corpus, build_all_role_sizes, load_registered_records, register_v6_roles,
     require_formal_capacity, required_unique_capacity, write_capacity_audit,
 )
 from .deduplication import audit_role_leakage
@@ -52,7 +53,30 @@ def command_preflight(args: argparse.Namespace, config: dict[str, object]) -> No
         str(data["input_glob"]), list(data["required_columns"]), _minimum_unique(config), int(data["minimum_ood_sources"])
     )
     target = Path(args.output)
+    resources = config.get("resources", {})
+    assert isinstance(resources, Mapping)
+    resource_audit = []
+    for item in resources.get("files", []):
+        path = Path(str(item["path"]))
+        observed = sha256_file(path) if path.is_file() else None
+        resource_audit.append({"path": path.as_posix(), "expected_sha256": item["sha256"], "observed_sha256": observed})
+        if observed != item["sha256"]:
+            audit = replace(
+                audit,
+                gaps=(*audit.gaps, DataGap(
+                    "resource_fingerprint_mismatch", item["sha256"], observed, path.as_posix()
+                )),
+            )
+    manifest_path = Path(str(data.get("corpus_manifest", "")))
+    if not manifest_path.is_file():
+        audit = replace(
+            audit,
+            gaps=(*audit.gaps, DataGap(
+                "missing_corpus_manifest", "existing manifest", None, manifest_path.as_posix()
+            )),
+        )
     write_capacity_audit(audit, target / "registration" / "data_capacity_audit.json")
+    write_json(target / "registration" / "resource_audit.json", {"resources": resource_audit})
     write_json(target / "registration" / "scope_contract.json", {
         "protocol_version": 6, "only_mode": 3, "base_head": git_head(ROOT),
         "protected_baseline_commit": config["scope"]["protected_baseline_commit"],
@@ -91,7 +115,15 @@ def command_prepare(args: argparse.Namespace, config: dict[str, object]) -> None
         "test_ood_encoded": False,
         "whitebox_blackbox_isolated": True,
         "dependency_fingerprints": {
-            path.name: sha256_file(path) for path in (ROOT / "requirements.txt", ROOT / "environment.yml") if path.exists()
+            path.name: sha256_file(path) for path in (
+                ROOT / "requirements.txt", ROOT / "environment.yml",
+                ROOT / str(config.get("resources", {}).get("environment_lock", "")),
+            ) if path.is_file()
+        },
+        "corpus_manifest_sha256": sha256_file(Path(str(data["corpus_manifest"]))),
+        "resource_fingerprints": {
+            Path(str(item["path"])).name: sha256_file(Path(str(item["path"])))
+            for item in config.get("resources", {}).get("files", [])
         },
     })
 

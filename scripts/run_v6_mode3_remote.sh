@@ -12,6 +12,7 @@ WORKERS="${V6_WORKERS:-8}"
 V5_HISTORY="${V6_V5_HISTORY:-results/sticky_lab/sentence_t5_base/mode3_v5/publication/v5_single_token_history.json}"
 V5_RESULTS="${V6_V5_RESULTS:-results/sticky_lab/sentence_t5_base/mode3_v5}"
 LOGS="$OUTPUT/orchestration_logs"
+export NLTK_DATA="${V6_NLTK_DATA:-/mnt/data/jkl/StickyToken-v6-resources/nltk_data}"
 
 cd "$ROOT"
 mkdir -p "$LOGS"

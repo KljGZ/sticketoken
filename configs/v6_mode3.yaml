@@ -23,6 +23,18 @@ model:
   normalize_final_embeddings: true
   batch_size: 128
 
+resources:
+  environment_lock: docs/sticky_attractor_v6_environment.lock
+  nltk_data: /mnt/data/jkl/StickyToken-v6-resources/nltk_data
+  spacy_model: en_core_web_sm
+  files:
+    - path: /mnt/data/jkl/StickyToken-v6-resources/en_core_web_sm-3.8.0-py3-none-any.whl
+      sha256: 1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+    - path: /mnt/data/jkl/StickyToken-v6-resources/wordnet.zip
+      sha256: cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59
+    - path: /mnt/data/jkl/StickyToken-v6-resources/omw-1.4.zip
+      sha256: 3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d
+
 tokenizer:
   exact_actual_length: 1
   exclude_special_tokens: true
@@ -72,7 +84,8 @@ positions:
   random_replicates_average_before_position_weighting: true
 
 data:
-  input_glob: data/**/sampled_sentence_pairs.csv
+  input_glob: /mnt/data/jkl/StickyToken-v6-data/registered/**/sampled_sentence_pairs.csv
+  corpus_manifest: /mnt/data/jkl/StickyToken-v6-data/registered/corpus_manifest.json
   required_columns: [text, document_id, source_id, domain, language, text_type, license]
   allow_sentence_as_document_fallback: false
   allow_resampling: false
@@ -81,6 +94,7 @@ data:
   near_duplicate_methods: [minhash, simhash]
   maximum_near_duplicate_jaccard: 0.80
   minimum_ood_sources: 4
+  ood_domains_allowlist: [ood_news, ood_movie_reviews, ood_business_reviews, ood_product_reviews]
   roles:
     screen_fit: 2000
     screen_eval: 2000
