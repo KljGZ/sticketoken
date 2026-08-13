@@ -16,6 +16,7 @@ from .exhaustive import ScreenRecord, assert_common_sample_manifest, select_full
 from .experiment import evaluate_position_layers, evaluate_shared_token, records_hash
 from .insertion import BoundaryManifest, BoundaryRecord
 from .oracle_blackbox import SentenceTransformerFinalOracle
+from .resource_errors import is_resource_exhaustion
 from .tokenizer_audit import LegalToken, enumerate_actual_single_tokens, shard_legal_tokens
 
 
@@ -98,6 +99,8 @@ def _evaluate_rows(args: argparse.Namespace, config: dict[str, object], token_id
             row = metrics.to_dict(); row["status"] = "valid"
             rows.append(row); caps.append(cap.to_json())
         except Exception as error:
+            if is_resource_exhaustion(error):
+                raise RuntimeError(f"resource exhaustion while evaluating token {token.token_id}") from error
             # One geometrically invalid token must not invalidate its shard.
             rows.append({
                 "token_id": token.token_id, "token_text": token.token_text, "status": "invalid",
@@ -152,6 +155,10 @@ def build_union(args: argparse.Namespace, config: dict[str, object]) -> None:
         top_each=settings["union_rules"]["top_each_search_margin"], category_top=settings["union_rules"]["semantic_category_top"],
     )
     write_json(output / "candidate_union" / "selected.json", {"token_ids": selected, "provenance": {str(key): value for key, value in provenance.items()}})
+    write_json(output / "candidate_union" / "COMPLETE.json", {
+        "candidate_count": len(selected), "minimum": settings["full_search_candidates_minimum"],
+        "target": settings["full_search_candidates_target"], "full_search_re_evaluation_required": True,
+    })
 
 
 def full_search_shard(args: argparse.Namespace, config: dict[str, object]) -> None:

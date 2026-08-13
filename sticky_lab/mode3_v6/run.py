@@ -66,6 +66,37 @@ def command_preflight(args: argparse.Namespace, config: dict[str, object]) -> No
         resource_audit.append({"path": path.as_posix(), "expected_sha256": item["sha256"], "observed_sha256": observed})
         if observed != item["sha256"]:
             audit = _append_gap(audit, "resource_fingerprint_mismatch", item["sha256"], observed, path.as_posix())
+    manifest_member_audit = []
+    for manifest_value in resources.get("sha256_manifests", []):
+        resource_manifest = Path(str(manifest_value))
+        if not resource_manifest.is_file():
+            audit = _append_gap(
+                audit, "missing_resource_sha256_manifest", "existing manifest", None,
+                resource_manifest.as_posix(),
+            )
+            continue
+        for line_number, line in enumerate(resource_manifest.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                expected, member_value = line.split(maxsplit=1)
+            except ValueError:
+                audit = _append_gap(
+                    audit, "malformed_resource_sha256_manifest", "sha256 path", line,
+                    f"{resource_manifest.as_posix()}:{line_number}",
+                )
+                continue
+            member = Path(member_value.strip().lstrip("*"))
+            observed = sha256_file(member) if member.is_file() else None
+            manifest_member_audit.append({
+                "manifest": resource_manifest.as_posix(), "path": member.as_posix(),
+                "expected_sha256": expected, "observed_sha256": observed,
+            })
+            if observed != expected:
+                audit = _append_gap(
+                    audit, "resource_manifest_member_mismatch", expected, observed,
+                    member.as_posix(),
+                )
     manifest_path = Path(str(data.get("corpus_manifest", "")))
     if not manifest_path.is_file():
         audit = _append_gap(audit, "missing_corpus_manifest", "existing manifest", None, manifest_path.as_posix())
@@ -88,7 +119,9 @@ def command_preflight(args: argparse.Namespace, config: dict[str, object]) -> No
                         audit, "corpus_file_fingerprint_mismatch", expected, observed, path.as_posix()
                     )
     write_capacity_audit(audit, target / "registration" / "data_capacity_audit.json")
-    write_json(target / "registration" / "resource_audit.json", {"resources": resource_audit})
+    write_json(target / "registration" / "resource_audit.json", {
+        "resources": resource_audit, "manifest_members": manifest_member_audit,
+    })
     write_json(target / "registration" / "scope_contract.json", {
         "protocol_version": 6, "only_mode": 3, "base_head": git_head(ROOT),
         "protected_baseline_commit": config["scope"]["protected_baseline_commit"],
@@ -172,11 +205,14 @@ def command_sealed(args: argparse.Namespace, config: dict[str, object]) -> None:
     output = Path(args.output)
     frozen = _require_freeze(output)
     phase = args.command
-    phase_dir = output / phase
-    phase_dir.mkdir(parents=True, exist_ok=True)
     # The encoding worker writes a phase payload; this coordinator verifies
     # frozen identity and forbids any center/radius fit fields.
     payload = json.loads(Path(args.payload).read_text(encoding="utf-8"))
+    if phase in {"replication", "ood"}:
+        phase_dir = output / phase / f"{phase}_{int(payload['index']):02d}"
+    else:
+        phase_dir = output / phase
+    phase_dir.mkdir(parents=True, exist_ok=True)
     forbidden = {"fitted_centers", "fitted_radii", "selected_cap_count", "refit"}
     if forbidden.intersection(payload):
         raise RuntimeError("sealed phase attempted to refit geometry")

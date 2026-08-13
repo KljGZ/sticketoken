@@ -174,6 +174,10 @@ def main(argv: list[str] | None = None) -> int:
         "token_ids": sorted(candidate_ids), "track": "whitebox", "may_seed_blackbox": False,
         "continuous_upper_bound": {"optimized_continuous_token": True, "status": "mechanistic_upper_bound_only", "nearest_token_ids": nearest, "trajectory": continuous_trajectory},
     })
+    write_json(target / "COMPLETE.json", {
+        "track": "whitebox", "candidate_count": len(candidate_ids),
+        "may_seed_blackbox": False, "continuous_token_is_upper_bound_only": True,
+    })
     return 0
 
 

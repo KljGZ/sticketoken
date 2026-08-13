@@ -15,6 +15,7 @@ from .experiment import encode_all_positions, encode_clean, position_balanced_co
 from .geometry import FrozenCap, calibrate_multicap_radii, fit_spherical_multicenter
 from .insertion import BoundaryManifest, BoundaryRecord
 from .oracle_blackbox import SentenceTransformerFinalOracle
+from .resource_errors import is_resource_exhaustion
 
 
 def _jsonl(path: Path) -> list[dict[str, object]]:
@@ -67,6 +68,8 @@ def main(argv: list[str] | None = None) -> int:
                     radial_multipliers=config["radial_analysis"]["multipliers"],
                 )
             except Exception as error:
+                if is_resource_exhaustion(error):
+                    raise
                 attempts.append({"cap_count": cap_count, "status": "invalid", "error": str(error)})
                 continue
             evidence.update({"label": "ST-mFCA", "not_single_center_universal": True, "cluster_mass": fitted.cluster_mass.tolist()})

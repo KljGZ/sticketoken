@@ -20,6 +20,7 @@ from .blackbox_search import island_categorical_ga
 from .experiment import evaluate_shared_token
 from .insertion import BoundaryManifest, BoundaryRecord
 from .oracle_blackbox import SentenceTransformerFinalOracle
+from .resource_errors import is_resource_exhaustion
 from .tokenizer_audit import LegalToken
 from .trajectory import render_trajectory
 
@@ -78,7 +79,9 @@ def main(argv: list[str] | None = None) -> int:
                     maximum_radius_degrees=config["geometry"]["maximum_radius_degrees"], source_tracks=("blackbox",),
                 )
                 values.append(metrics.search_margin_m90_1 - metrics.radius_radians - metrics.benign_occupancy)
-            except RuntimeError:
+            except RuntimeError as error:
+                if is_resource_exhaustion(error):
+                    raise
                 values.append(-1e9)
         return values
 
@@ -96,7 +99,9 @@ def main(argv: list[str] | None = None) -> int:
                     maximum_radius_degrees=config["geometry"]["maximum_radius_degrees"], source_tracks=("blackbox",),
                 )
                 values.append(metrics.search_margin_m90_1 - metrics.radius_radians - metrics.benign_occupancy)
-            except Exception:
+            except Exception as error:
+                if is_resource_exhaustion(error):
+                    raise
                 values.append(-1e9)
         return values
 
@@ -130,7 +135,9 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 leader_id = candidate_id
                 break
-            except Exception:
+            except Exception as error:
+                if is_resource_exhaustion(error):
+                    raise
                 continue
         if cap is None or arrays is None or leader_id is None:
             raise RuntimeError(f"generation {index} has no geometrically valid leader snapshot")
@@ -142,6 +149,11 @@ def main(argv: list[str] | None = None) -> int:
         )
         snapshot_paths.append(snapshot)
     render_trajectory(snapshot_paths, target / "projection_trajectory", seed=int(config["positions"]["random_seed"]))
+    write_json(target / "COMPLETE.json", {
+        "track": "pure_blackbox", "restart_offset": args.restart_offset,
+        "restarts": args.restarts or settings["restarts"], "candidate_count": min(5000, len(ranked)),
+        "query_ledger": oracle.ledger.to_dict(), "whitebox_seeded": False,
+    })
     return 0
 
 

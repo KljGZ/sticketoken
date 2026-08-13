@@ -3,6 +3,7 @@ from __future__ import annotations
 from sticky_lab.mode3_v6.exhaustive import ScreenRecord, assert_common_sample_manifest, select_full_search_union
 from sticky_lab.mode3_v6.insertion import BoundaryManifest, build_manifest, insert_once
 from sticky_lab.mode3_v6.blackbox_search import island_categorical_ga
+from sticky_lab.mode3_v6.resource_errors import is_resource_exhaustion
 
 
 def test_random_boundaries_are_trigger_independent() -> None:
@@ -38,3 +39,8 @@ def test_blackbox_global_archive_uses_fixed_reference_only() -> None:
     )
     assert traces and archive
     assert all(value == -float(token_id) for token_id, value in archive.items())
+
+
+def test_resource_exhaustion_is_never_scored_as_geometric_invalidity() -> None:
+    assert is_resource_exhaustion(RuntimeError("CUDA out of memory"))
+    assert not is_resource_exhaustion(ValueError("radius exceeds preregistered maximum"))

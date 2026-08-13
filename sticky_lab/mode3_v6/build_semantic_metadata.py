@@ -76,6 +76,11 @@ def main(argv: list[str] | None = None) -> int:
         )
         rows.append(meta.__dict__)
     write_jsonl(output / "semantic" / "token_metadata.jsonl", rows)
+    from .atomic_io import write_json
+    write_json(output / "semantic" / "COMPLETE.json", {
+        "token_count": len(rows), "documents": documents,
+        "spacy_model": "en_core_web_sm", "wordnet_loaded": True,
+    })
     return 0
 
 

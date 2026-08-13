@@ -9,6 +9,7 @@ import numpy as np
 
 from .evaluation import candidate_metrics, certify_frozen_cap, fit_and_calibrate_single_cap
 from .insertion import BoundaryManifest, insert_once
+from .resource_errors import is_resource_exhaustion
 from .oracle_blackbox import FinalEmbeddingOracle
 
 
@@ -139,6 +140,8 @@ def evaluate_position_layers(
                 radial_multipliers=config["radial_analysis"]["multipliers"],
             )
         except Exception as error:
+            if is_resource_exhaustion(error):
+                raise
             p1[position] = {"certified": False, "status": "invalid", "error_type": type(error).__name__, "error": str(error)}
     # P2 is the same token with three conditional frozen centers/radii. Its
     # certification is the conservative conjunction of the three independent

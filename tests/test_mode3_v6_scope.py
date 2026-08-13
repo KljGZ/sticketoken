@@ -50,3 +50,8 @@ def test_sealed_worker_has_no_fit_calls() -> None:
     source = (V6 / "sealed_worker.py").read_text(encoding="utf-8")
     assert "fit_robust" not in source
     assert '"refit_performed": False' in source
+
+
+def test_indexed_sealed_results_cannot_overwrite_each_other() -> None:
+    source = (V6 / "run.py").read_text(encoding="utf-8")
+    assert 'f"{phase}_{int(payload[\'index\']):02d}"' in source

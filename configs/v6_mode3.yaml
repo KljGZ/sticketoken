@@ -36,6 +36,8 @@ resources:
       sha256: cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59
     - path: /mnt/data/jkl/StickyToken-v6-resources/omw-1.4.zip
       sha256: 3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d
+  sha256_manifests:
+    - /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
 
 tokenizer:
   exact_actual_length: 1
