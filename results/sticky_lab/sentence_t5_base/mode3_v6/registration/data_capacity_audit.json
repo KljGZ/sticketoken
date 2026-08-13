@@ -1,0 +1,53 @@
+{
+  "columns": [
+    "sentence1",
+    "sentence2",
+    "similarity"
+  ],
+  "document_ids": 0,
+  "domains": 0,
+  "exact_unique_texts": 18753,
+  "files": 40,
+  "formal_ready": false,
+  "gaps": [
+    {
+      "code": "missing_columns",
+      "detail": "missing: ['document_id', 'domain', 'language', 'license', 'source_id', 'text', 'text_type']",
+      "observed": [
+        "sentence1",
+        "sentence2",
+        "similarity"
+      ],
+      "required": [
+        "text",
+        "document_id",
+        "source_id",
+        "domain",
+        "language",
+        "text_type",
+        "license"
+      ]
+    },
+    {
+      "code": "insufficient_unique_texts",
+      "detail": "resampling is forbidden",
+      "observed": 18616,
+      "required": 640000
+    },
+    {
+      "code": "insufficient_sources",
+      "detail": "multi-source OOD cannot be registered",
+      "observed": 0,
+      "required": 4
+    },
+    {
+      "code": "missing_document_identity",
+      "detail": "sentence-as-document fallback is forbidden",
+      "observed": 0,
+      "required": ">0 real document ids"
+    }
+  ],
+  "normalized_unique_texts": 18616,
+  "rows": 40000,
+  "source_ids": 0
+}

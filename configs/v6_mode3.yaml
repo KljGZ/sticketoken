@@ -1,0 +1,169 @@
+protocol_version: 6
+experiment_name: mode3_v6_single_token_frozen_cap
+scope:
+  only_mode: 3
+  protected_baseline_branch: codex/mode3-v5
+  protected_baseline_commit: 17446ebe5cb2d53afceefc7a558222ede452e653
+  forbidden_paths:
+    - sticky_lab/mode1
+    - sticky_lab/mode2
+    - sticky_lab/mode3_v3
+    - sticky_lab/mode3_v4
+    - sticky_lab/mode3_v5
+    - configs/v3_mode3.yaml
+    - configs/v4_mode3.yaml
+    - configs/v5_mode3.yaml
+
+model:
+  id: sentence-transformers/sentence-t5-base
+  revision: 7e14ec9c582dde6f0f451ae17b7c99727f398f2d
+  local_path: null
+  cache_folder: null
+  trust_remote_code: false
+  normalize_final_embeddings: true
+  batch_size: 128
+
+tokenizer:
+  exact_actual_length: 1
+  exclude_special_tokens: true
+  require_standalone_roundtrip: true
+  require_contextual_roundtrip: true
+  publish_visible_and_unrestricted_sets: true
+
+geometry:
+  metric: angular_distance_radians
+  normalize_source_vectors: true
+  primary_cap_count: 1
+  rescue_cap_counts: [2, 3, 4]
+  maximum_radius_degrees: 35.0
+  fit:
+    target_coverage: 0.90
+    trim_fraction: 0.10
+    restarts: 10
+    maximum_iterations: 100
+    tolerance: 1.0e-6
+  calibration:
+    weak_coverage: 0.90
+    strong_coverage: 0.95
+    split_conformal: true
+  multicaps:
+    minimum_cluster_mass: 0.10
+    maximum_outlier_fraction: 0.10
+    minimum_radius_improvement: 0.10
+    minimum_coverage_improvement: 0.05
+    minimal_cap_principle: true
+
+certification:
+  confidence: 0.95
+  strict_primary_inequalities: true
+  triggered_coverage_lcb: 0.90
+  triggered_coverage_strong_lcb: 0.95
+  independent_benign_occupancy_ucb: 0.01
+  independent_benign_strong_ucb: 0.005
+  outside_to_inside_lcb: 0.85
+  conditional_outside_origin_lcb: 0.95
+  exact_core_multiplier: 1.0
+
+positions:
+  logical: [prefix, suffix, random]
+  shared_equal_weights: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+  random_seed: 20260813
+  random_replicates: 3
+  random_replicates_average_before_position_weighting: true
+
+data:
+  input_glob: data/**/sampled_sentence_pairs.csv
+  required_columns: [text, document_id, source_id, domain, language, text_type, license]
+  allow_sentence_as_document_fallback: false
+  allow_resampling: false
+  exact_deduplication: true
+  normalized_deduplication: true
+  near_duplicate_methods: [minhash, simhash]
+  maximum_near_duplicate_jaccard: 0.80
+  minimum_ood_sources: 4
+  roles:
+    screen_fit: 2000
+    screen_eval: 2000
+    screen_benign: 20000
+    full_search_fit: 8000
+    full_search_eval: 8000
+    full_search_benign: 50000
+    cap_fit: 10000
+    cap_calibration: 10000
+    cap_calibration_benign: 50000
+    iid_test: 20000
+    iid_test_benign: 100000
+    semantic_control: 10000
+    retrieval_probe: 10000
+  iid_replications: 3
+  ood_domains: 4
+  ood_trigger_per_domain: 5000
+  ood_benign_per_domain: 20000
+  test_and_ood_sealed_before_gate: true
+
+enumeration:
+  shards: 32
+  common_sample_manifest_required: true
+  different_batch_per_shard_forbidden: true
+  full_search_candidates_minimum: 2000
+  full_search_candidates_target: 5000
+  union_sources: [exhaustive, whitebox, blackbox, v5_history]
+  union_rules:
+    top_each_search_margin: 1000
+    top_each_radius: 1000
+    top_each_occupancy: 1000
+    empirical_coverage_floor: 0.85
+    empirical_occupancy_ceiling: 0.02
+    semantic_category_top: 20
+
+whitebox:
+  physically_isolated: true
+  may_access_input_embedding_and_gradient: true
+  may_seed_blackbox: false
+  hotflip:
+    seeds: 100
+    gradient_topk: 512
+    beam_size: 64
+    iterations: 20
+    restarts: 10
+  continuous_upper_bound:
+    enabled: true
+    iterations: 100
+    learning_rate: 0.05
+    nearest_discrete_tokens: 512
+
+blackbox:
+  physically_isolated: true
+  oracle_access: final_embedding_only
+  population: 512
+  generations: 50
+  restarts: 20
+  islands: 8
+  elite_fraction: 0.10
+  uniform_fraction: 0.20
+  migration_every: 5
+  migration_count: 16
+  reference_archive_every: 5
+  whitebox_seed_ablation_only: true
+
+semantic_controls:
+  controls_per_candidate: 50
+  matching_fields: [frequency, idf, pos, semantic_category, character_length, casing, input_embedding_norm, naturalness]
+  tests: [additive_semantic_model, wrapper_counterfactual, whitebox_mechanism]
+  minimum_coverage_over_control_q95: 0.10
+  minimum_wrapper_coverage: 0.80
+
+radial_analysis:
+  multipliers: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
+  groups: [triggered, paired_clean, independent_benign]
+  depth_quantiles: [0.10, 0.25, 0.50, 0.75, 0.90]
+  tests: [wasserstein, cliffs_delta, ks, group_bootstrap]
+  bootstrap_replicates: 1000
+
+publication:
+  release_prefix: mode3-v6
+  shard_bytes: 1900000000
+  require_remote_local_release_identity: true
+  require_fresh_clone_restore: true
+  hash_algorithm: sha256
+  content_root_algorithm: sha256-merkle-v1
