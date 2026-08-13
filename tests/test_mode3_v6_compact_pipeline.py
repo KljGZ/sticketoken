@@ -8,6 +8,39 @@ import pytest
 
 from sticky_lab.mode3_v6_compact.evaluate import DiscoveryMetric, attach_benign_metrics
 from sticky_lab.mode3_v6_compact.oracle import load_embedding_cache, records_sha256, write_embedding_cache
+from sticky_lab.mode3_v6_compact.workers import _enumerate_limited_single_tokens
+
+
+class _TinyTokenizer:
+    all_special_ids: list[int] = []
+
+    def __init__(self) -> None:
+        self.decode_calls = 0
+
+    def get_vocab(self) -> dict[str, int]:
+        return {f"t{index}": index for index in range(100)}
+
+    def decode(self, token_ids: list[int], **_: object) -> str:
+        self.decode_calls += 1
+        return f"t{token_ids[0]}"
+
+    def encode(self, text: str, **_: object) -> list[int]:
+        return [int(text[1:])]
+
+
+def test_dry_enumeration_limit_stops_after_enough_legal_tokens() -> None:
+    tokenizer = _TinyTokenizer()
+    unrestricted, visible = _enumerate_limited_single_tokens(
+        tokenizer,
+        context_records=[],
+        manifest=object(),
+        role="s0_fit",
+        exclude_special=True,
+        limit=7,
+    )
+    assert [row.token_id for row in unrestricted] == list(range(7))
+    assert [row.token_id for row in visible] == list(range(7))
+    assert tokenizer.decode_calls == 7
 
 
 def test_embedding_cache_binds_role_and_records(tmp_path: Path) -> None:

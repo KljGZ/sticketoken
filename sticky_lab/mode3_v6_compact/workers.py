@@ -19,8 +19,11 @@ from sticky_lab.mode3_v6.geometry import (
     calibrate_multicap_radii,
     fit_spherical_multicenter,
 )
+from sticky_lab.mode3_v6.insertion import insert_once_with_span
 from sticky_lab.mode3_v6.resource_errors import is_resource_exhaustion
 from sticky_lab.mode3_v6.tokenizer_audit import (
+    LegalToken,
+    _realizes_exact_span,
     enumerate_actual_single_tokens,
     shard_legal_tokens,
 )
@@ -67,6 +70,72 @@ def _cache(output: Path, role: str, records: list[dict[str, str]]) -> np.ndarray
     )
 
 
+def _enumerate_limited_single_tokens(
+    tokenizer: object,
+    *,
+    context_records: list[dict[str, str]],
+    manifest: object,
+    role: str,
+    exclude_special: bool,
+    limit: int,
+) -> tuple[list[LegalToken], list[LegalToken]]:
+    """Run the exact legality audit but stop after ``limit`` accepted tokens.
+
+    This path exists only for the bounded dry-run. The formal run deliberately
+    continues to call the frozen V6 exhaustive enumerator below.
+    """
+    if limit <= 0:
+        raise ValueError("enumeration limit must be positive")
+    vocab = tokenizer.get_vocab()
+    special = set(getattr(tokenizer, "all_special_ids", []))
+    unrestricted: list[LegalToken] = []
+    for token_id in sorted(set(map(int, vocab.values()))):
+        if exclude_special and token_id in special:
+            continue
+        token_text = tokenizer.decode(
+            [token_id],
+            skip_special_tokens=False,
+            clean_up_tokenization_spaces=False,
+        )
+        standalone_ids = tokenizer.encode(token_text, add_special_tokens=False)
+        standalone = list(map(int, standalone_ids)) == [token_id]
+        if not standalone or not token_text:
+            continue
+        visible = bool(token_text.strip()) and not any(
+            ord(char) < 32 and char not in "\t\n\r" for char in token_text
+        )
+        checks: dict[str, bool] = {}
+        for position in ("prefix", "suffix", "random"):
+            okay = True
+            for row in context_records:
+                value, span = insert_once_with_span(
+                    row["text"],
+                    token_text,
+                    position,
+                    role=role,
+                    text_id=row["text_id"],
+                    manifest=manifest,
+                )
+                if not _realizes_exact_span(tokenizer, value, span, token_id):
+                    okay = False
+                    break
+            checks[position] = okay
+        item = LegalToken(
+            token_id,
+            token_text,
+            visible,
+            standalone,
+            checks["prefix"],
+            checks["suffix"],
+            checks["random"],
+        )
+        if item.contextual_roundtrip:
+            unrestricted.append(item)
+            if len(unrestricted) >= limit:
+                break
+    return unrestricted, [item for item in unrestricted if item.visible]
+
+
 def enumerate_vocab(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     from transformers import AutoTokenizer
 
@@ -79,17 +148,19 @@ def enumerate_vocab(args: argparse.Namespace, config: Mapping[str, Any]) -> None
         trust_remote_code=bool(model["trust_remote_code"]),
     )
     records = load_role(output, "s0_fit")[:32]
-    unrestricted, visible = enumerate_actual_single_tokens(
-        tokenizer,
-        context_records=records,
-        manifest=load_manifest(output),
-        role="s0_fit",
-        exclude_special=bool(config["tokenizer"]["exclude_special_tokens"]),
-    )
-    if getattr(args, "limit", None):
-        unrestricted = unrestricted[: int(args.limit)]
-        allowed = {row.token_id for row in unrestricted}
-        visible = [row for row in visible if row.token_id in allowed]
+    limit = getattr(args, "limit", None)
+    enumeration_args = {
+        "context_records": records,
+        "manifest": load_manifest(output),
+        "role": "s0_fit",
+        "exclude_special": bool(config["tokenizer"]["exclude_special_tokens"]),
+    }
+    if limit is None:
+        unrestricted, visible = enumerate_actual_single_tokens(tokenizer, **enumeration_args)
+    else:
+        unrestricted, visible = _enumerate_limited_single_tokens(
+            tokenizer, limit=int(limit), **enumeration_args
+        )
     digest = hashlib.sha256()
     for row in unrestricted:
         digest.update(f"{row.token_id}\0{row.token_text}\n".encode("utf-8"))

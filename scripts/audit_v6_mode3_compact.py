@@ -38,6 +38,7 @@ def main() -> int:
         "scripts/status_v6_mode3_compact.py",
         "scripts/budget_v6_mode3_compact.py",
         "scripts/audit_v6_mode3_compact.py",
+        "scripts/dry_run_v6_mode3_compact.py",
         "docs/sticky_cap_v6_compact_",
     )
     forbidden = [path for path in changed if not path.startswith(allowed_prefixes)]
