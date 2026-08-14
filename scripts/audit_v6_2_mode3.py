@@ -38,6 +38,7 @@ def main() -> int:
         "scripts/status_v6_2_mode3.py",
         "scripts/budget_v6_2_mode3.py",
         "scripts/audit_v6_2_mode3.py",
+        "scripts/audit_v6_2_corpus.py",
         "scripts/dry_run_v6_2_mode3.py",
         "scripts/summarize_v6_2_mode3.py",
         "scripts/build_v6_2_corpus.py",
