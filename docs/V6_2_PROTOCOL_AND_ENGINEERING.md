@@ -70,6 +70,8 @@ Evidence is reported in levels: A radial shift; B ST-FCA-Core; C Moat with benig
 
 The top 100 token candidates are matched to 50 controls on frequency, IDF, POS, semantic category, character length, casing, input-embedding norm, naturalness, leading-space pattern, and Unicode/language class. Encoded candidate, control, and wrapper vectors are reused without extra model calls to compute distinct evidence for every exact `(token_id, cap_count)` model; evidence from one cap complexity can never rank or freeze another. The discovery role may influence selection. After freezing, the same declared procedure is repeated on the independent `semantic_confirm` role and cannot modify a cap. Required anomaly evidence is candidate coverage minus the control q95 at least 0.10 and minimum wrapper coverage at least 0.80.
 
+WordNet and OMW are offline-only resources. Both runtime archives under the configured NLTK data directory are SHA-256 registered, rehashed when semantic metadata is built, placed first on the NLTK search path, and required to resolve from those exact archives.
+
 ## Budget and stopping
 
 V5 submitted-text baseline is 83,605,976. V6.2 registers 1,008,791,696 equivalents (about 12.07 V5), a 12.5 V5 planned threshold, 13.5 warning, 14.7 hard stop, and an unreachable 15.0 forbidden threshold. The shared ledger reserves a complete call before model execution and never refunds failed calls. If pressure arises, isolated black/white-box diagnostics and auxiliary encoders are reduced first. Role independence, the common 5,000 evaluation, confirmation, sealing, and semantic controls cannot be cut.

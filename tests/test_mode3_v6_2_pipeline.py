@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -12,6 +14,7 @@ from sticky_lab.mode3_v6_2.common import verified_checksum_tree
 from sticky_lab.mode3_v6_2.encoding import pretruncate_source
 from sticky_lab.mode3_v6_2.errors import CacheCorruption, ProtocolViolation
 from sticky_lab.mode3_v6_2.oracle import load_embedding_cache, records_sha256, write_embedding_cache
+from sticky_lab.mode3_v6_2.semantic import _bind_registered_nltk_resources
 from sticky_lab.mode3_v6_2.statistics import p2_position_certificates
 
 
@@ -66,6 +69,43 @@ def test_pretruncate_freezes_tokenizer_canonicalization_fixed_point() -> None:
 def test_pretruncate_rejects_tokenizer_canonicalization_cycle() -> None:
     with pytest.raises(ProtocolViolation, match="canonicalization cycle"):
         pretruncate_source(_CyclingTokenizer(), "raw", maximum_length=8, trigger_overhead=1)
+
+
+def test_nltk_runtime_is_bound_to_registered_archives(tmp_path: Path) -> None:
+    root = tmp_path / "nltk_data"
+    corpora = root / "corpora"
+    corpora.mkdir(parents=True)
+    archives = {
+        "wordnet": corpora / "wordnet.zip",
+        "omw-1.4": corpora / "omw-1.4.zip",
+    }
+    for name, path in archives.items():
+        path.write_bytes(name.encode("ascii"))
+
+    class FakeData:
+        path = [str(tmp_path / "unregistered")]
+
+        @staticmethod
+        def find(resource: str) -> str:
+            name = resource.split("/", 1)[1]
+            return f"{archives[name]}/{name}"
+
+    config = {
+        "resources": {
+            "nltk_data": str(root),
+            "files": [
+                {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+                for path in archives.values()
+            ],
+        }
+    }
+    runtime = SimpleNamespace(data=FakeData())
+    pointers = _bind_registered_nltk_resources(runtime, config)
+    assert runtime.data.path[0] == str(root.resolve())
+    assert set(pointers) == {"wordnet", "omw-1.4"}
+    archives["wordnet"].write_bytes(b"tampered")
+    with pytest.raises(ProtocolViolation, match="hash mismatch"):
+        _bind_registered_nltk_resources(runtime, config)
 
 
 def test_embedding_cache_is_bound_to_role_and_records(tmp_path: Path) -> None:

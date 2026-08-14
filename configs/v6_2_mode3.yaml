@@ -44,6 +44,10 @@ resources:
       sha256: cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59
     - path: /mnt/data/jkl/StickyToken-v6-resources/omw-1.4.zip
       sha256: 3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d
+    - path: /mnt/data/jkl/StickyToken-v6-resources/nltk_data/corpora/wordnet.zip
+      sha256: cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59
+    - path: /mnt/data/jkl/StickyToken-v6-resources/nltk_data/corpora/omw-1.4.zip
+      sha256: 3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d
 
 tokenizer:
   exact_actual_length: 1

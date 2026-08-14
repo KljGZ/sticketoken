@@ -17,7 +17,7 @@ from sticky_lab.mode3_v6.oracle_whitebox import WhiteboxSentenceTransformer
 from sticky_lab.mode3_v6.semantic_controls import additive_semantic_residual, wrapper_counterfactuals
 from sticky_lab.mode3_v6.insertion import BoundaryManifest, BoundaryRecord, fixed_random_boundary, insert_once_with_span
 
-from .common import load_config, load_legal, load_manifest, load_role, model_from_dict, read_jsonl, write_json, write_jsonl
+from .common import load_config, load_legal, load_manifest, load_role, model_from_dict, read_jsonl, sha256_file, write_json, write_jsonl
 from .encoding import encode_audited_positions, pretruncate_source, primary_position_vectors
 from .errors import CandidateRejectedTokenRealization, ProtocolViolation
 from .oracle import V62FinalOracle, load_embedding_cache, records_sha256
@@ -71,9 +71,52 @@ def matched_controls(candidate: SemanticMetadata, pool: Sequence[SemanticMetadat
     return sorted(eligible, key=lambda row: (_distance(candidate, row, scales), row.token_id))[:count]
 
 
+def _bind_registered_nltk_resources(nltk_runtime: Any, config: Mapping[str, Any]) -> dict[str, str]:
+    """Bind WordNet to the exact runtime archives registered in the config."""
+    resources = config["resources"]
+    root = Path(str(resources["nltk_data"])).resolve()
+    if not root.is_dir():
+        raise ProtocolViolation(f"registered NLTK data directory is missing: {root}")
+    registered = {
+        Path(str(row["path"])).resolve(): str(row["sha256"]).lower()
+        for row in resources["files"]
+    }
+    required = {
+        "wordnet": (root / "corpora" / "wordnet.zip").resolve(),
+        "omw-1.4": (root / "corpora" / "omw-1.4.zip").resolve(),
+    }
+    for name, archive in required.items():
+        expected = registered.get(archive)
+        if expected is None:
+            raise ProtocolViolation(f"runtime NLTK archive is not registered: {archive}")
+        observed = sha256_file(archive) if archive.is_file() else None
+        if observed != expected:
+            raise ProtocolViolation(
+                f"runtime NLTK archive hash mismatch for {name}: {observed} != {expected}"
+            )
+    root_text = str(root)
+    nltk_runtime.data.path[:] = [root_text] + [
+        value for value in nltk_runtime.data.path if str(Path(value).resolve()) != root_text
+    ]
+    pointers: dict[str, str] = {}
+    for name, archive in required.items():
+        try:
+            pointer = nltk_runtime.data.find(f"corpora/{name}")
+        except LookupError as error:
+            raise ProtocolViolation(f"registered NLTK resource cannot be resolved: {name}") from error
+        pointer_text = str(pointer).replace("\\", "/")
+        archive_prefix = str(archive).replace("\\", "/") + "/"
+        if not pointer_text.startswith(archive_prefix):
+            raise ProtocolViolation(
+                f"NLTK resolved {name} outside its registered archive: {pointer_text}"
+            )
+        pointers[name] = pointer_text
+    return pointers
+
+
 def build_metadata(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
+    import nltk
     import spacy
-    from nltk.corpus import wordnet as wn
     from sentence_transformers import SentenceTransformer
     from transformers import AutoTokenizer
 
@@ -82,6 +125,8 @@ def build_metadata(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     local = Path(str(model["local_path"]))
     source = str(local) if local.is_dir() else str(model["id"])
     revision = None if local.is_dir() else model["revision"]
+    nltk_pointers = _bind_registered_nltk_resources(nltk, config)
+    from nltk.corpus import wordnet as wn
     try:
         nlp = spacy.load(str(config["resources"]["spacy_model"]), disable=["parser", "ner"])
         wn.ensure_loaded()
@@ -116,6 +161,8 @@ def build_metadata(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
         "schema_version": "mode3-v6-2-semantic-metadata-v1", "token_count": len(rows),
         "documents": documents, "matching_fields": list(config["semantic_controls"]["matching_fields"]),
         "spacy_model": config["resources"]["spacy_model"], "wordnet_loaded": True,
+        "nltk_data": str(Path(str(config["resources"]["nltk_data"])).resolve()),
+        "nltk_resource_pointers": nltk_pointers,
     })
 
 
