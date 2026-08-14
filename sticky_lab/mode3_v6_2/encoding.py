@@ -53,13 +53,28 @@ def pretruncate_source(tokenizer: Any, text: str, *, maximum_length: int, trigge
     if capacity <= 0:
         raise ProtocolViolation("model maximum length leaves no source capacity")
     retained = original[:capacity]
-    decoded = tokenizer.decode(
-        retained, skip_special_tokens=False, clean_up_tokenization_spaces=False
-    )
-    roundtrip = list(map(int, tokenizer.encode(decoded, add_special_tokens=False)))
-    if roundtrip != retained:
-        raise ProtocolViolation("pretruncated source is not token-id roundtrip stable")
-    return decoded, retained, len(original)
+    # SentencePiece decoding is a canonicalization operation, not necessarily
+    # an identity on the first pass (for example around normalized whitespace
+    # or byte-fallback pieces).  Freeze the *fixed point* before any trigger is
+    # inserted.  The bound and cycle check keep this fail-closed: a tokenizer
+    # that cannot produce stable text/IDs is a protocol violation rather than
+    # an implicitly changing source representation.
+    seen: set[tuple[int, ...]] = set()
+    for _ in range(32):
+        key = tuple(retained)
+        if key in seen:
+            raise ProtocolViolation("pretruncated source token IDs entered a canonicalization cycle")
+        seen.add(key)
+        decoded = tokenizer.decode(
+            retained, skip_special_tokens=False, clean_up_tokenization_spaces=False
+        )
+        roundtrip = list(map(int, tokenizer.encode(decoded, add_special_tokens=False)))
+        if len(roundtrip) > capacity:
+            roundtrip = roundtrip[:capacity]
+        if roundtrip == retained:
+            return decoded, retained, len(original)
+        retained = roundtrip
+    raise ProtocolViolation("pretruncated source did not reach a token-id fixed point")
 
 
 def build_audited_text(

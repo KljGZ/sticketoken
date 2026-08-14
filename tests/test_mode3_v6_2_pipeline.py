@@ -9,9 +9,35 @@ from sticky_lab.mode3_v6_2.freeze import create_freeze, load_freeze, save_freeze
 from sticky_lab.mode3_v6_2.funnel import build_cap_archives, select_stage_models
 from sticky_lab.mode3_v6_2.geometry import FrozenCapModel
 from sticky_lab.mode3_v6_2.common import verified_checksum_tree
-from sticky_lab.mode3_v6_2.errors import CacheCorruption
+from sticky_lab.mode3_v6_2.encoding import pretruncate_source
+from sticky_lab.mode3_v6_2.errors import CacheCorruption, ProtocolViolation
 from sticky_lab.mode3_v6_2.oracle import load_embedding_cache, records_sha256, write_embedding_cache
 from sticky_lab.mode3_v6_2.statistics import p2_position_certificates
+
+
+class _CanonicalizingTokenizer:
+    def __call__(self, text: str, *, add_special_tokens: bool = True) -> dict[str, list[int]]:
+        return {"input_ids": [0, 1] if add_special_tokens else self.encode(text, add_special_tokens=False)}
+
+    def encode(self, text: str, *, add_special_tokens: bool = False) -> list[int]:
+        assert not add_special_tokens
+        return {
+            "raw": [10, 20, 30],
+            "canonical-one": [10, 21, 30],
+            "canonical-two": [10, 21, 30],
+        }[text]
+
+    def decode(self, values: list[int], **_: object) -> str:
+        return "canonical-one" if values == [10, 20, 30] else "canonical-two"
+
+
+class _CyclingTokenizer(_CanonicalizingTokenizer):
+    def encode(self, text: str, *, add_special_tokens: bool = False) -> list[int]:
+        assert not add_special_tokens
+        return {"raw": [10], "left": [20], "right": [10]}[text]
+
+    def decode(self, values: list[int], **_: object) -> str:
+        return "left" if values == [10] else "right"
 
 
 def _row(token: int, caps: int, coverage: float) -> dict:
@@ -26,6 +52,20 @@ def test_funnel_keeps_independent_one_and_multicap_archives() -> None:
     assert len(selected) == 8 and len({token for token, _ in selected}) == 8
     assert any("one_cap" in label for labels in audit["provenance"].values() for label in labels)
     assert any("multi_cap" in label for labels in audit["provenance"].values() for label in labels)
+
+
+def test_pretruncate_freezes_tokenizer_canonicalization_fixed_point() -> None:
+    text, ids, original_count = pretruncate_source(
+        _CanonicalizingTokenizer(), "raw", maximum_length=8, trigger_overhead=1
+    )
+    assert text == "canonical-two"
+    assert ids == [10, 21, 30]
+    assert original_count == 3
+
+
+def test_pretruncate_rejects_tokenizer_canonicalization_cycle() -> None:
+    with pytest.raises(ProtocolViolation, match="canonicalization cycle"):
+        pretruncate_source(_CyclingTokenizer(), "raw", maximum_length=8, trigger_overhead=1)
 
 
 def test_embedding_cache_is_bound_to_role_and_records(tmp_path: Path) -> None:
