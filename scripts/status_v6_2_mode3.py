@@ -88,6 +88,7 @@ def main() -> int:
         "budget": load(root / "budget" / "observed.json"),
         "stages": {name: path.is_file() for name, path in stage_paths.items()},
         "shards": {
+            "enumeration": count_complete(root, "enumeration/shard_*/COMPLETE.json"),
             "s0": count_complete(root, "funnel/s0/shard_*/COMPLETE.json"),
             "s1": count_complete(root, "funnel/s1/shard_*/COMPLETE.json"),
             "s2": count_complete(root, "funnel/s2/shard_*/COMPLETE.json"),

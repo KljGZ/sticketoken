@@ -29,7 +29,7 @@ Confirmation contains 50,000 triggered and 150,000 independent benign records. T
 
 ## Token and truncation contract
 
-Enumeration audits every candidate across exactly 2,048 stratified S0 contexts and prefix, suffix, and the primary random boundary. Each formal encoding repeats the assertion for every record:
+Enumeration audits every candidate across exactly 2,048 stratified S0 contexts and prefix, suffix, and the primary random boundary. The vocabulary is partitioned into 32 disjoint CPU shards; context pretruncation is computed once, tokenizer calls are made in bounded batches, and the merge independently reconstructs the complete standalone-roundtrip candidate set before accepting the union. This changes no audited observation. Each formal encoding repeats the assertion for every record:
 
 1. the trigger overlaps exactly one no-special token;
 2. that token has the registered ID;

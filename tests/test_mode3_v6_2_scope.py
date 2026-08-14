@@ -53,6 +53,7 @@ def test_remote_runner_targets_only_v62() -> None:
     text = (ROOT / "scripts/run_v6_2_mode3_remote.sh").read_text(encoding="utf-8-sig")
     assert "sticky_lab.mode3_v6_2" in text and "tests/test_mode3_v6_2" in text
     assert "sticky_lab.mode3_v6_compact" not in text
+    assert "merge-enumeration" in text and "V6_2_ENUM_WORKERS" in text
 
 
 def test_status_counts_every_funnel_stage_under_funnel_root() -> None:

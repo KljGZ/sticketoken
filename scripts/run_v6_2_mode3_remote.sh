@@ -7,9 +7,10 @@ CONFIG="${V6_2_CONFIG:-configs/v6_2_mode3.yaml}"
 OUTPUT="${V6_2_OUTPUT:-/mnt/data/jkl/StickyToken-v6-2-results/sticky_lab/sentence_t5_base/mode3_v6_2}"
 WORKERS="${V6_2_WORKERS:-8}"
 SHARDS="${V6_2_SHARDS:-32}"
+ENUM_WORKERS="${V6_2_ENUM_WORKERS:-16}"
 LOGS="$OUTPUT/orchestration_logs"
 export NLTK_DATA="${V6_2_NLTK_DATA:-/mnt/data/jkl/StickyToken-v6-resources/nltk_data}"
-export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1
+export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false
 
 cd "$ROOT"
 mkdir -p "$LOGS"
@@ -82,7 +83,15 @@ STAGE=prepare; atomic_status running 0 "$STAGE"
 
 if [[ ! -s "$OUTPUT/enumeration/COMPLETE.json" ]]; then
   STAGE=enumeration; atomic_status running 0 "$STAGE"
-  "$PYTHON" -m sticky_lab.mode3_v6_2.workers --config "$CONFIG" --output "$OUTPUT" enumerate-vocab >"$LOGS/enumeration.log" 2>&1
+  commands=()
+  for shard in $(seq 0 $((SHARDS-1))); do
+    [[ -s "$OUTPUT/enumeration/shard_$(printf '%02d' "$shard")/COMPLETE.json" ]] && continue
+    commands+=("'$PYTHON' -m sticky_lab.mode3_v6_2.workers --config '$CONFIG' --output '$OUTPUT' enumerate-vocab --shard '$shard' --shards '$SHARDS' >'$LOGS/enumeration_${shard}.log' 2>&1")
+  done
+  original_workers="$WORKERS"; WORKERS="$ENUM_WORKERS"
+  [[ "${#commands[@]}" -eq 0 ]] || run_parallel "${commands[@]}"
+  WORKERS="$original_workers"
+  "$PYTHON" -m sticky_lab.mode3_v6_2.workers --config "$CONFIG" --output "$OUTPUT" merge-enumeration --shards "$SHARDS" >"$LOGS/enumeration_merge.log" 2>&1
 fi
 
 mapfile -t discovery_roles < <("$PYTHON" - <<'PY'

@@ -16,7 +16,7 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 
 from sticky_lab.mode3_v6.insertion import insert_once_with_span
-from sticky_lab.mode3_v6.tokenizer_audit import LegalToken, _realizes_exact_span
+from sticky_lab.mode3_v6.tokenizer_audit import LegalToken
 
 from .common import (
     load_config, load_legal, load_manifest, load_role, model_from_dict,
@@ -79,48 +79,75 @@ def _legal_in_context(
     tokenizer: Any,
     token_id: int,
     token_text: str,
-    contexts: Sequence[tuple[str, Mapping[str, str]]],
+    contexts: Sequence[tuple[str, Mapping[str, str], str, list[int]]],
     manifest: Any,
     maximum_length: int,
 ) -> tuple[bool, str | None]:
-    """Audit all registered contexts without encoding model vectors."""
-    for role, row in contexts:
+    """Audit all contexts in bounded tokenizer batches without duplicate calls."""
+    for start in range(0, len(contexts), 64):
+        texts: list[str] = []
+        expected: list[tuple[str, Mapping[str, str], str, list[int], tuple[int, int]]] = []
+        for role, row, source, source_ids in contexts[start : start + 64]:
+            for position in ("prefix", "suffix", "random"):
+                triggered, span = insert_once_with_span(
+                    source, token_text, position, role=role, text_id=str(row["text_id"]),
+                    manifest=manifest, replicate=0,
+                )
+                texts.append(triggered)
+                expected.append((role, row, position, source_ids, span))
+        encoded = tokenizer(
+            texts, add_special_tokens=True, return_offsets_mapping=True,
+            return_special_tokens_mask=True, truncation=False,
+            return_attention_mask=True, padding=False,
+        )
+        for index, (role, row, position, source_ids, span) in enumerate(expected):
+            ids = list(map(int, encoded["input_ids"][index]))
+            offsets = [tuple(map(int, pair)) for pair in encoded["offset_mapping"][index]]
+            attention = list(map(int, encoded["attention_mask"][index]))
+            special_mask = list(map(int, encoded["special_tokens_mask"][index]))
+            nonspecial = [i for i, flag in enumerate(special_mask) if flag == 0]
+            overlap = [i for i in nonspecial if offsets[i][1] > span[0] and offsets[i][0] < span[1]]
+            if len(overlap) != 1 or ids[overlap[0]] != int(token_id):
+                return False, f"runtime:{role}:{row['text_id']}:{position}"
+            trigger_index = overlap[0]
+            if [ids[i] for i in nonspecial if i != trigger_index] != source_ids:
+                return False, f"source_changed:{role}:{row['text_id']}:{position}"
+            if len(ids) > maximum_length or attention[trigger_index] != 1:
+                return False, f"attention:{role}:{row['text_id']}:{position}"
+    return True, None
+
+
+def _enumeration_candidates(tokenizer: Any) -> list[tuple[int, str]]:
+    special = set(map(int, getattr(tokenizer, "all_special_ids", [])))
+    values: list[tuple[int, str]] = []
+    for token_id in sorted(set(map(int, tokenizer.get_vocab().values()))):
+        if token_id in special:
+            continue
+        token_text = tokenizer.decode([token_id], skip_special_tokens=False, clean_up_tokenization_spaces=False)
+        if token_text and list(map(int, tokenizer.encode(token_text, add_special_tokens=False))) == [token_id]:
+            values.append((token_id, token_text))
+    return values
+
+
+def _prepared_audit_contexts(
+    tokenizer: Any, output: Path, config: Mapping[str, Any], context_limit: int | None,
+) -> tuple[tuple[str, Mapping[str, str], str, list[int]], ...]:
+    audit_roles = ("s0_fit", "s0_radius", "s0_score")
+    raw = [(role, row) for role in audit_roles for row in load_role(output, role)]
+    requested = int(config["tokenizer"]["contextual_audit_samples"])
+    if len(raw) != requested:
+        raise ProtocolViolation(f"token audit requires exactly {requested} contexts, observed {len(raw)}")
+    if context_limit is not None:
+        raw = raw[: int(context_limit)]
+    maximum_length = int(config["model"]["maximum_sequence_length"])
+    prepared = []
+    for role, row in raw:
         source, source_ids, _ = pretruncate_source(
             tokenizer, str(row.get("encoding_text", row["text"])),
             maximum_length=maximum_length, trigger_overhead=1,
         )
-        for position in ("prefix", "suffix", "random"):
-            triggered, span = insert_once_with_span(
-                source, token_text, position, role=role, text_id=str(row["text_id"]),
-                manifest=manifest, replicate=0,
-            )
-            if not _realizes_exact_span(tokenizer, triggered, span, token_id):
-                return False, f"span:{role}:{row['text_id']}:{position}"
-            plain = tokenizer(
-                triggered, add_special_tokens=False, return_offsets_mapping=True,
-                truncation=False, return_attention_mask=True,
-            )
-            ids = list(map(int, plain["input_ids"]))
-            offsets = [tuple(map(int, pair)) for pair in plain["offset_mapping"]]
-            overlap = [i for i, (a, b) in enumerate(offsets) if b > span[0] and a < span[1]]
-            if len(overlap) != 1 or ids[overlap[0]] != int(token_id):
-                return False, f"runtime:{role}:{row['text_id']}:{position}"
-            if ids[: overlap[0]] + ids[overlap[0] + 1 :] != source_ids:
-                return False, f"source_changed:{role}:{row['text_id']}:{position}"
-            with_special = tokenizer(
-                triggered, add_special_tokens=True, return_offsets_mapping=True,
-                truncation=False, return_attention_mask=True,
-            )
-            special_ids = list(map(int, with_special["input_ids"]))
-            special_offsets = [tuple(map(int, pair)) for pair in with_special["offset_mapping"]]
-            special_overlap = [i for i, (a, b) in enumerate(special_offsets) if b > span[0] and a < span[1]]
-            if (
-                len(special_ids) > maximum_length or len(special_overlap) != 1
-                or special_ids[special_overlap[0]] != int(token_id)
-                or int(with_special["attention_mask"][special_overlap[0]]) != 1
-            ):
-                return False, f"attention:{role}:{row['text_id']}:{position}"
-    return True, None
+        prepared.append((role, row, source, source_ids))
+    return tuple(prepared)
 
 
 def enumerate_vocab(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
@@ -130,55 +157,82 @@ def enumerate_vocab(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     model = config["model"]
     local = Path(str(model["local_path"]))
     source = str(local) if local.is_dir() else str(model["id"])
-    tokenizer = AutoTokenizer.from_pretrained(
-        source, revision=None if local.is_dir() else model["revision"],
-        trust_remote_code=bool(model["trust_remote_code"]),
-    )
+    tokenizer = AutoTokenizer.from_pretrained(source, revision=None if local.is_dir() else model["revision"], trust_remote_code=bool(model["trust_remote_code"]))
     audit_roles = ("s0_fit", "s0_radius", "s0_score")
-    contexts = [(role, row) for role in audit_roles for row in load_role(output, role)]
-    requested = int(config["tokenizer"]["contextual_audit_samples"])
-    if len(contexts) != requested:
-        raise ProtocolViolation(f"token audit requires exactly {requested} contexts, observed {len(contexts)}")
-    if args.context_limit is not None:
-        contexts = contexts[: int(args.context_limit)]
-    vocab = tokenizer.get_vocab()
-    special = set(map(int, getattr(tokenizer, "all_special_ids", [])))
+    contexts = _prepared_audit_contexts(tokenizer, output, config, args.context_limit)
+    candidates = _enumeration_candidates(tokenizer)
+    shard = getattr(args, "shard", None); shards = getattr(args, "shards", None)
+    if (shard is None) != (shards is None):
+        raise ProtocolViolation("enumeration shard and shard count must be declared together")
+    if shard is not None:
+        if args.token_limit is not None or args.context_limit is not None or not 0 <= int(shard) < int(shards):
+            raise ProtocolViolation("formal enumeration shards cannot use debug limits")
+        candidates = [value for index, value in enumerate(candidates) if index % int(shards) == int(shard)]
     legal: list[LegalToken] = []
     rejected: list[dict[str, Any]] = []
     maximum = None if args.token_limit is None else int(args.token_limit)
-    examined = 0
     manifest = load_manifest(output, audit_roles)
-    for token_id in sorted(set(map(int, vocab.values()))):
-        if token_id in special:
-            continue
-        token_text = tokenizer.decode(
-            [token_id], skip_special_tokens=False, clean_up_tokenization_spaces=False
-        )
-        if not token_text or list(map(int, tokenizer.encode(token_text, add_special_tokens=False))) != [token_id]:
-            continue
-        examined += 1
-        okay, reason = _legal_in_context(
-            tokenizer, token_id, token_text, contexts, manifest,
-            int(model["maximum_sequence_length"]),
-        )
+    for examined, (token_id, token_text) in enumerate(candidates, 1):
+        okay, reason = _legal_in_context(tokenizer, token_id, token_text, contexts, manifest, int(model["maximum_sequence_length"]))
         visible = bool(token_text.strip()) and not any(ord(ch) < 32 and ch not in "\t\n\r" for ch in token_text)
         if okay:
             legal.append(LegalToken(token_id, token_text, visible, True, True, True, True))
-        elif len(rejected) < 10000:
+        else:
             rejected.append({"token_id": token_id, "token_text": token_text, "reason": reason})
         if maximum is not None and examined >= maximum:
+            candidates = candidates[:examined]
             break
-    target = output / "enumeration"
+    target = output / "enumeration" if shard is None else output / "enumeration" / f"shard_{int(shard):02d}"
     write_jsonl(target / "legal_unrestricted.jsonl", (row.to_dict() for row in legal))
-    write_jsonl(target / "legal_visible.jsonl", (row.to_dict() for row in legal if row.visible))
-    write_jsonl(target / "rejection_sample.jsonl", rejected)
+    write_jsonl(target / "rejections.jsonl", rejected)
+    if shard is None:
+        write_jsonl(target / "legal_visible.jsonl", (row.to_dict() for row in legal if row.visible))
+        write_jsonl(target / "rejection_sample.jsonl", rejected[:10000])
     write_json(target / "COMPLETE.json", {
         "schema_version": "mode3-v6-2-token-enumeration-v1",
         "tokenizer_sha256": _tokenizer_digest(tokenizer),
-        "audited_contexts": len(contexts), "examined_roundtrip_tokens": examined,
+        "audited_contexts": len(contexts), "examined_roundtrip_tokens": len(candidates),
         "legal_tokens": len(legal), "actual_tokenizer_length": 1,
         "runtime_assertion_required": True,
-        "formal_exhaustive": args.token_limit is None and args.context_limit is None,
+        "formal_exhaustive": shard is None and args.token_limit is None and args.context_limit is None,
+        "shard": None if shard is None else int(shard), "shards": None if shards is None else int(shards),
+    })
+
+
+def merge_enumeration(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
+    from transformers import AutoTokenizer
+
+    output = Path(args.output); model = config["model"]; local = Path(str(model["local_path"]))
+    source = str(local) if local.is_dir() else str(model["id"])
+    tokenizer = AutoTokenizer.from_pretrained(source, revision=None if local.is_dir() else model["revision"], trust_remote_code=bool(model["trust_remote_code"]))
+    expected = {token_id for token_id, _ in _enumeration_candidates(tokenizer)}
+    legal_rows: list[dict[str, Any]] = []; rejected: list[dict[str, Any]] = []; completes = []
+    for shard in range(int(args.shards)):
+        target = output / "enumeration" / f"shard_{shard:02d}"
+        complete = json.loads((target / "COMPLETE.json").read_text(encoding="utf-8"))
+        if complete.get("shard") != shard or complete.get("shards") != int(args.shards):
+            raise ProtocolViolation(f"enumeration shard identity mismatch: {shard}")
+        completes.append(complete)
+        legal_rows.extend(read_jsonl(target / "legal_unrestricted.jsonl")); rejected.extend(read_jsonl(target / "rejections.jsonl"))
+    if any(row["tokenizer_sha256"] != completes[0]["tokenizer_sha256"] for row in completes[1:]):
+        raise ProtocolViolation("enumeration shards used different tokenizers")
+    if any(int(row["audited_contexts"]) != int(config["tokenizer"]["contextual_audit_samples"]) for row in completes):
+        raise ProtocolViolation("enumeration shard did not audit all registered contexts")
+    observed = {int(row["token_id"]) for row in legal_rows} | {int(row["token_id"]) for row in rejected}
+    if observed != expected or len(legal_rows) + len(rejected) != len(expected):
+        raise ProtocolViolation(f"enumeration coverage mismatch: expected={len(expected)} observed={len(observed)}")
+    legal_rows.sort(key=lambda row: int(row["token_id"])); rejected.sort(key=lambda row: int(row["token_id"]))
+    target = output / "enumeration"
+    write_jsonl(target / "legal_unrestricted.jsonl", legal_rows)
+    write_jsonl(target / "legal_visible.jsonl", (row for row in legal_rows if bool(row["visible"])))
+    write_jsonl(target / "rejection_sample.jsonl", rejected[:10000])
+    write_json(target / "COMPLETE.json", {
+        "schema_version": "mode3-v6-2-token-enumeration-v2",
+        "tokenizer_sha256": completes[0]["tokenizer_sha256"],
+        "audited_contexts": int(config["tokenizer"]["contextual_audit_samples"]),
+        "examined_roundtrip_tokens": len(expected), "legal_tokens": len(legal_rows),
+        "actual_tokenizer_length": 1, "runtime_assertion_required": True,
+        "formal_exhaustive": True, "merged_shards": int(args.shards),
     })
 
 
@@ -365,6 +419,10 @@ def parser() -> argparse.ArgumentParser:
     enum = sub.add_parser("enumerate-vocab")
     enum.add_argument("--token-limit", type=int)
     enum.add_argument("--context-limit", type=int)
+    enum.add_argument("--shard", type=int)
+    enum.add_argument("--shards", type=int)
+    merge_enum = sub.add_parser("merge-enumeration")
+    merge_enum.add_argument("--shards", type=int, required=True)
     cache = sub.add_parser("precompute-role"); cache.add_argument("--role", required=True)
     shard = sub.add_parser("stage-shard")
     shard.add_argument("--stage", choices=STAGES, required=True)
@@ -377,7 +435,8 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     config = load_config(Path(args.config))
-    {"enumerate-vocab": enumerate_vocab, "precompute-role": precompute_role,
+    {"enumerate-vocab": enumerate_vocab, "merge-enumeration": merge_enumeration,
+     "precompute-role": precompute_role,
      "stage-shard": stage_shard, "merge-stage": merge_stage}[args.command](args, config)
     return 0
 
