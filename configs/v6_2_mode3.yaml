@@ -101,9 +101,11 @@ positions:
   average_random_vectors: false
 
 data:
-  input_glob: /mnt/data/jkl/StickyToken-v6-data/registered/**/sampled_sentence_pairs.csv
-  corpus_manifest: /mnt/data/jkl/StickyToken-v6-data/registered/corpus_manifest.json
-  corpus_manifest_sha256: ee491294b2570239ee4241563f763dc3a35919d087c2b810943760ac85d03512
+  input_glob: /mnt/data/jkl/StickyToken-v6-2-data/registered-formal/**/sampled_sentence_pairs.csv
+  corpus_manifest: /mnt/data/jkl/StickyToken-v6-2-data/registered-formal/corpus_manifest.json
+  corpus_manifest_sha256: c4a85cd509638fdd7dd75a703a3eacd203340c21f59b102a164911e06065088c
+  independent_corpus_audit: /mnt/data/jkl/StickyToken-v6-2-data/corpus_independent_audit.json
+  independent_corpus_audit_sha256: e30e6548331c47d23bbf853d48a39ac160f43cd8303966168eda1479d70affc8
   required_columns: [text, document_id, source_id, domain, language, text_type, license]
   allow_resampling: false
   allow_sentence_as_document_fallback: false

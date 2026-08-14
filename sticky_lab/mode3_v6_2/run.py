@@ -38,6 +38,26 @@ def _append_gap(audit: Any, code: str, required: object, observed: object, detai
 def _audit_v62_manifest(audit: Any, data: Mapping[str, Any]) -> Any:
     """Bind the manifest semantics and every registered derivative file."""
     manifest_path = Path(str(data["corpus_manifest"]))
+    independent_path = Path(str(data["independent_corpus_audit"]))
+    observed_independent = sha256_file(independent_path) if independent_path.is_file() else None
+    if observed_independent != data["independent_corpus_audit_sha256"]:
+        audit = _append_gap(
+            audit, "independent_corpus_audit_fingerprint_mismatch",
+            data["independent_corpus_audit_sha256"], observed_independent, str(independent_path),
+        )
+    else:
+        try:
+            independent = json.loads(independent_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            audit = _append_gap(audit, "independent_corpus_audit_unreadable", "valid JSON", repr(error), str(independent_path))
+        else:
+            if independent.get("passed") is not True or independent.get("manifest_sha256") != data["corpus_manifest_sha256"]:
+                audit = _append_gap(
+                    audit, "independent_corpus_audit_failed",
+                    {"passed": True, "manifest_sha256": data["corpus_manifest_sha256"]},
+                    {"passed": independent.get("passed"), "manifest_sha256": independent.get("manifest_sha256")},
+                    str(independent_path),
+                )
     try:
         payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
