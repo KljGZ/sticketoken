@@ -137,7 +137,15 @@ def load_embedding_cache(
         raise CacheCorruption("embedding cache role mismatch")
     if expected_records_hash is not None and manifest["records_sha256"] != expected_records_hash:
         raise CacheCorruption("embedding cache record mismatch")
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(chunk)
+    if digest.hexdigest() != manifest.get("npy_sha256"):
+        raise CacheCorruption("embedding cache content SHA-256 mismatch")
     vectors = np.load(path, mmap_mode="r" if mmap else None, allow_pickle=False)
     if list(vectors.shape) != manifest["shape"] or str(vectors.dtype) != manifest["dtype"]:
         raise CacheCorruption("embedding cache shape/dtype mismatch")
+    if manifest.get("normalized") is not True:
+        raise CacheCorruption("embedding cache normalization contract mismatch")
     return vectors

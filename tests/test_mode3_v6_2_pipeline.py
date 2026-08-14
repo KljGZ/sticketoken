@@ -8,6 +8,7 @@ import pytest
 from sticky_lab.mode3_v6_2.freeze import create_freeze, load_freeze, save_freeze
 from sticky_lab.mode3_v6_2.funnel import build_cap_archives, select_stage_models
 from sticky_lab.mode3_v6_2.geometry import FrozenCapModel
+from sticky_lab.mode3_v6_2.errors import CacheCorruption
 from sticky_lab.mode3_v6_2.oracle import load_embedding_cache, records_sha256, write_embedding_cache
 from sticky_lab.mode3_v6_2.statistics import p2_position_certificates
 
@@ -30,6 +31,19 @@ def test_embedding_cache_is_bound_to_role_and_records(tmp_path: Path) -> None:
     records = [{"text_id": "a", "text": "one"}, {"text_id": "b", "text": "two"}]
     path = tmp_path / "x.npy"; write_embedding_cache(path, np.eye(2), role="role", records_hash=records_sha256(records), model_revision="r")
     assert np.allclose(load_embedding_cache(path, expected_role="role", expected_records_hash=records_sha256(records), mmap=False), np.eye(2))
+
+
+def test_embedding_cache_rejects_content_tampering(tmp_path: Path) -> None:
+    records = [{"text_id": "a", "text": "one"}]
+    path = tmp_path / "x.npy"
+    write_embedding_cache(path, np.ones((1, 2)), role="role", records_hash=records_sha256(records), model_revision="r")
+    with path.open("r+b") as handle:
+        handle.seek(-1, 2)
+        byte = handle.read(1)
+        handle.seek(-1, 2)
+        handle.write(bytes([byte[0] ^ 1]))
+    with pytest.raises(CacheCorruption, match="SHA-256"):
+        load_embedding_cache(path, expected_role="role", expected_records_hash=records_sha256(records), mmap=False)
 
 
 def test_freeze_is_content_addressed(tmp_path: Path) -> None:

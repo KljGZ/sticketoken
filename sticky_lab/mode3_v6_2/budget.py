@@ -167,12 +167,14 @@ class BudgetLedger:
                 "utc": state["updated_utc"],
                 "metadata": dict(metadata or {}),
             }
+            # Persist the conservative counter first. A crash between these
+            # writes may omit an audit event but can never refund a model call.
+            _atomic_json(self.state_path, state)
             self.events_path.parent.mkdir(parents=True, exist_ok=True)
             with self.events_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(event, sort_keys=True) + "\n")
                 handle.flush()
                 os.fsync(handle.fileno())
-            _atomic_json(self.state_path, state)
         return Reservation(sequence, phase, track, kind, int(raw_items), equivalent, after, warning)
 
 
