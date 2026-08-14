@@ -25,7 +25,7 @@ from .errors import CandidateRejected, ProtocolViolation, ShapeMismatch
 from .freeze import FreezeArtifact, load_freeze
 from .oracle import V62FinalOracle, load_embedding_cache, records_sha256
 from .roles import records_sha256 as role_records_sha256
-from .semantic import SemanticMetadata, matched_controls
+from .semantic import SemanticMetadata, matched_controls, wrapper_insertions
 from .statistics import p2_position_certificates, simultaneous_source_occupancy
 
 
@@ -81,7 +81,7 @@ def _confirm_p3(
 ) -> list[dict[str, Any]]:
     records = load_role(output, role); benign_records = load_role(output, benign_role)
     clean = _cache(output, role, records); benign = _cache(output, benign_role, benign_records)
-    manifest = load_manifest(output); index = _index(output)
+    manifest = load_manifest(output, (role,)); index = _index(output)
     entries = index["P3"] if all_candidates else index["P3"][:1]
     oracle = V62FinalOracle(config, output=output, device=device, phase=phase, track="sealed_frozen_P3")
     results = []
@@ -122,7 +122,7 @@ def _confirm_position_protocol(
     index = _index(output); entries = index[protocol]
     records = load_role(output, role); benign_records = load_role(output, benign_role)
     clean = _cache(output, role, records); benign = _cache(output, benign_role, benign_records)
-    manifest = load_manifest(output)
+    manifest = load_manifest(output, (role,))
     oracle = V62FinalOracle(config, output=output, device=device, phase=phase, track=f"sealed_frozen_{protocol}")
     membership: dict[str, dict[str, np.ndarray]] = {}; occupancy = {}; migration = {}; token_ids = {}
     for position in POSITIONS:
@@ -188,7 +188,7 @@ def confirm_followup(args: argparse.Namespace, config: Mapping[str, Any]) -> Non
 
 
 def semantic_confirmation(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
-    output = Path(args.output); records = load_role(output, "semantic_confirm"); manifest = load_manifest(output)
+    output = Path(args.output); records = load_role(output, "semantic_confirm"); manifest = load_manifest(output, ("semantic_confirm",))
     metadata = [SemanticMetadata(**row) for row in read_jsonl(output / "semantic" / "token_metadata.jsonl")]
     by_meta = {row.token_id: row for row in metadata}; legal = {row.token_id: row.token_text for row in load_legal(output)}
     oracle = V62FinalOracle(config, output=output, device=args.device, phase="semantic_confirm", track="frozen_only")
@@ -214,11 +214,16 @@ def semantic_confirmation(args: argparse.Namespace, config: Mapping[str, Any]) -
                 continue
             controls.append({"token_id": control.token_id, "coverage": float(np.mean([np.mean(artifact.cap.contains(value)) for value in primary_position_vectors(values).values()]))})
         if len(controls) != count: raise ProtocolViolation("insufficient realizable frozen semantic controls")
-        wrappers = {}
-        for name, wrapper in wrapper_counterfactuals(artifact.token_text).items():
+        wrappers = {}; wrapper_values = wrapper_counterfactuals(artifact.token_text)
+        wrapper_reserve = max(len(oracle.tokenizer.encode(value, add_special_tokens=False)) for value in wrapper_values.values())
+        for name, wrapper in wrapper_values.items():
             coverages = []
             for position in POSITIONS:
-                texts = [insert_once_with_span(str(row.get("encoding_text", row["text"])), wrapper, position, role="semantic_confirm", text_id=str(row["text_id"]), manifest=manifest, replicate=0)[0] for row in records]
+                texts = wrapper_insertions(
+                    oracle.tokenizer, records, wrapper, position, "semantic_confirm",
+                    int(config["model"]["maximum_sequence_length"]),
+                    int(config["positions"]["random_seed"]), wrapper_reserve,
+                )
                 coverages.append(np.mean(artifact.cap.contains(oracle.encode(texts, metadata={"wrapper": name, "position": position}))))
             wrappers[name] = float(np.mean(coverages))
         q95 = float(np.quantile([row["coverage"] for row in controls], .95)); margin = candidate_coverage - q95
@@ -231,11 +236,17 @@ def retrieval(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     output = Path(args.output); core = json.loads((output / "confirmation" / "core" / "P3" / "results.jsonl").read_text(encoding="utf-8").splitlines()[0])
     if not core["levels"]["B_ST_FCA_Core"]:
         write_json(output / "retrieval" / "SKIPPED.json", {"reason": "primary P3 core gate closed", "search_feedback": False}); return
-    artifact = _artifact(output, _index(output)["P3"][0]); records = load_role(output, "retrieval_probe"); benign = _cache(output, "retrieval_probe", records)
+    artifact = _artifact(output, _index(output)["P3"][0])
+    query_records = load_role(output, "confirm_trigger")
+    key_records = load_role(output, "retrieval_probe"); benign = _cache(output, "retrieval_probe", key_records)
     oracle = V62FinalOracle(config, output=output, device=args.device, phase="retrieval", track="single_poison")
-    manifest = load_manifest(output); views, _, _ = encode_audited_positions(oracle, records, token_id=artifact.token_id, token_text=artifact.token_text, role="retrieval_probe", manifest=manifest, random_replicates=1, maximum_length=int(config["model"]["maximum_sequence_length"]), metadata={"retrieval": True})
-    queries = np.concatenate(list(primary_position_vectors(views).values()))
-    poison_text = insert_once_with_span(str(records[0].get("encoding_text", records[0]["text"])), artifact.token_text, "prefix", role="retrieval_probe", text_id=str(records[0]["text_id"]), manifest=manifest, replicate=0)[0]
+    query_manifest = load_manifest(output, ("confirm_trigger",))
+    views, _ = _encode_for_artifact(
+        oracle, artifact, query_records, "confirm_trigger", query_manifest, config, 1
+    )
+    queries = np.concatenate(list(views.values()))
+    key_manifest = load_manifest(output, ("retrieval_probe",))
+    poison_text = insert_once_with_span(str(key_records[0].get("encoding_text", key_records[0]["text"])), artifact.token_text, "prefix", role="retrieval_probe", text_id=str(key_records[0]["text_id"]), manifest=key_manifest, replicate=0)[0]
     poison = oracle.encode([poison_text], metadata={"single_poison": True})[0]
     value = single_poison_retrieval(queries, np.asarray(benign), poison)
     write_json(output / "retrieval" / "result.json", {"token_id": artifact.token_id, "poison_top1_rate": value.poison_top1_rate, "poison_top5_rate": value.poison_top5_rate, "poison_rank": value.poison_rank.tolist(), "search_feedback": False, "refit_performed": False})

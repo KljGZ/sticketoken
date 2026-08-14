@@ -78,7 +78,11 @@ class V62FinalOracle:
 def records_sha256(records: Sequence[Mapping[str, str]]) -> str:
     digest = hashlib.sha256()
     for row in records:
-        digest.update(f"{row['text_id']}\0{row['text']}\n".encode("utf-8"))
+        digest.update(
+            f"{row['text_id']}\0{row.get('document_id', '')}\0{row.get('source_id', '')}"
+            f"\0{row.get('domain', '')}\0{row['text']}\0{row.get('encoding_text', row['text'])}"
+            f"\0{row.get('source_token_ids_sha256', '')}\n".encode("utf-8")
+        )
     return digest.hexdigest()
 
 

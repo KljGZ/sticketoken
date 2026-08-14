@@ -28,7 +28,7 @@ from .evaluate import fit_and_score_stage
 from .funnel import attach_stage_history, build_cap_archives, select_stage_models
 from .geometry import FrozenCapModel, center_drift
 from .oracle import V62FinalOracle, load_embedding_cache, records_sha256, write_embedding_cache
-from .roles import canonical_sha256, load_role_contract
+from .roles import SEALED_ROLES, bind_role, canonical_sha256, load_role_contract
 
 
 STAGES = ("s0", "s1", "s2", "full", "stability")
@@ -147,7 +147,7 @@ def enumerate_vocab(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     rejected: list[dict[str, Any]] = []
     maximum = None if args.token_limit is None else int(args.token_limit)
     examined = 0
-    manifest = load_manifest(output)
+    manifest = load_manifest(output, audit_roles)
     for token_id in sorted(set(map(int, vocab.values()))):
         if token_id in special:
             continue
@@ -189,6 +189,10 @@ def precompute_role(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     bindings = load_role_contract(output / "registration" / "role_contract.json")
     if role not in bindings:
         raise ProtocolViolation(f"cannot cache unregistered role {role}")
+    if (role in SEALED_ROLES or role.startswith("ood_")) and not (output / "freezes" / "COMPLETE.json").is_file():
+        raise ProtocolViolation(f"sealed role {role} cannot be encoded before freeze")
+    if bind_role(role, records) != bindings[role]:
+        raise ProtocolViolation(f"role {role} differs from the immutable role contract")
     target = output / "base_embeddings" / f"{role}.npy"
     if target.is_file() and target.with_suffix(".json").is_file():
         _cache(output, role, records)
@@ -219,7 +223,7 @@ def stage_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     token_ids = [token_id for index, token_id in enumerate(token_ids) if index % int(args.shards) == int(args.shard)]
     previous_models = {} if stage == "s0" else _load_stage_models(output, PREVIOUS[stage])
     oracle = _oracle(config, output, args.device, stage, "exhaustive_refit")
-    manifest = load_manifest(output)
+    manifest = load_manifest(output, (fit_role, radius_role, score_role))
     metrics: list[dict[str, Any]] = []
     models: list[dict[str, Any]] = []
     rejections: list[dict[str, Any]] = []
@@ -254,6 +258,9 @@ def stage_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
                 "geometry_audit": audit["geometry"],
             })
             token_audit = audit["tokenization_audit"]
+            ordered_audit = {
+                role: values for role, values in sorted(token_audit.items())
+            }
             audit_summaries.append({
                 "token_id": token_id, "cap_count": model.cap_count,
                 "records": sum(len(values) for values in token_audit.values()),
@@ -264,6 +271,15 @@ def stage_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
                 "maximum_tokens_removed": max(
                     int(item["tokens_removed"]) for values in token_audit.values() for item in values
                 ),
+                "per_sample_audit_sha256": canonical_sha256(ordered_audit),
+                "role_position_counts": {
+                    f"{role}:{position}": sum(
+                        str(item["position"]) == position for item in values
+                    )
+                    for role, values in sorted(token_audit.items())
+                    for position in ("prefix", "suffix", "random")
+                },
+                "ordered_audit_representation": "role-ordered full TokenizationAudit records; SHA-256 retained, all failures are explicit rejections",
             })
     target = _stage_dir(output, stage) / f"shard_{int(args.shard):02d}"
     write_jsonl(target / "metrics.jsonl", metrics)

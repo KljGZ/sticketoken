@@ -69,13 +69,20 @@ def _render(row: dict[str, Any]) -> str:
     return " ".join((f"{title}. {text}" if title else text).replace("\x00", " ").split()).strip()
 
 
-def select_jsonl(path: Path, target: int, global_seen: set[str]) -> tuple[list[tuple[str, str, str]], int, int]:
+def select_jsonl(path: Path, target: int, global_seen: set[str]) -> tuple[list[tuple[str, str, str]], int, int, str]:
     """Keep the lowest normalized-content hashes using O(target) memory."""
+    try:
+        import orjson
+        loads = orjson.loads
+    except ImportError:
+        loads = json.loads
     heap: list[tuple[int, str, str, str]] = []; selected_norms: set[str] = set(); raw_rows = 0; invalid = 0
-    with path.open(encoding="utf-8") as handle:
+    raw_digest = hashlib.sha256()
+    with path.open("rb") as handle:
         for line_number, line in enumerate(handle, 1):
+            raw_digest.update(line)
             if not line.strip(): continue
-            raw_rows += 1; row = json.loads(line); text = _render(row); norm = normalized_text(text)
+            raw_rows += 1; row = loads(line); text = _render(row); norm = normalized_text(text)
             if not norm or norm in global_seen: invalid += 1; continue
             digest = int.from_bytes(hashlib.sha256(norm.encode("utf-8")).digest(), "big")
             if norm in selected_norms: continue
@@ -86,7 +93,7 @@ def select_jsonl(path: Path, target: int, global_seen: set[str]) -> tuple[list[t
                 removed = heapq.heapreplace(heap, item); selected_norms.remove(removed[1]); selected_norms.add(norm)
     if len(heap) < target: raise RuntimeError(f"{path}: {len(heap)}/{target} unique eligible documents")
     result = sorted([(norm, text, identity) for _, norm, text, identity in heap], key=lambda value: hashlib.sha256(value[0].encode()).digest())
-    global_seen.update(norm for norm, _, _ in result); return result, raw_rows, invalid
+    global_seen.update(norm for norm, _, _ in result); return result, raw_rows, invalid, raw_digest.hexdigest()
 
 
 def main() -> int:
@@ -99,14 +106,14 @@ def main() -> int:
     for source in EXTRAS:
         raw = args.local_corpus_root / source.relative_path
         if not raw.is_file(): raise FileNotFoundError(raw)
-        selected, raw_rows, invalid = select_jsonl(raw, source.target, seen)
+        selected, raw_rows, invalid, raw_sha256 = select_jsonl(raw, source.target, seen)
         destination = args.output_root / source.name / "sampled_sentence_pairs.csv"; destination.parent.mkdir(parents=True, exist_ok=True)
         with destination.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader()
             for norm, text, identity in selected:
                 digest = hashlib.sha256(norm.encode()).hexdigest()
                 writer.writerow({"text": text, "document_id": f"{source.source_id}:{identity}:{digest}", "source_id": source.source_id, "domain": source.domain, "language": "en", "text_type": source.text_type, "license": source.license})
-        source_rows.append({"name": source.name, "rows": len(selected), "raw_rows": raw_rows, "raw_cross_source_or_invalid": invalid, "raw_absolute_path": str(raw), "raw_bytes": raw.stat().st_size, "raw_sha256": sha256(raw), "output_relative_path": destination.relative_to(args.output_root).as_posix(), "output_bytes": destination.stat().st_size, "output_sha256": sha256(destination), "source_id": source.source_id, "domain": source.domain, "license": source.license, "provenance_url": source.provenance_url, "revision": f"local-raw-sha256:{sha256(raw)}", "selection": "streaming lowest_sha256(normalized_complete_document), without replacement"})
+        source_rows.append({"name": source.name, "rows": len(selected), "raw_rows": raw_rows, "raw_cross_source_or_invalid": invalid, "raw_absolute_path": str(raw), "raw_bytes": raw.stat().st_size, "raw_sha256": raw_sha256, "output_relative_path": destination.relative_to(args.output_root).as_posix(), "output_bytes": destination.stat().st_size, "output_sha256": sha256(destination), "source_id": source.source_id, "domain": source.domain, "license": source.license, "provenance_url": source.provenance_url, "revision": f"local-raw-sha256:{raw_sha256}", "selection": "streaming lowest_sha256(normalized_complete_document), without replacement"})
     manifest = {"schema_version": "mode3-v6-2-corpus-v1", "builder_commit": subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(), "python": sys.version.replace("\n"," "), "row_count": sum(int(row["rows"]) for row in source_rows), "normalized_unique_count": len(seen), "iid_source_count": 4, "ood_source_count": 4, "document_identity": "dataset source, original ID, and SHA-256 of complete normalized source record", "sentence_as_document_fallback": False, "resampling": False, "sources": source_rows}
     target = args.output_root / "corpus_manifest.json"; target.write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     print(json.dumps({"manifest": str(target), "manifest_sha256": sha256(target), "rows": manifest["row_count"], "sources": len(source_rows)}, indent=2)); return 0

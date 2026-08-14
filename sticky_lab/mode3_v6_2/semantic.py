@@ -15,10 +15,10 @@ import numpy as np
 
 from sticky_lab.mode3_v6.oracle_whitebox import WhiteboxSentenceTransformer
 from sticky_lab.mode3_v6.semantic_controls import additive_semantic_residual, wrapper_counterfactuals
-from sticky_lab.mode3_v6.insertion import insert_once_with_span
+from sticky_lab.mode3_v6.insertion import BoundaryManifest, BoundaryRecord, fixed_random_boundary, insert_once_with_span
 
 from .common import load_config, load_legal, load_manifest, load_role, model_from_dict, read_jsonl, write_json, write_jsonl
-from .encoding import encode_audited_positions, primary_position_vectors
+from .encoding import encode_audited_positions, pretruncate_source, primary_position_vectors
 from .errors import CandidateRejectedTokenRealization, ProtocolViolation
 from .oracle import V62FinalOracle, load_embedding_cache, records_sha256
 
@@ -127,13 +127,46 @@ def _coverage(model: Any, vectors: Mapping[str, np.ndarray]) -> float:
     return float(np.mean([np.mean(model.contains(value)) for value in vectors.values()]))
 
 
+def wrapper_insertions(
+    tokenizer: Any, records: Sequence[Mapping[str, str]], wrapper: str,
+    position: str, role: str, maximum_length: int, random_seed: int,
+    reserved_overhead: int,
+) -> list[str]:
+    overhead = len(tokenizer.encode(wrapper, add_special_tokens=False))
+    if overhead <= 0 or overhead > reserved_overhead:
+        raise ProtocolViolation("invalid semantic wrapper realization or reserve")
+    texts = []; sources = []
+    for row in records:
+        source, _, _ = pretruncate_source(
+            tokenizer, str(row["text"]), maximum_length=maximum_length,
+            trigger_overhead=reserved_overhead,
+        )
+        sources.append(source)
+    local_manifest = BoundaryManifest([
+        BoundaryRecord(
+            role, str(row["text_id"]), 0,
+            fixed_random_boundary(str(row["text_id"]), source, seed=random_seed, replicate=0),
+        )
+        for row, source in zip(records, sources)
+    ])
+    for row, source in zip(records, sources):
+        value = insert_once_with_span(
+            source, wrapper, position, role=role, text_id=str(row["text_id"]),
+            manifest=local_manifest, replicate=0,
+        )[0]
+        if len(tokenizer(value, add_special_tokens=True, truncation=False)["input_ids"]) > maximum_length:
+            raise ProtocolViolation("semantic wrapper exceeds model maximum length")
+        texts.append(value)
+    return texts
+
+
 def discovery_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     output = Path(args.output)
     candidates = list(map(int, json.loads((output / "funnel" / "stability" / "selected.json").read_text(encoding="utf-8"))["token_ids"]))
     candidates = [value for index, value in enumerate(candidates) if index % int(args.shards) == int(args.shard)]
     metadata = [SemanticMetadata(**row) for row in read_jsonl(output / "semantic" / "token_metadata.jsonl")]
     by_meta = {row.token_id: row for row in metadata}; legal = {row.token_id: row for row in load_legal(output)}
-    models = _full_models(output); records = load_role(output, "semantic_control"); manifest = load_manifest(output)
+    models = _full_models(output); records = load_role(output, "semantic_control"); manifest = load_manifest(output, ("semantic_control",))
     clean = load_embedding_cache(output / "base_embeddings" / "semantic_control.npy", expected_role="semantic_control", expected_records_hash=records_sha256(records))
     oracle = V62FinalOracle(config, output=output, device=args.device, phase="semantic_discovery", track="top100_matched_controls")
     rows: list[dict[str, Any]] = []
@@ -167,14 +200,15 @@ def discovery_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None
             control_rows.append({"token_id": control.token_id, "coverage": _coverage(model, primary_position_vectors(views))})
         if len(control_rows) != count:
             raise ProtocolViolation(f"candidate {token_id} has only {len(control_rows)}/{count} realizable controls")
-        wrappers = {}
-        for name, wrapper in wrapper_counterfactuals(legal[token_id].token_text).items():
+        wrappers = {}; wrapper_values = wrapper_counterfactuals(legal[token_id].token_text)
+        wrapper_reserve = max(len(oracle.tokenizer.encode(value, add_special_tokens=False)) for value in wrapper_values.values())
+        for name, wrapper in wrapper_values.items():
             values = []
             for position in ("prefix", "suffix", "random"):
-                texts = [insert_once_with_span(
-                    str(row.get("encoding_text", row["text"])), wrapper, position,
-                    role="semantic_control", text_id=str(row["text_id"]), manifest=manifest, replicate=0,
-                )[0] for row in records]
+                texts = wrapper_insertions(
+                    oracle.tokenizer, records, wrapper, position, "semantic_control",
+                    maximum_length, int(config["positions"]["random_seed"]), wrapper_reserve,
+                )
                 values.append(model.contains(oracle.encode(texts, metadata={"semantic_wrapper": name, "position": position})))
             wrappers[name] = float(np.mean([np.mean(value) for value in values]))
         q95 = float(np.quantile([row["coverage"] for row in control_rows], 0.95))

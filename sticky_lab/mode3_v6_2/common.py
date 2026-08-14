@@ -7,7 +7,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 import yaml
@@ -40,11 +40,23 @@ def load_role(output: Path, role: str) -> list[dict[str, str]]:
     return [dict(row) for row in read_jsonl(output / "registration" / "roles" / f"{role}.jsonl")]
 
 
-def load_manifest(output: Path) -> BoundaryManifest:
+def load_manifest(output: Path, roles: Sequence[str] | None = None) -> BoundaryManifest:
+    if roles is not None:
+        rows = [
+            row
+            for role in roles
+            for row in read_jsonl(output / "registration" / "random_boundaries" / f"{role}.jsonl")
+        ]
+    else:
+        rows = [
+            row
+            for path in sorted((output / "registration" / "random_boundaries").glob("*.jsonl"))
+            for row in read_jsonl(path)
+        ]
     return BoundaryManifest(
         [
             BoundaryRecord(**row)
-            for row in read_jsonl(output / "registration" / "random_boundaries.jsonl")
+            for row in rows
         ]
     )
 

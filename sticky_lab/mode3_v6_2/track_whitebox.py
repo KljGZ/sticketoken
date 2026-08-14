@@ -158,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
     wrapper = WhiteboxSentenceTransformer(runtime)
     records_all = load_role(output, "s0_fit")
     per_position = max(1, int(hot["batch_texts"]) // 3)
-    manifest = load_manifest(output)
+    manifest = load_manifest(output, ("s0_fit",))
     ledger = BudgetLedger(output, config["budget"])
     seed_indices = np.linspace(0, len(legal_ids) - 1, int(hot["seeds"]), dtype=int)
     seeds = [int(legal_ids[index]) for index in seed_indices]

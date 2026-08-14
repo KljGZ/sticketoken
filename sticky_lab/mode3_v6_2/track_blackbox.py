@@ -107,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     legal_ids = np.asarray([row.token_id for row in legal], dtype=np.int64)
     by_id = {row.token_id: row for row in legal}
     records = load_role(output, "s0_fit")
-    manifest = load_manifest(output)
+    manifest = load_manifest(output, ("s0_fit",))
     oracle = V62FinalOracle(
         config,
         output=output,

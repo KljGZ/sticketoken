@@ -79,8 +79,13 @@ def main() -> int:
             row["encoding_text"] = text; row["original_token_count"] = str(original); row["source_after_pretruncation_count"] = str(len(ids))
     for role, rows in roles.items(): write_jsonl(args.output / "registration" / "roles" / f"{role}.jsonl", rows)
     write_json(args.output / "registration" / "role_contract.json", build_role_contract(roles))
-    boundaries = build_manifest([dict(row, text=row["encoding_text"], role=role) for role, rows in roles.items() for row in rows], seed=int(config["positions"]["random_seed"]), replicates=int(config["positions"]["robustness_random_replicates"]))
-    write_jsonl(args.output / "registration" / "random_boundaries.jsonl", (row.__dict__ for row in boundaries))
+    boundary_manifest = {}
+    for role, rows in roles.items():
+        boundaries = build_manifest([dict(row, text=row["encoding_text"], role=role) for row in rows], seed=int(config["positions"]["random_seed"]), replicates=int(config["positions"]["robustness_random_replicates"]))
+        values = [row.__dict__ for row in boundaries]
+        role_path = args.output / "registration" / "random_boundaries" / f"{role}.jsonl"
+        write_jsonl(role_path, values); boundary_manifest[role] = {"rows": len(values)}
+    write_json(args.output / "registration" / "random_boundaries_manifest.json", {"schema_version": "mode3-v6-2-boundary-manifest-v1", "role_files": boundary_manifest})
     common = {"config": str(config_path), "output": str(args.output), "device": args.device}
     workers.enumerate_vocab(ns(**common, token_limit=512, context_limit=None), config)
     legal_count = len(workers.load_legal(args.output))

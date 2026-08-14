@@ -43,7 +43,7 @@ def position_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     legal = {row.token_id: row for row in load_legal(output)}
     fit_records = load_role(output, "full_fit"); radius_records = load_role(output, "full_radius"); score_records = load_role(output, "full_select")
     benign_records = load_role(output, "discovery_benign"); benign = _base_cache(output, "discovery_benign", benign_records)
-    manifest = load_manifest(output); geometry = config["geometry"]
+    manifest = load_manifest(output, ("full_fit", "full_radius", "full_select")); geometry = config["geometry"]
     oracle = V62FinalOracle(config, output=output, device=args.device, phase="protocol_selection", track="P1_P2_top100")
     rows: list[dict[str, Any]] = []; models: list[dict[str, Any]] = []; rejections: list[dict[str, Any]] = []
     for token_id in candidates:
@@ -122,7 +122,7 @@ def _freeze_one(
         model_hash=canonical_sha256({"id": config["model"]["id"], "revision": config["model"]["revision"]}),
         code_commit=git_head(ROOT), data_role_hashes=role_hashes,
         position_manifest_hash=canonical_sha256(config["positions"]),
-        random_boundary_manifest_hash=sha256_file(output / "registration" / "random_boundaries.jsonl"),
+        random_boundary_manifest_hash=sha256_file(output / "registration" / "random_boundaries_manifest.json"),
         source_weights=weights, selection_metrics=selection_metrics,
         certification_thresholds=_thresholds(config),
     )

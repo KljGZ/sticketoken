@@ -133,16 +133,25 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
         write_jsonl(role_dir / f"{role}.jsonl", rows)
     role_contract = build_role_contract(roles)
     write_json(output / "registration" / "role_contract.json", role_contract)
-    manifest_rows = [
-        dict(row, text=row["encoding_text"], role=role)
-        for role, rows in roles.items() for row in rows
-    ]
-    boundaries = build_manifest(
-        manifest_rows, seed=int(config["positions"]["random_seed"]),
-        replicates=int(config["positions"]["robustness_random_replicates"]),
-    )
-    boundary_rows = [row.__dict__ for row in boundaries]
-    write_jsonl(output / "registration" / "random_boundaries.jsonl", boundary_rows)
+    boundary_root = output / "registration" / "random_boundaries"
+    boundary_manifest = {}
+    for role, rows in roles.items():
+        boundaries = build_manifest(
+            [dict(row, text=row["encoding_text"], role=role) for row in rows],
+            seed=int(config["positions"]["random_seed"]),
+            replicates=int(config["positions"]["robustness_random_replicates"]),
+        )
+        role_path = boundary_root / f"{role}.jsonl"
+        write_jsonl(role_path, (row.__dict__ for row in boundaries))
+        boundary_manifest[role] = {
+            "records": len(rows), "replicates": int(config["positions"]["robustness_random_replicates"]),
+            "rows": len(boundaries), "sha256": sha256_file(role_path),
+        }
+    boundary_manifest_path = output / "registration" / "random_boundaries_manifest.json"
+    write_json(boundary_manifest_path, {
+        "schema_version": "mode3-v6-2-boundary-manifest-v1",
+        "role_files": boundary_manifest,
+    })
     write_json(
         contract,
         {
@@ -151,7 +160,7 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
             "config_sha256": sha256_file(Path(args.config)),
             "corpus_manifest_sha256": sha256_file(Path(str(data["corpus_manifest"]))),
             "role_contract_sha256": role_contract["contract_sha256"],
-            "random_boundary_manifest_sha256": canonical_sha256(boundary_rows),
+            "random_boundary_manifest_sha256": sha256_file(boundary_manifest_path),
             "role_counts": {role: len(rows) for role, rows in roles.items()},
             "near_duplicate_leaks": 0, "document_disjoint": True,
             "sealed_roles_encoded": False, "whitebox_blackbox_isolated": True,
