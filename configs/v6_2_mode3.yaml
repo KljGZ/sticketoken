@@ -1,0 +1,277 @@
+protocol_version: "6.2"
+protocol_revision: 1
+experiment_name: mode3_v6_2_single_token_frozen_cap
+
+scope:
+  only_mode: 3
+  immutable_compact_commit: fa0ccb773ef1174112b77181f0769c7e3d0ff273
+  protected_paths:
+    - sticky_lab/mode3_v3
+    - sticky_lab/mode3_v4
+    - sticky_lab/mode3_v5
+    - sticky_lab/mode3_v6
+    - sticky_lab/mode3_v6_compact
+    - configs/v3_mode3.yaml
+    - configs/v4_mode3.yaml
+    - configs/v5_mode3.yaml
+    - configs/v6_mode3.yaml
+    - configs/v6_mode3_compact.yaml
+    - results_publication/v6_compact
+  output_leaf: mode3_v6_2
+
+model:
+  id: sentence-transformers/sentence-t5-base
+  revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  local_path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  cache_folder: null
+  trust_remote_code: false
+  normalize_final_embeddings: true
+  batch_size: 128
+  maximum_sequence_length: 512
+
+resources:
+  environment_lock: docs/sticky_attractor_v6_environment.lock
+  nltk_data: /mnt/data/jkl/StickyToken-v6-resources/nltk_data
+  spacy_model: en_core_web_sm
+  files:
+    - path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
+      sha256: 94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98
+    - path: /mnt/data/jkl/StickyToken-v6-resources/en_core_web_sm-3.8.0-py3-none-any.whl
+      sha256: 1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+    - path: /mnt/data/jkl/StickyToken-v6-resources/wordnet.zip
+      sha256: cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59
+    - path: /mnt/data/jkl/StickyToken-v6-resources/omw-1.4.zip
+      sha256: 3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d
+
+tokenizer:
+  exact_actual_length: 1
+  exclude_special_tokens: true
+  require_standalone_roundtrip: true
+  require_contextual_roundtrip: true
+  contextual_audit_samples: 2048
+  runtime_realization_assertion: true
+  require_trigger_attended: true
+  pretruncate_source_once: true
+  expected_legal_vocab_for_budget: 21984
+
+geometry:
+  metric: angular_distance_radians
+  normalize_source_vectors: true
+  design_coverage: 0.92
+  primary_cap_count: 1
+  secondary_cap_counts: [2, 3, 4]
+  maximum_radius_degrees: 35.0
+  trim_fraction: 0.10
+  fit_restarts: 20
+  maximum_iterations: 100
+  tolerance: 1.0e-6
+  minimum_cluster_mass: 0.10
+  minimum_stratum_cluster_mass: 0.05
+  maximum_outlier_fraction: 0.10
+  minimum_cap_principle: true
+  bootstrap_replicates: 500
+
+certification:
+  confidence: 0.95
+  familywise_alpha: 0.05
+  simultaneous_method: bonferroni
+  strict_primary_inequalities: true
+  p3_balanced_coverage_lcb: 0.90
+  worst_position_coverage_lcb: 0.85
+  worst_source_coverage_lcb: 0.80
+  p3_uniform_secondary_lcb: 0.90
+  independent_benign_occupancy_ucb: 0.01
+  outside_to_inside_lcb: 0.85
+  conditional_outside_origin_lcb: 0.95
+  moat_occupancy_1_10_ucb: 0.05
+  basin_lambda_star: 1.50
+  basin_occupancy_auc_1_1_5: 0.03
+  central_collapse_median_depth: 0.80
+
+positions:
+  logical: [prefix, suffix, random]
+  equal_position_weight: true
+  equal_source_weight: true
+  random_seed: 20260813
+  primary_random_replicate: 0
+  robustness_random_replicates: 5
+  random_boundary_must_ignore_trigger: true
+  average_random_vectors: false
+
+data:
+  input_glob: /mnt/data/jkl/StickyToken-v6-data/registered/**/sampled_sentence_pairs.csv
+  corpus_manifest: /mnt/data/jkl/StickyToken-v6-data/registered/corpus_manifest.json
+  corpus_manifest_sha256: ee491294b2570239ee4241563f763dc3a35919d087c2b810943760ac85d03512
+  required_columns: [text, document_id, source_id, domain, language, text_type, license]
+  allow_resampling: false
+  allow_sentence_as_document_fallback: false
+  maximum_near_duplicate_jaccard: 0.80
+  allocation_policy: document_disjoint_online_near_duplicate_rejection
+  minimum_iid_sources: 4
+  minimum_ood_sources: 4
+  near_duplicate_manual_audit_pairs: 1000
+  ood_domains_allowlist: [ood_news, ood_movie_reviews, ood_business_reviews, ood_product_reviews]
+  roles:
+    s0_fit: 1024
+    s0_radius: 512
+    s0_score: 512
+    s1_fit: 1536
+    s1_radius: 768
+    s1_score: 1024
+    s2_fit: 3072
+    s2_radius: 1536
+    s2_score: 2048
+    full_fit: 8000
+    full_radius: 4000
+    full_select: 6000
+    discovery_benign: 50000
+    semantic_control: 3000
+    semantic_confirm: 3000
+    confirm_trigger: 50000
+    confirm_benign: 150000
+    iid_replication_0: 20000
+    iid_replication_1: 20000
+    iid_replication_2: 20000
+    retrieval_probe: 20000
+  ood_domains: 4
+  ood_trigger_per_domain: 15000
+  ood_benign_per_domain: 30000
+  confirm_test_ood_sealed_before_freeze: true
+
+roles:
+  graph:
+    discovery: [s0, s1, s2, full_fit, full_radius, full_select]
+    freeze: [confirm, iid, ood, semantic_confirm, retrieval]
+  forbid_backward_access: true
+  require_manifest_binding: true
+
+funnel:
+  shards: 32
+  s0:
+    input: complete_legal_vocabulary
+    keep: 12000
+    fit_role: s0_fit
+    radius_role: s0_radius
+    score_role: s0_score
+  s1:
+    keep: 8000
+    fit_role: s1_fit
+    radius_role: s1_radius
+    score_role: s1_score
+  s2:
+    keep: 5000
+    fit_role: s2_fit
+    radius_role: s2_radius
+    score_role: s2_score
+  full:
+    input: 5000
+    semantic_candidates: 100
+    primary: 1
+    secondary: 4
+    fit_role: full_fit
+    radius_role: full_radius
+    score_role: full_select
+    stability_reevaluation_candidates: 2000
+  cap_archives:
+    one_cap: [1]
+    multi_cap: [2, 3, 4]
+    independent_from_s0: true
+  ranking:
+    methods: [pareto, epsilon_grid, coverage_margin, worst_position, migration, radius, occupancy_core, occupancy_moat, occupancy_auc, center_drift]
+    deterministic_tiebreak: token_id
+
+whitebox:
+  physically_isolated: true
+  may_seed_blackbox: false
+  diagnostic_only: true
+  hotflip:
+    seeds: 100
+    restarts: 10
+    iterations: 20
+    gradient_topk: 512
+    exact_forward_topk: 64
+    beam_size: 64
+    batch_texts: 128
+  continuous_upper_bound:
+    restarts: 10
+    iterations: 100
+    nearest_discrete_tokens: 512
+    learning_rate: 0.05
+  backward_equivalent_gamma_ceiling: 8.0
+
+blackbox:
+  physically_isolated: true
+  oracle_access: final_embedding_only
+  diagnostic_only: true
+  algorithm: categorical_cem
+  population: 512
+  generations: 50
+  restarts: 20
+  batch_texts: 128
+  elite_fraction: 0.10
+  smoothing: 0.25
+  uniform_floor: 0.05
+  whitebox_seeded: false
+
+semantic_controls:
+  discovery_top_candidates: 100
+  confirmation_frozen_only: true
+  controls_per_candidate: 50
+  matching_fields: [frequency, idf, pos, semantic_category, character_length, casing, input_embedding_norm, naturalness, leading_space_pattern, unicode_language_class]
+  tests: [additive_semantic_model, wrapper_counterfactual, whitebox_mechanism]
+  minimum_coverage_over_control_q95: 0.10
+  minimum_wrapper_coverage: 0.80
+
+radial_analysis:
+  multipliers: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.05, 1.1, 1.25, 1.5, 2.0]
+  groups: [triggered, paired_clean, independent_benign]
+  bootstrap_replicates: 1000
+
+budget:
+  unit: v5_submitted_text_equivalent
+  v5_baseline_submitted_texts: 83605976
+  planned_ratio: 12.5
+  warning_ratio: 13.5
+  hard_ratio: 14.7
+  forbidden_ratio: 15.0
+  planned_limit: 1045074700
+  warning_limit: 1128680676
+  hard_limit: 1229007847
+  forbidden_limit: 1254089640
+  registered_estimate: 1008791696
+  reserve_before_model_call: true
+  stop_new_calls_at_hard_limit: true
+  immutable_reduction_priority: [blackbox, whitebox, auxiliary_encoders]
+  non_reducible: [role_independence, full_5000, confirm, sealing, semantic_controls]
+  allowances:
+    isolated_blackbox_whitebox: 70000000
+    semantic_controls_wrappers: 52200000
+    final_confirm_random_positions: 5450000
+    iid_ood_confirmation: 5520000
+    retrieval: 1500000
+    auxiliary_encoders: 30000000
+    clean_base_and_audit: 1500000
+    hardware_replay_and_audit_reserve: 50000000
+
+dry_run:
+  legal_tokens: 64
+  stage_keep: [32, 16, 8]
+  fit: 64
+  radius: 32
+  score: 32
+  benign: 128
+  full_candidates: 8
+  semantic_candidates: 2
+  confirm_candidates: 1
+  random_replicates: 2
+  whitebox_seeds: 1
+  whitebox_restarts: 1
+  blackbox_restarts: 1
+  blackbox_generations: 2
+
+publication:
+  release_prefix: mode3-v6-2
+  shard_bytes: 1900000000
+  hash_algorithm: sha256
+  require_remote_local_release_identity: true
+  require_fresh_clone_restore: true
