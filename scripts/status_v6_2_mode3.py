@@ -27,7 +27,7 @@ def count_complete(root: Path, pattern: str) -> int:
 def matching_processes() -> list[dict[str, Any]]:
     values = []
     for entry in Path("/proc").iterdir() if Path("/proc").is_dir() else []:
-        if not entry.name.isdigit():
+        if not entry.name.isdigit() or int(entry.name) == os.getpid():
             continue
         try:
             cmd = (entry / "cmdline").read_bytes().replace(b"\0", b" ").decode(errors="replace").strip()
@@ -88,7 +88,7 @@ def main() -> int:
         "budget": load(root / "budget" / "observed.json"),
         "stages": {name: path.is_file() for name, path in stage_paths.items()},
         "shards": {
-            "s0": count_complete(root, "s0/shard_*/COMPLETE.json"),
+            "s0": count_complete(root, "funnel/s0/shard_*/COMPLETE.json"),
             "s1": count_complete(root, "funnel/s1/shard_*/COMPLETE.json"),
             "s2": count_complete(root, "funnel/s2/shard_*/COMPLETE.json"),
             "full": count_complete(root, "funnel/full/shard_*/COMPLETE.json"),
