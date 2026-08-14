@@ -173,21 +173,23 @@ def discovery_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     count = int(config["semantic_controls"]["controls_per_candidate"])
     maximum_length = int(config["model"]["maximum_sequence_length"])
     for token_id in candidates:
-        available = [model for (current, _), model in models.items() if current == token_id]
+        available = {
+            int(cap_count): model
+            for (current, cap_count), model in models.items()
+            if current == token_id
+        }
         if not available:
             raise ProtocolViolation(f"full model missing for semantic candidate {token_id}")
-        model = min(available, key=lambda item: (item.cap_count, float(np.max(item.radii))))
         candidate_views, _, _ = encode_audited_positions(
             oracle, records, token_id=token_id, token_text=legal[token_id].token_text,
             role="semantic_control", manifest=manifest, random_replicates=1,
             maximum_length=maximum_length, metadata={"semantic_candidate": token_id},
         )
         candidate_vectors = primary_position_vectors(candidate_views)
-        candidate_coverage = _coverage(model, candidate_vectors)
         pool = matched_controls(by_meta[token_id], metadata, max(count * 3, count))
-        control_rows = []
+        control_vectors = []
         for control in pool:
-            if len(control_rows) >= count: break
+            if len(control_vectors) >= count: break
             try:
                 views, _, _ = encode_audited_positions(
                     oracle, records, token_id=control.token_id, token_text=legal[control.token_id].token_text,
@@ -197,10 +199,10 @@ def discovery_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None
                 )
             except CandidateRejectedTokenRealization:
                 continue
-            control_rows.append({"token_id": control.token_id, "coverage": _coverage(model, primary_position_vectors(views))})
-        if len(control_rows) != count:
-            raise ProtocolViolation(f"candidate {token_id} has only {len(control_rows)}/{count} realizable controls")
-        wrappers = {}; wrapper_values = wrapper_counterfactuals(legal[token_id].token_text)
+            control_vectors.append((control.token_id, primary_position_vectors(views)))
+        if len(control_vectors) != count:
+            raise ProtocolViolation(f"candidate {token_id} has only {len(control_vectors)}/{count} realizable controls")
+        wrapper_vectors = {}; wrapper_values = wrapper_counterfactuals(legal[token_id].token_text)
         wrapper_reserve = max(len(oracle.tokenizer.encode(value, add_special_tokens=False)) for value in wrapper_values.values())
         for name, wrapper in wrapper_values.items():
             values = []
@@ -209,22 +211,36 @@ def discovery_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> None
                     oracle.tokenizer, records, wrapper, position, "semantic_control",
                     maximum_length, int(config["positions"]["random_seed"]), wrapper_reserve,
                 )
-                values.append(model.contains(oracle.encode(texts, metadata={"semantic_wrapper": name, "position": position})))
-            wrappers[name] = float(np.mean([np.mean(value) for value in values]))
-        q95 = float(np.quantile([row["coverage"] for row in control_rows], 0.95))
+                values.append(oracle.encode(texts, metadata={"semantic_wrapper": name, "position": position}))
+            wrapper_vectors[name] = values
         triggered = np.concatenate(list(candidate_vectors.values()))
         token_direction = oracle.encode([legal[token_id].token_text], metadata={"semantic_token_direction": token_id})[0]
         additive = additive_semantic_residual(np.concatenate([np.asarray(clean)] * 3), triggered, token_direction)
-        margin = candidate_coverage - q95
-        rows.append({
-            "token_id": token_id, "token_text": legal[token_id].token_text,
-            "cap_count": model.cap_count, "candidate_coverage": candidate_coverage,
-            "control_coverage_q95": q95, "semantic_anomaly": margin,
-            "matched_controls": control_rows, "wrapper_coverages": wrappers,
-            "additive_semantic_model": additive,
-            "anomaly_supported": margin >= float(config["semantic_controls"]["minimum_coverage_over_control_q95"])
-                and min(wrappers.values()) >= float(config["semantic_controls"]["minimum_wrapper_coverage"]),
-        })
+        # Encoding is model-independent. Reusing these frozen vectors across
+        # cap complexities preserves the registered query budget while making
+        # every semantic result specific to the exact model that may freeze.
+        for cap_count, model in sorted(available.items()):
+            candidate_coverage = _coverage(model, candidate_vectors)
+            control_rows = [
+                {"token_id": control_id, "coverage": _coverage(model, values)}
+                for control_id, values in control_vectors
+            ]
+            wrappers = {
+                name: float(np.mean([np.mean(model.contains(values)) for values in position_values]))
+                for name, position_values in wrapper_vectors.items()
+            }
+            q95 = float(np.quantile([row["coverage"] for row in control_rows], 0.95))
+            margin = candidate_coverage - q95
+            rows.append({
+                "token_id": token_id, "token_text": legal[token_id].token_text,
+                "cap_count": cap_count, "candidate_coverage": candidate_coverage,
+                "control_coverage_q95": q95, "semantic_anomaly": margin,
+                "matched_controls": control_rows, "wrapper_coverages": wrappers,
+                "additive_semantic_model": additive,
+                "model_specific_semantic_evidence": True,
+                "anomaly_supported": margin >= float(config["semantic_controls"]["minimum_coverage_over_control_q95"])
+                    and min(wrappers.values()) >= float(config["semantic_controls"]["minimum_wrapper_coverage"]),
+            })
     target = output / "semantic" / f"shard_{int(args.shard):02d}"
     write_jsonl(target / "results.jsonl", rows)
     write_json(target / "COMPLETE.json", {"candidates": len(candidates), "results": len(rows), "raw_forward_texts": oracle.raw_forward_texts})
@@ -236,11 +252,13 @@ def merge_discovery(args: argparse.Namespace, config: Mapping[str, Any]) -> None
         target = output / "semantic" / f"shard_{shard:02d}"
         rows.extend(read_jsonl(target / "results.jsonl"))
     expected = set(map(int, json.loads((output / "funnel" / "stability" / "selected.json").read_text(encoding="utf-8"))["token_ids"]))
-    if {int(row["token_id"]) for row in rows} != expected or len(rows) != len(expected):
+    keys = [(int(row["token_id"]), int(row["cap_count"])) for row in rows]
+    if {token for token, _ in keys} != expected or len(keys) != len(set(keys)):
         raise ProtocolViolation("semantic discovery did not cover the frozen top-100 candidate set")
     write_jsonl(output / "semantic" / "discovery_results.jsonl", rows)
     write_json(output / "semantic" / "COMPLETE.json", {
-        "schema_version": "mode3-v6-2-semantic-discovery-v1", "candidates": len(rows),
+        "schema_version": "mode3-v6-2-semantic-discovery-v2",
+        "candidate_tokens": len(expected), "candidate_models": len(rows),
         "anomaly_supported": sum(bool(row["anomaly_supported"]) for row in rows),
         "selection_feedback_allowed": True, "confirmation_role_encoded": False,
     })

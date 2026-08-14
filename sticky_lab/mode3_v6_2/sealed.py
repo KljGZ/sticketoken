@@ -26,7 +26,7 @@ from .freeze import FreezeArtifact, load_freeze
 from .oracle import V62FinalOracle, load_embedding_cache, records_sha256
 from .roles import records_sha256 as role_records_sha256
 from .semantic import SemanticMetadata, matched_controls, wrapper_insertions
-from .statistics import p2_position_certificates, simultaneous_source_occupancy
+from .statistics import migration_certificates, p2_position_certificates, simultaneous_source_occupancy
 
 
 POSITIONS = ("prefix", "suffix", "random")
@@ -134,24 +134,25 @@ def _confirm_position_protocol(
             {source: artifact.cap.contains(values) for source, values in _sources(benign_records, benign).items()},
             familywise_alpha=float(config["certification"]["familywise_alpha"]) / 3.0,
         )
-        migration[position] = {
-            source: {
-                "outside_to_inside": float(np.mean((~artifact.cap.contains(clean_sources[source])) & membership[position][source])),
-                "conditional_outside_origin": float(np.mean((~artifact.cap.contains(clean_sources[source]))[membership[position][source]])) if np.any(membership[position][source]) else 0.0,
-            }
-            for source in tr_sources
-        }
+        migration[position] = migration_certificates(
+            {(source, position): artifact.cap.contains(values) for source, values in clean_sources.items()},
+            {(source, position): membership[position][source] for source in tr_sources},
+            familywise_alpha=float(config["certification"]["familywise_alpha"]) / 3.0,
+        )
     certificates = p2_position_certificates(membership, familywise_alpha=float(config["certification"]["familywise_alpha"]))
     threshold = float(config["certification"]["p3_balanced_coverage_lcb"])
     gates = {
         position: certificates[position]["balanced_lcb"] > threshold
+            and certificates[position]["worst_source_lcb"] > float(config["certification"]["worst_source_coverage_lcb"])
             and occupancy[position]["worst_source_ucb"] < float(config["certification"]["independent_benign_occupancy_ucb"])
+            and migration[position]["outside_to_inside"]["balanced_lower"] >= float(config["certification"]["outside_to_inside_lcb"])
+            and migration[position]["conditional_outside_origin"]["balanced_lower"] >= float(config["certification"]["conditional_outside_origin_lcb"])
         for position in POSITIONS
     }
     result = {
         "schema_version": "mode3-v6-2-position-confirmation-v1", "protocol": protocol,
         "phase": phase, "token_ids": token_ids, "certificates": certificates,
-        "occupancy": occupancy, "migration_estimates": migration, "position_gates": gates,
+        "occupancy": occupancy, "migration_certificates": migration, "position_gates": gates,
         "simultaneous_all_positions": all(gates.values()), "refit_performed": False,
         "raw_forward_texts": oracle.raw_forward_texts,
     }

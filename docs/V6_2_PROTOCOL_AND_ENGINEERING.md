@@ -62,13 +62,13 @@ The P3 primary gates are:
 - outside-to-inside LCB `>= 0.85`;
 - conditional original-outside LCB `>= 0.95`.
 
-Secondary uniform P3 evidence additionally requires the minimum source-by-position LCB `> 0.90`. P2 applies simultaneous correction across positions and within-position sources.
+Secondary uniform P3 evidence additionally requires the minimum source-by-position LCB `> 0.90`. P1 and P2 apply simultaneous correction across positions and within-position sources; their position gates include balanced coverage, worst-source coverage, independent benign occupancy, outside-to-inside migration, and conditional outside-origin migration.
 
 Evidence is reported in levels: A radial shift; B ST-FCA-Core; C Moat with benign occupancy UCB at `1.1 rho < 0.05`; D Basin with `lambda* >= 1.5` and occupancy AUC on `[1,1.5] <= 0.03`; E Central Collapse with median triggered normalized depth `<= 0.80`.
 
 ## Semantic controls
 
-The top 100 candidates are matched to 50 controls on frequency, IDF, POS, semantic category, character length, casing, input-embedding norm, naturalness, leading-space pattern, and Unicode/language class. The discovery role may influence selection. After freezing, the same declared procedure is repeated on the independent `semantic_confirm` role and cannot modify a cap. Required anomaly evidence is candidate coverage minus the control q95 at least 0.10 and minimum wrapper coverage at least 0.80.
+The top 100 token candidates are matched to 50 controls on frequency, IDF, POS, semantic category, character length, casing, input-embedding norm, naturalness, leading-space pattern, and Unicode/language class. Encoded candidate, control, and wrapper vectors are reused without extra model calls to compute distinct evidence for every exact `(token_id, cap_count)` model; evidence from one cap complexity can never rank or freeze another. The discovery role may influence selection. After freezing, the same declared procedure is repeated on the independent `semantic_confirm` role and cannot modify a cap. Required anomaly evidence is candidate coverage minus the control q95 at least 0.10 and minimum wrapper coverage at least 0.80.
 
 ## Budget and stopping
 

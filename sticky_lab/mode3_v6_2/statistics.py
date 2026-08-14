@@ -194,6 +194,7 @@ def p2_position_certificates(
         result[position] = {
             "source_bounds": {key: value.to_dict() for key, value in bounds.items()},
             "balanced_lcb": float(np.mean([value.lower for value in bounds.values()])),
+            "worst_source_lcb": min(value.lower for value in bounds.values()),
             "familywise_position_alpha": position_alpha,
         }
     result["simultaneous_all_positions"] = True

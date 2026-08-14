@@ -138,8 +138,13 @@ def merge_and_freeze(args: argparse.Namespace, config: Mapping[str, Any]) -> Non
     expected = set(map(int, json.loads((output / "funnel" / "stability" / "selected.json").read_text(encoding="utf-8"))["token_ids"]))
     model_map = {(int(row["token_id"]), str(row["position"])): model_from_dict(row["model"]) for row in position_models}
     metric_map = {(int(row["token_id"]), str(row["position"])): row for row in position_rows}
-    semantic = {int(row["token_id"]): row for row in read_jsonl(output / "semantic" / "discovery_results.jsonl")}
-    if set(semantic) != expected: raise ProtocolViolation("semantic/top-100 candidate binding mismatch")
+    semantic_rows = read_jsonl(output / "semantic" / "discovery_results.jsonl")
+    semantic = {
+        (int(row["token_id"]), int(row["cap_count"])): row
+        for row in semantic_rows
+    }
+    if {token for token, _ in semantic} != expected or len(semantic) != len(semantic_rows):
+        raise ProtocolViolation("semantic/top-100 candidate-model binding mismatch")
     p1 = {}
     for position in POSITIONS:
         candidates = [row for row in position_rows if row["position"] == position]
@@ -161,10 +166,10 @@ def merge_and_freeze(args: argparse.Namespace, config: Mapping[str, Any]) -> Non
     full_models = {(int(row["token_id"]), int(row["cap_count"])): model_from_dict(row["model"]) for row in read_jsonl(output / "funnel" / "stability" / "all_models.jsonl")}
     full_metrics = {(int(row["token_id"]), int(row["cap_count"])): row for row in read_jsonl(output / "funnel" / "stability" / "all_metrics.jsonl")}
     def p3_rank(key: tuple[int, int]) -> tuple[Any, ...]:
-        row = full_metrics[key]; sem = semantic[key[0]]
+        row = full_metrics[key]; sem = semantic[key]
         return (-float(row["coverage_margin"]), -float(row["worst_position_coverage"]), -float(sem["semantic_anomaly"]), float(row["benign_occupancy"]), float(row["radius_degrees"]), key)
-    one = sorted([key for key in full_models if key[0] in expected and key[1] == 1], key=p3_rank)
-    multi = sorted([key for key in full_models if key[0] in expected and 2 <= key[1] <= 4], key=lambda key: (key[1],) + p3_rank(key))
+    one = sorted([key for key in full_models if key in semantic and key[1] == 1], key=p3_rank)
+    multi = sorted([key for key in full_models if key in semantic and 2 <= key[1] <= 4], key=lambda key: (key[1],) + p3_rank(key))
     if not one: raise ProtocolViolation("P3 primary single-cap archive is empty")
     chosen = [one[0]]; used = {one[0][0]}
     alternating = [*multi, *one[1:]]
@@ -183,7 +188,7 @@ def merge_and_freeze(args: argparse.Namespace, config: Mapping[str, Any]) -> Non
         row = metric_map[(int(p2["token_id"]), position)]; model = model_map[(int(p2["token_id"]), position)]
         index["P2"][position] = _freeze_one(output, config, model, output / "freezes" / "P2" / f"{position}.json", {**row, "simultaneous_selection": p2}, ("full_fit", "full_radius"))
     for rank, key in enumerate(chosen):
-        row = {**full_metrics[key], "semantic": semantic[key[0]], "freeze_rank": rank}
+        row = {**full_metrics[key], "semantic": semantic[key], "freeze_rank": rank}
         entry = _freeze_one(output, config, full_models[key], output / "freezes" / "P3" / f"rank_{rank:02d}_token_{key[0]}_m{key[1]}.json", row, ("full_fit", "full_radius"))
         entry.update({"rank": rank, "cap_count": key[1], "primary": rank == 0}); index["P3"].append(entry)
     index["freeze_count"] = len(index["P1"]) + len(index["P2"]) + len(index["P3"])

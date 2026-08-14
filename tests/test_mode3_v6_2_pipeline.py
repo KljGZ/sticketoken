@@ -44,3 +44,4 @@ def test_p2_uses_simultaneous_position_correction() -> None:
     result = p2_position_certificates(values, familywise_alpha=.05)
     assert result["simultaneous_all_positions"] and result["correction"] == "bonferroni"
     assert all(result[position]["familywise_position_alpha"] == pytest.approx(.05 / 3) for position in values)
+    assert all(result[position]["worst_source_lcb"] <= result[position]["balanced_lcb"] for position in values)
