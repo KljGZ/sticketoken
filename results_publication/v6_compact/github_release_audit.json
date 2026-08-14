@@ -1,0 +1,67 @@
+{
+  "assets": [
+    {
+      "bytes": 971275701,
+      "github_asset_id": 514188226,
+      "github_state": "uploaded",
+      "name": "mode3-v6-compact-full-results.part-001-of-003.tar.gz",
+      "sha256": "e94f998cca3eaae8be42b723dd622f4017ba0b46d86e132211116f89ea8a119f"
+    },
+    {
+      "bytes": 1470228588,
+      "github_asset_id": 514190420,
+      "github_state": "uploaded",
+      "name": "mode3-v6-compact-full-results.part-002-of-003.tar.gz",
+      "sha256": "493a316b6c64de213ffeb679fe704d668ffc9a3f06c1af371a541c342562792f"
+    },
+    {
+      "bytes": 489889778,
+      "github_asset_id": 514194420,
+      "github_state": "uploaded",
+      "name": "mode3-v6-compact-full-results.part-003-of-003.tar.gz",
+      "sha256": "6c676abf166143e40a83a73cd936caf13f23fd39c311ef13d522d12e36134f74"
+    },
+    {
+      "bytes": 1459,
+      "github_asset_id": 514195365,
+      "github_state": "uploaded",
+      "name": "release_asset_index.json",
+      "sha256": "6bc3c29dc540aa7875d8f2a00b5b7bb44600153c2c228b3764d0e90badc6cf18"
+    },
+    {
+      "bytes": 114173,
+      "github_asset_id": 514195390,
+      "github_state": "uploaded",
+      "name": "complete_file_manifest.csv",
+      "sha256": "c327e3c9ea1ab94fc56abaab0137d617101d37e2183feabaa6de479202434a70"
+    },
+    {
+      "bytes": 355498,
+      "github_asset_id": 514195408,
+      "github_state": "uploaded",
+      "name": "remote_inventory.json",
+      "sha256": "d69856c33d2859070b2ed7b23c6dddb9e59b5b4c8299dea8c231de8c2bfd1696"
+    },
+    {
+      "bytes": 242,
+      "github_asset_id": 514195453,
+      "github_state": "uploaded",
+      "name": "PACKAGE_COMPLETE.json",
+      "sha256": "0ce57b4a65bc9329d514edf84b67993c6f31825f2c0703b5743b37147d37349e"
+    },
+    {
+      "bytes": 5440,
+      "github_asset_id": 514195470,
+      "github_state": "uploaded",
+      "name": "summary.json",
+      "sha256": "115cd7e48ef27f87660d1bec9d3b98b58579b005e35fcac6748b68b9a3bfccfd"
+    }
+  ],
+  "html_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v6-compact-full-results",
+  "published_at": "2026-08-14T09:06:05Z",
+  "release_id": 370459563,
+  "repo": "KljGZ/sticketoken",
+  "schema_version": "mode3-v6-compact-github-release-audit-v1",
+  "tag": "mode3-v6-compact-full-results",
+  "target": "245fa08aa10621c357e8f3cfc2738fefdb7a0aff"
+}

@@ -19,3 +19,10 @@ Raw-result identity:
 The Git branch includes the authoritative manifest, release index, readable
 report, plots, and `scripts/recover_v6_compact_results.py`. Recovery is valid
 only when all per-file hashes and the content root match.
+
+The post-publication fresh-clone audit completed successfully from commit
+`245fa08aa10621c357e8f3cfc2738fefdb7a0aff`. It downloaded all three release
+shards, restored 764 files totaling 3,446,888,256 bytes, reproduced the registered
+content root, and found zero missing, extra, size-mismatched, or hash-mismatched
+files. The release includes `fresh_clone_release_audit.json` as independent
+machine-readable evidence.

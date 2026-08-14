@@ -19,6 +19,8 @@ Key files:
 The full raw result identity is 764 files, 3,446,888,256 bytes, and content root
 `9dcac6ead43975c71ebe7db14ff3539e8bc0c1766ad0ae4c8b950fd6114b400b`.
 
+Release: [mode3-v6-compact-full-results](https://github.com/KljGZ/sticketoken/releases/tag/mode3-v6-compact-full-results)
+
 After cloning the publication branch, restore and verify the release with:
 
 ```powershell
@@ -30,4 +32,7 @@ python scripts\recover_v6_compact_results.py `
 ```
 
 The recovery is accepted only if file count, total bytes, every file SHA-256,
-and the deterministic content root all match.
+and the deterministic content root all match. The completed independent recovery
+is recorded in `fresh_clone_release_audit.json`: 764 files and 3,446,888,256
+bytes were restored with zero missing, extra, size-mismatched, or hash-mismatched
+files, and `triple_identity_ready` is true.

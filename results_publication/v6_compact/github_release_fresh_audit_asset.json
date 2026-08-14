@@ -1,0 +1,18 @@
+{
+  "assets": [
+    {
+      "bytes": 1228,
+      "github_asset_id": 514209463,
+      "github_state": "uploaded",
+      "name": "fresh_clone_release_audit.json",
+      "sha256": "e69dee63f69829f7b6a730c747175b82697f1b7a87d187c9415d7fd919dd8c74"
+    }
+  ],
+  "html_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v6-compact-full-results",
+  "published_at": "2026-08-14T09:06:05Z",
+  "release_id": 370459563,
+  "repo": "KljGZ/sticketoken",
+  "schema_version": "mode3-v6-compact-github-release-audit-v1",
+  "tag": "mode3-v6-compact-full-results",
+  "target": "245fa08aa10621c357e8f3cfc2738fefdb7a0aff"
+}

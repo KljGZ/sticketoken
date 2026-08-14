@@ -148,7 +148,14 @@ including the orchestrator's embedded pre-final inventory snapshot:
 The readable tables, figures, manifest, inventory, package index, budget records,
 run contract, and resource-error evidence are under
 `results_publication/v6_compact/`. The complete raw tree is split into
-content-addressed GitHub Release assets; `scripts/recover_v6_compact_results.py`
-performs safe extraction and verifies every file's size and SHA-256 plus the
-content root. The publication is not considered complete until that script has
-also succeeded from a fresh clone.
+content-addressed assets in the
+[V6 Compact full-results GitHub Release](https://github.com/KljGZ/sticketoken/releases/tag/mode3-v6-compact-full-results).
+`scripts/recover_v6_compact_results.py` performs safe extraction and verifies
+every file's size and SHA-256 plus the content root.
+
+A fresh clone of branch `codex/mode3-v6-compact` at commit
+`245fa08aa10621c357e8f3cfc2738fefdb7a0aff` downloaded all three assets from the
+published release, restored 764 files totaling 3,446,888,256 bytes, and reproduced
+the authoritative content root exactly. It reported no missing, extra, size-
+mismatched, or hash-mismatched files and set `triple_identity_ready` to true. The
+machine-readable evidence is `results_publication/v6_compact/fresh_clone_release_audit.json`.

@@ -148,7 +148,10 @@ def plot_bundle(
 
     plt.rcParams.update({"figure.dpi": 150, "savefig.dpi": 180, "font.size": 10})
 
-    labels = [label for label, _ in funnel]
+    labels = [
+        {"S0": "Stage S0", "S1": "Stage S1", "S2": "Stage S2", "S3/validation": "Stage S3 / validation"}.get(label, label)
+        for label, _ in funnel
+    ]
     values = [value for _, value in funnel]
     fig, axis = plt.subplots(figsize=(8.2, 4.5))
     bars = axis.bar(labels, values, color=["#355C7D", "#4F86A6", "#6CA6C1", "#84B8CC", "#F6AE2D", "#C84630"])

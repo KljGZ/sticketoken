@@ -1,0 +1,12 @@
+{
+  "audit_host": "jkl@10.249.47.6:8000",
+  "audit_root": "/mnt/data/jkl/StickyToken-v6-compact-fresh-clone-audit/audit_20260814T0907Z_245fa08",
+  "branch": "codex/mode3-v6-compact",
+  "clone_head": "245fa08aa10621c357e8f3cfc2738fefdb7a0aff",
+  "clone_source": "https://github.com/KljGZ/sticketoken.git",
+  "fresh_clone_audit_sha256": "e69dee63f69829f7b6a730c747175b82697f1b7a87d187c9415d7fd919dd8c74",
+  "release_url": "https://github.com/KljGZ/sticketoken/releases/tag/mode3-v6-compact-full-results",
+  "schema_version": "mode3-v6-compact-fresh-clone-context-v1",
+  "systemd_unit": "stickytoken-v6-compact-freshclone-245fa08.service",
+  "systemd_result": "success"
+}
