@@ -87,7 +87,7 @@ def test_nltk_runtime_is_bound_to_registered_archives(tmp_path: Path) -> None:
 
         @staticmethod
         def find(resource: str) -> str:
-            name = resource.split("/", 1)[1]
+            name = "wordnet" if "wordnet.zip" in resource else "omw-1.4"
             return f"{archives[name]}/{name}"
 
     config = {

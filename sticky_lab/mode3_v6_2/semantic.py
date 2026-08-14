@@ -82,10 +82,16 @@ def _bind_registered_nltk_resources(nltk_runtime: Any, config: Mapping[str, Any]
         for row in resources["files"]
     }
     required = {
-        "wordnet": (root / "corpora" / "wordnet.zip").resolve(),
-        "omw-1.4": (root / "corpora" / "omw-1.4.zip").resolve(),
+        "wordnet": (
+            (root / "corpora" / "wordnet.zip").resolve(),
+            "corpora/wordnet.zip/wordnet/",
+        ),
+        "omw-1.4": (
+            (root / "corpora" / "omw-1.4.zip").resolve(),
+            "corpora/omw-1.4.zip/omw-1.4/",
+        ),
     }
-    for name, archive in required.items():
+    for name, (archive, _) in required.items():
         expected = registered.get(archive)
         if expected is None:
             raise ProtocolViolation(f"runtime NLTK archive is not registered: {archive}")
@@ -99,9 +105,9 @@ def _bind_registered_nltk_resources(nltk_runtime: Any, config: Mapping[str, Any]
         value for value in nltk_runtime.data.path if str(Path(value).resolve()) != root_text
     ]
     pointers: dict[str, str] = {}
-    for name, archive in required.items():
+    for name, (archive, locator) in required.items():
         try:
-            pointer = nltk_runtime.data.find(f"corpora/{name}")
+            pointer = nltk_runtime.data.find(locator)
         except LookupError as error:
             raise ProtocolViolation(f"registered NLTK resource cannot be resolved: {name}") from error
         pointer_text = str(pointer).replace("\\", "/")
