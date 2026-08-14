@@ -13,6 +13,21 @@ import time
 from typing import Any
 
 
+ALLOWED_EMPTY_ARTIFACT_NAMES = frozenset(
+    {
+        "all_rejections.jsonl",
+        "rejection_sample.jsonl",
+        "rejections.jsonl",
+    }
+)
+
+
+def allowed_empty_artifact(path: Path) -> bool:
+    """Return whether a zero-record JSONL artifact is valid by protocol."""
+
+    return path.name in ALLOWED_EMPTY_ARTIFACT_NAMES
+
+
 def load(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
@@ -79,6 +94,11 @@ def main() -> int:
         "final": root / "FINAL_STATUS.json",
     }
     files = [path for path in root.rglob("*") if path.is_file()] if root.is_dir() else []
+    zero_byte_files = [
+        path
+        for path in files
+        if path.stat().st_size == 0 and path.name not in {".orchestrator.lock", ".budget.lock"}
+    ]
     status = {
         "schema_version": "mode3-v6-2-status-v1",
         "captured_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -106,8 +126,13 @@ def main() -> int:
         ],
         "zero_byte_critical": [
             str(path.relative_to(root))
-            for path in files
-            if path.stat().st_size == 0 and path.name not in {".orchestrator.lock", ".budget.lock"}
+            for path in zero_byte_files
+            if not allowed_empty_artifact(path)
+        ],
+        "zero_byte_allowed": [
+            str(path.relative_to(root))
+            for path in zero_byte_files
+            if allowed_empty_artifact(path)
         ],
         "disk": {
             str(path): {"total": usage.total, "used": usage.used, "free": usage.free}

@@ -16,6 +16,7 @@ from sticky_lab.mode3_v6_2.errors import CacheCorruption, ProtocolViolation
 from sticky_lab.mode3_v6_2.oracle import load_embedding_cache, records_sha256, write_embedding_cache
 from sticky_lab.mode3_v6_2.semantic import _bind_registered_nltk_resources
 from sticky_lab.mode3_v6_2.statistics import p2_position_certificates
+from scripts.status_v6_2_mode3 import allowed_empty_artifact
 
 
 class _CanonicalizingTokenizer:
@@ -106,6 +107,14 @@ def test_nltk_runtime_is_bound_to_registered_archives(tmp_path: Path) -> None:
     archives["wordnet"].write_bytes(b"tampered")
     with pytest.raises(ProtocolViolation, match="hash mismatch"):
         _bind_registered_nltk_resources(runtime, config)
+
+
+def test_status_allows_empty_rejection_streams_only() -> None:
+    assert allowed_empty_artifact(Path("rejections.jsonl"))
+    assert allowed_empty_artifact(Path("all_rejections.jsonl"))
+    assert allowed_empty_artifact(Path("rejection_sample.jsonl"))
+    assert not allowed_empty_artifact(Path("COMPLETE.json"))
+    assert not allowed_empty_artifact(Path("metrics.jsonl"))
 
 
 def test_embedding_cache_is_bound_to_role_and_records(tmp_path: Path) -> None:
