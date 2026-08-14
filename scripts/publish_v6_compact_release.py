@@ -84,7 +84,15 @@ def upload_asset(repo: str, release_id: int, path: Path, token: str) -> dict[str
     query = urllib.parse.urlencode({"name": path.name})
     target = f"/repos/{repo}/releases/{release_id}/assets?{query}"
     size = path.stat().st_size
-    connection = http.client.HTTPSConnection("uploads.github.com", timeout=600)
+    proxy_url = urllib.request.getproxies().get("https")
+    if proxy_url:
+        proxy = urllib.parse.urlparse(proxy_url)
+        if not proxy.hostname:
+            raise RuntimeError(f"invalid HTTPS proxy URL: {proxy_url}")
+        connection = http.client.HTTPSConnection(proxy.hostname, proxy.port or 80, timeout=600)
+        connection.set_tunnel("uploads.github.com", 443)
+    else:
+        connection = http.client.HTTPSConnection("uploads.github.com", timeout=600)
     connection.putrequest("POST", target)
     connection.putheader("Accept", "application/vnd.github+json")
     connection.putheader("Authorization", f"Bearer {token}")
