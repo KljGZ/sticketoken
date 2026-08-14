@@ -1,0 +1,35 @@
+{
+  "archives": [
+    {
+      "bytes": 971275701,
+      "name": "mode3-v6-compact-full-results.part-001-of-003.tar.gz",
+      "sha256": "e94f998cca3eaae8be42b723dd622f4017ba0b46d86e132211116f89ea8a119f"
+    },
+    {
+      "bytes": 1470228588,
+      "name": "mode3-v6-compact-full-results.part-002-of-003.tar.gz",
+      "sha256": "493a316b6c64de213ffeb679fe704d668ffc9a3f06c1af371a541c342562792f"
+    },
+    {
+      "bytes": 489889778,
+      "name": "mode3-v6-compact-full-results.part-003-of-003.tar.gz",
+      "sha256": "6c676abf166143e40a83a73cd936caf13f23fd39c311ef13d522d12e36134f74"
+    }
+  ],
+  "byte_mismatches": [],
+  "extra_files": [],
+  "file_count": 764,
+  "hash_mismatches": [],
+  "missing_files": [],
+  "recovery_complete": true,
+  "registered_content_root_sha256": "9dcac6ead43975c71ebe7db14ff3539e8bc0c1766ad0ae4c8b950fd6114b400b",
+  "registered_file_count": 764,
+  "registered_total_bytes": 3446888256,
+  "release_id": null,
+  "repo": "KljGZ/sticketoken",
+  "root_sha256": "9dcac6ead43975c71ebe7db14ff3539e8bc0c1766ad0ae4c8b950fd6114b400b",
+  "schema_version": "mode3-v6-compact-fresh-clone-audit-v1",
+  "tag": "mode3-v6-compact-full-results",
+  "total_bytes": 3446888256,
+  "triple_identity_ready": true
+}

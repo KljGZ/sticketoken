@@ -1,0 +1,128 @@
+{
+  "single_cap": {
+    "bounds": {
+      "benign_occupancy_ucb": 0.007081087183972981,
+      "conditional_outside_origin_lcb": 0.9927824159846868,
+      "coverage_lcb": 0.8963027376534214,
+      "outside_to_inside_lcb": 0.8907151574620442
+    },
+    "cap": {
+      "assignment_rule": "minimum_normalized_angular_distance",
+      "calibration_role": "cap_calibration",
+      "cap_count": 1,
+      "coverage_level": 0.9,
+      "fit_role": "cap_fit",
+      "outlier_budget": 0.1,
+      "protocol": "P3_shared",
+      "radii": [
+        0.5152666460477547
+      ],
+      "radius_chord": [
+        0.5095854022834863
+      ],
+      "radius_degrees": [
+        29.522604142397586
+      ],
+      "token_id": 23713,
+      "token_text": "racist"
+    },
+    "certified": false,
+    "counts": {
+      "independent_benign": 50000,
+      "independent_benign_inside": 323,
+      "paired_clean": 18000,
+      "paired_clean_inside": 99,
+      "triggered": 18000,
+      "triggered_inside": 16201
+    },
+    "depth": {
+      "benign_quantiles": {
+        "0.1": 1.0678218548348166,
+        "0.25": 1.1034759985295968,
+        "0.5": 1.1462057541548218,
+        "0.75": 1.1891304570888832,
+        "0.9": 1.2297005514767292
+      },
+      "cliffs_delta_triggered_vs_benign": -0.9763043288888889,
+      "ks_pvalue": 0.0,
+      "ks_statistic": 0.9132844444444445,
+      "median_depth_gap": 0.24042671677052263,
+      "triggered_quantiles": {
+        "0.1": 0.8393087936857371,
+        "0.25": 0.8684084465893657,
+        "0.5": 0.9057790373842992,
+        "0.75": 0.9491704874383915,
+        "0.9": 0.9999695480650044
+      },
+      "wasserstein": 0.2331115213141927
+    },
+    "gates": {
+      "conditional_outside_origin": true,
+      "coverage": false,
+      "low_core_occupancy": true,
+      "outside_to_inside": true
+    },
+    "migration": {
+      "inside_to_inside": 0.0055,
+      "inside_to_outside": 0.0,
+      "outside_to_inside": 0.8945555555555555,
+      "outside_to_outside": 0.09994444444444445,
+      "total": 18000
+    },
+    "token_id": 23713,
+    "token_text": "racist"
+  },
+  "two_cap_rescue": {
+    "bounds": {
+      "benign_occupancy_ucb": 0.015307531282164602,
+      "conditional_outside_origin_lcb": 0.9818858304851537,
+      "coverage_lcb": 0.9017807694450194,
+      "outside_to_inside_lcb": 0.8867098864783434
+    },
+    "cap": {
+      "assignment_rule": "minimum_normalized_angular_distance",
+      "calibration_role": "cap_calibration",
+      "cap_count": 2,
+      "coverage_level": 0.9,
+      "fit_role": "cap_fit",
+      "outlier_budget": 0.1,
+      "protocol": "P3_shared_multicap",
+      "radii": [
+        0.5176955710764347,
+        0.4862748248481157
+      ],
+      "radius_chord": [
+        0.5119337859603771,
+        0.48149787872579847
+      ],
+      "radius_degrees": [
+        29.661771295294642,
+        27.86149514726036
+      ],
+      "token_id": 23713,
+      "token_text": "racist"
+    },
+    "certified": false,
+    "counts": {
+      "independent_benign": 50000,
+      "independent_benign_inside": 720,
+      "paired_clean": 18000,
+      "paired_clean_inside": 267,
+      "triggered": 18000,
+      "triggered_inside": 16298
+    },
+    "gates": {
+      "conditional_outside_origin": true,
+      "coverage": true,
+      "low_core_occupancy": false,
+      "outside_to_inside": true
+    },
+    "migration": {
+      "inside_to_inside": 0.014833333333333334,
+      "inside_to_outside": 0.0,
+      "outside_to_inside": 0.8906111111111111,
+      "outside_to_outside": 0.09455555555555556,
+      "total": 18000
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "budget": {
+    "observed": {
+      "hard_limit_reached": false,
+      "new_model_calls_allowed": true,
+      "raw_backward_texts": 92232,
+      "raw_forward_texts": 175871576,
+      "reservations": 214319,
+      "schema_version": "mode3-v6-compact-budget-v1",
+      "submitted_text_equivalent": 176609432,
+      "updated_utc": "2026-08-14T08:01:21Z",
+      "warning_reached": false
+    },
+    "observed_fraction_of_planned_estimate": 0.677771610871619,
+    "planned": {
+      "breakdown": {
+        "blackbox_cem": 19660800,
+        "retrieval_allowance": 40000,
+        "s0_complete_vocabulary": 197222400,
+        "s1_progressive_eval": 18432000,
+        "s2_progressive_eval": 7372800,
+        "s3_progressive_eval": 4800000,
+        "sealed_triggered": 680000,
+        "semantic_controls_allowance": 783360,
+        "token_independent_base_embeddings": 300384,
+        "validation": 960000,
+        "whitebox_backward_equivalent": 2457600,
+        "whitebox_forward": 7864320
+      },
+      "legal_vocab_assumption": 32100,
+      "limits": {
+        "forbidden_limit": 418029880,
+        "hard_limit": 392948087,
+        "planned_limit": 300981514,
+        "warning_limit": 351145099
+      },
+      "planned_submitted_text_equivalent": 260573664,
+      "planned_v5_ratio": 3.116687065527469,
+      "schema_version": "mode3-v6-compact-budget-estimate-v1",
+      "within_planned_limit": true,
+      "within_warning_limit": true
+    }
+  },
+  "config_sha256": "31845bf2fc12ec8ae0b285d5c20e9833bb2529ab3bf9a896af0cacbeeb3e2597",
+  "data": {
+    "columns": [
+      "document_id",
+      "domain",
+      "language",
+      "license",
+      "source_id",
+      "text",
+      "text_type"
+    ],
+    "document_ids": 670000,
+    "domains": 5,
+    "exact_unique_texts": 670000,
+    "files": 5,
+    "formal_ready": true,
+    "gaps": [],
+    "near_duplicate_audit": {
+      "independent_post_allocation_verification": true,
+      "pairs": 0,
+      "threshold": 0.8
+    },
+    "normalized_unique_texts": 670000,
+    "rows": 670000,
+    "source_ids": 5
+  },
+  "endpoint": {
+    "gate_open": false,
+    "negative_endpoint": true,
+    "reason": "validation gate closed after one-cap and finalist-only two-cap rescue",
+    "sealed_followups_encoded": false
+  },
+  "funnel": {
+    "Certified": 0,
+    "Legal vocabulary": 21984,
+    "S0": 3000,
+    "S1": 600,
+    "S2": 200,
+    "S3/validation": 20
+  },
+  "interpretation_limit": "No candidate was certified under the registered confidence-bound gates. This is a protocol-, model-, data-, and budget-specific negative endpoint, not a proof that no such token can exist in every setting.",
+  "run_code_commit": "dc2d9b9e4250954c0b651eb7f207282f3ee57d20",
+  "schema_version": "mode3-v6-compact-readable-summary-v1",
+  "scope": "mode3_v6_compact_only",
+  "tracks": {
+    "blackbox": {
+      "candidate_count": 1000,
+      "generations": 25,
+      "population": 256,
+      "restarts": 8,
+      "whitebox_seeded": false
+    },
+    "whitebox": {
+      "backward_gamma": {
+        "accounting_gamma": 8.0,
+        "forward_backward_seconds": [
+          0.256113801850006,
+          0.3981532051693648,
+          0.276757778134197
+        ],
+        "forward_seconds": [
+          0.1565572910476476,
+          0.2040991480462253,
+          0.2833845179993659
+        ],
+        "measured_gamma": 1.3559967338595438,
+        "samples": 126
+      },
+      "candidate_count": 1785,
+      "continuous_restarts": 4,
+      "hotflip_restarts": 4,
+      "hotflip_seeds": 16,
+      "may_seed_blackbox": false
+    }
+  },
+  "validation": {
+    "best_registered_near_miss": {
+      "benign_occupancy_ucb": 0.007081087183972981,
+      "cap_count": 1,
+      "conditional_outside_origin_lcb": 0.9927824159846868,
+      "coverage_lcb": 0.8963027376534214,
+      "gate_conditional_outside_origin": true,
+      "gate_coverage": false,
+      "gate_low_core_occupancy": true,
+      "gate_outside_to_inside": true,
+      "gates_passed": 3,
+      "independent_benign_inside": 323,
+      "independent_benign_occupancy": 0.00646,
+      "independent_benign_total": 50000,
+      "outside_to_inside": 0.8945555555555555,
+      "outside_to_inside_lcb": 0.8907151574620442,
+      "p1_prefix_certified": false,
+      "p1_random_certified": false,
+      "p1_suffix_certified": false,
+      "p2_certified": false,
+      "p3_certified": false,
+      "paired_clean_inside": 99,
+      "paired_clean_total": 18000,
+      "radius_degrees": "29.5226041424",
+      "single_cap_certified": false,
+      "token_id": 23713,
+      "token_text": "racist",
+      "triggered_coverage": 0.9000555555555556,
+      "triggered_inside": 16201,
+      "triggered_total": 18000
+    },
+    "best_two_cap_rescue": {
+      "benign_occupancy_ucb": 0.015307531282164602,
+      "cap_count": 2,
+      "certified": false,
+      "conditional_outside_origin_lcb": 0.9818858304851537,
+      "coverage_lcb": 0.9017807694450194,
+      "gates_passed": 3,
+      "independent_benign_inside": 720,
+      "independent_benign_occupancy": 0.0144,
+      "independent_benign_total": 50000,
+      "outside_to_inside_lcb": 0.8867098864783434,
+      "radius_degrees": "29.6617712953;27.8614951473",
+      "token_id": 23713,
+      "token_text": "racist",
+      "triggered_coverage": 0.9054444444444445,
+      "triggered_inside": 16298,
+      "triggered_total": 18000
+    },
+    "certified": 0,
+    "frozen": 0,
+    "one_cap_candidates": 20,
+    "tested": 20,
+    "two_cap_rescues": 20
+  }
+}

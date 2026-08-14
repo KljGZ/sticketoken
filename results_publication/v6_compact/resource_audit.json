@@ -1,0 +1,24 @@
+{
+  "resources": [
+    {
+      "expected_sha256": "94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98",
+      "observed_sha256": "94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98",
+      "path": "/mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256"
+    },
+    {
+      "expected_sha256": "1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85",
+      "observed_sha256": "1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85",
+      "path": "/mnt/data/jkl/StickyToken-v6-resources/en_core_web_sm-3.8.0-py3-none-any.whl"
+    },
+    {
+      "expected_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+      "observed_sha256": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+      "path": "/mnt/data/jkl/StickyToken-v6-resources/wordnet.zip"
+    },
+    {
+      "expected_sha256": "3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d",
+      "observed_sha256": "3b941e664852f3297b6040236626065796a2aaf7d7f9eec8779a3beaa1096c2d",
+      "path": "/mnt/data/jkl/StickyToken-v6-resources/omw-1.4.zip"
+    }
+  ]
+}

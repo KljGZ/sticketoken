@@ -1,0 +1,28 @@
+{
+  "breakdown": {
+    "blackbox_cem": 19660800,
+    "retrieval_allowance": 40000,
+    "s0_complete_vocabulary": 197222400,
+    "s1_progressive_eval": 18432000,
+    "s2_progressive_eval": 7372800,
+    "s3_progressive_eval": 4800000,
+    "sealed_triggered": 680000,
+    "semantic_controls_allowance": 783360,
+    "token_independent_base_embeddings": 300384,
+    "validation": 960000,
+    "whitebox_backward_equivalent": 2457600,
+    "whitebox_forward": 7864320
+  },
+  "legal_vocab_assumption": 32100,
+  "limits": {
+    "forbidden_limit": 418029880,
+    "hard_limit": 392948087,
+    "planned_limit": 300981514,
+    "warning_limit": 351145099
+  },
+  "planned_submitted_text_equivalent": 260573664,
+  "planned_v5_ratio": 3.116687065527469,
+  "schema_version": "mode3-v6-compact-budget-estimate-v1",
+  "within_planned_limit": true,
+  "within_warning_limit": true
+}

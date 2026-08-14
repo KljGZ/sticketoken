@@ -1,0 +1,37 @@
+{
+  "archive_prefix": "mode3_v6_compact",
+  "assets": [
+    {
+      "bytes": 971275701,
+      "content_file_count": 649,
+      "content_total_bytes": 1483120092,
+      "first_path": ".orchestrator.lock",
+      "last_path": "validation/shard_00/COMPLETE.json",
+      "name": "mode3-v6-compact-full-results.part-001-of-003.tar.gz",
+      "sha256": "e94f998cca3eaae8be42b723dd622f4017ba0b46d86e132211116f89ea8a119f"
+    },
+    {
+      "bytes": 1470228588,
+      "content_file_count": 60,
+      "content_total_bytes": 1472964141,
+      "first_path": "validation/shard_00/arrays/token_3338.npz",
+      "last_path": "validation/shard_15/COMPLETE.json",
+      "name": "mode3-v6-compact-full-results.part-002-of-003.tar.gz",
+      "sha256": "493a316b6c64de213ffeb679fe704d668ffc9a3f06c1af371a541c342562792f"
+    },
+    {
+      "bytes": 489889778,
+      "content_file_count": 55,
+      "content_total_bytes": 490804023,
+      "first_path": "validation/shard_15/arrays/token_10889.npz",
+      "last_path": "validation/shard_31/results.jsonl",
+      "name": "mode3-v6-compact-full-results.part-003-of-003.tar.gz",
+      "sha256": "6c676abf166143e40a83a73cd936caf13f23fd39c311ef13d522d12e36134f74"
+    }
+  ],
+  "content_file_count": 764,
+  "content_root_sha256": "9dcac6ead43975c71ebe7db14ff3539e8bc0c1766ad0ae4c8b950fd6114b400b",
+  "content_total_bytes": 3446888256,
+  "maximum_uncompressed_bytes": 1500000000,
+  "schema_version": "mode3-v6-compact-release-shards-v1"
+}

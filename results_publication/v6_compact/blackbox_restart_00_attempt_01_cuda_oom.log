@@ -1,0 +1,88 @@
+Loading weights:   0%|          | 0/99 [00:00<?, ?it/s]Loading weights: 100%|██████████| 99/99 [00:00<00:00, 4330.56it/s]
+/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/oracle.py:45: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  self.dimension = int(self._runtime.get_sentence_embedding_dimension())
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/track_blackbox.py", line 218, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/track_blackbox.py", line 141, in main
+    scores_by_id = _score(
+                   ^^^^^^^
+  File "/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/track_blackbox.py", line 34, in _score
+    values = encode_positions(
+             ^^^^^^^^^^^^^^^^^
+  File "/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/evaluate.py", line 46, in encode_positions
+    result[position] = oracle.encode(
+                       ^^^^^^^^^^^^^^
+  File "/home/jkl/StickyToken-v6-compact/sticky_lab/mode3_v6_compact/oracle.py", line 62, in encode
+    vectors = self._runtime.encode(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/sentence_transformers/util/decorators.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/sentence_transformers/sentence_transformer/model.py", line 661, in encode
+    out_features = self.forward(features, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/sentence_transformers/base/model.py", line 511, in forward
+    input = module(input, **module_kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/sentence_transformers/base/modules/transformer.py", line 1111, in forward
+    model_output = model_method(**filtered_kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 1187, in forward
+    encoder_outputs = self.encoder(
+                      ^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 728, in forward
+    layer_outputs = layer_module(
+                    ^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 425, in forward
+    self_attention_outputs = self.layer[0](
+                             ^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 354, in forward
+    attention_output = self.SelfAttention(
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/transformers/models/t5/modeling_t5.py", line 318, in forward
+    attn_weights = nn.functional.softmax(scores.float(), dim=-1).type_as(scores)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jkl/anaconda3/envs/StickyToken/lib/python3.11/site-packages/torch/nn/functional.py", line 2140, in softmax
+    ret = input.softmax(dim)
+          ^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 274.00 MiB. GPU 0 has a total capacity of 23.64 GiB of which 183.56 MiB is free. Process 3760488 has 2.61 GiB memory in use. Process 1604514 has 18.84 GiB memory in use. Including non-PyTorch memory, this process has 1.99 GiB memory in use. Of the allocated memory 1.10 GiB is allocated by PyTorch, and 453.27 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

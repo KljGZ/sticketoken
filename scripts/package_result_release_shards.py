@@ -72,6 +72,7 @@ def main() -> None:
     parser.add_argument("--asset-index", required=True, type=Path)
     parser.add_argument("--prefix", default="mode3_v5")
     parser.add_argument("--asset-stem", default="mode3-v5-full-results")
+    parser.add_argument("--schema-version", default="mode3-result-release-shards-v1")
     parser.add_argument("--maximum-uncompressed-bytes", type=int, default=1610612736)
     args = parser.parse_args()
     root = args.results.resolve()
@@ -96,7 +97,7 @@ def main() -> None:
             }
         )
     payload = {
-        "schema_version": "mode3-v5-release-shards-v1",
+        "schema_version": args.schema_version,
         "archive_prefix": args.prefix,
         "content_root_sha256": inventory["root_sha256"],
         "content_file_count": inventory["file_count"],

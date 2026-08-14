@@ -1,0 +1,5 @@
+{
+  "compliant_negative_endpoint": true,
+  "reason": "validation gate closed after one-cap and finalist-only two-cap rescue",
+  "test_ood_encoded": false
+}
