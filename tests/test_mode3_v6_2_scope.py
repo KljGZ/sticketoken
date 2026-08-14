@@ -60,3 +60,8 @@ def test_status_counts_every_funnel_stage_under_funnel_root() -> None:
     text = (ROOT / "scripts/status_v6_2_mode3.py").read_text(encoding="utf-8-sig")
     for stage in ("s0", "s1", "s2", "full", "stability"):
         assert f'"funnel/{stage}/shard_*/COMPLETE.json"' in text
+
+
+def test_real_model_dry_run_binds_verified_model_tree() -> None:
+    text = (ROOT / "scripts/dry_run_v6_2_mode3.py").read_text(encoding="utf-8-sig")
+    assert "verified_checksum_tree" in text and "model_tree_sha256" in text

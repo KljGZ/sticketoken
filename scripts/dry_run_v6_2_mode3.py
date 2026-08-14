@@ -18,7 +18,7 @@ if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from sticky_lab.mode3_v6.atomic_io import write_json, write_jsonl
 from sticky_lab.mode3_v6.data import load_registered_records
 from sticky_lab.mode3_v6.insertion import build_manifest
-from sticky_lab.mode3_v6_2.common import load_config
+from sticky_lab.mode3_v6_2.common import load_config, verified_checksum_tree
 from sticky_lab.mode3_v6_2.encoding import pretruncate_source
 from sticky_lab.mode3_v6_2.roles import build_role_contract
 from sticky_lab.mode3_v6_2 import workers, semantic, selection, sealed
@@ -63,6 +63,15 @@ def main() -> int:
     config["geometry"]["fit_restarts"] = 4; config["geometry"]["bootstrap_replicates"] = 20
     config["radial_analysis"]["bootstrap_replicates"] = 20
     config_path = args.output / "NONFORMAL_CONFIG.yaml"; config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+    model_tree = verified_checksum_tree(
+        Path(str(config["model"]["local_path"])),
+        Path(str(config["model"]["checksum_manifest"])),
+    )
+    write_json(args.output / "registration" / "run_contract.json", {
+        "schema_version": "mode3-v6-2-nonformal-dry-run-contract-v1",
+        "formal_evidence": False,
+        "model_tree_sha256": model_tree["tree_sha256"],
+    })
     records = load_registered_records(str(data["input_glob"]), list(data["required_columns"])); ood = set(data["ood_domains_allowlist"])
     iid_pool = [row for row in records if row["domain"] not in ood]; used: set[tuple[str, str]] = set(); roles = {}
     for role, count in small_roles.items(): roles[role] = take_documents(iid_pool, count, used)
