@@ -9,7 +9,11 @@ import pytest
 from sticky_lab.mode3_v6_2.budget import BudgetExhausted, BudgetLedger, estimate_budget
 from sticky_lab.mode3_v6_2.common import load_config
 from sticky_lab.mode3_v6_2.geometry import FrozenCapModel, fit_equal_strata_robust_center, fit_single_cap
-from sticky_lab.mode3_v6_2.statistics import gate_reachability_audit, simultaneous_balanced_bounds
+from sticky_lab.mode3_v6_2.statistics import (
+    gate_reachability_audit,
+    simultaneous_balanced_bounds,
+    trapezoidal_integral,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,3 +86,14 @@ def test_frozen_model_uses_original_angular_space() -> None:
     cap = FrozenCapModel(1, "x", "P3", np.array([[1., 0.]]), np.array([np.pi / 4]), .92, "fit", "radius", 1)
     points = np.array([[1., 0.], [np.sqrt(.5), np.sqrt(.5)], [0., 1.]])
     assert cap.contains(points).tolist() == [True, True, False]
+
+
+def test_trapezoidal_integral_supports_numpy_2_api(monkeypatch: pytest.MonkeyPatch) -> None:
+    def numpy2_style(y: object, x: object) -> float:
+        values = np.asarray(y, dtype=float)
+        grid = np.asarray(x, dtype=float)
+        return float(np.sum((values[:-1] + values[1:]) * 0.5 * np.diff(grid)))
+
+    monkeypatch.delattr(np, "trapz", raising=False)
+    monkeypatch.setattr(np, "trapezoid", numpy2_style, raising=False)
+    assert trapezoidal_integral([0.0, 1.0, 1.0], [0.0, 1.0, 2.0]) == pytest.approx(1.5)

@@ -16,6 +16,7 @@ from .geometry import (
     FrozenCapModel, Stratum, fit_multicap_model, fit_single_cap,
 )
 from .oracle import V62FinalOracle
+from .statistics import trapezoidal_integral
 
 
 @dataclass(frozen=True)
@@ -127,7 +128,7 @@ def score_model(
     benign_depth = np.concatenate([model.normalized_radius(value) for value in benign_by_source.values()])
     multipliers = np.asarray([1.0, 1.10, 1.25, 1.50], dtype=float)
     occupancy = np.asarray([np.mean(benign_depth <= value + 1e-12) for value in multipliers])
-    auc = float(np.trapz(occupancy, multipliers) / 0.5)
+    auc = trapezoidal_integral(occupancy, multipliers) / 0.5
     triggered_matrix = np.concatenate(list(triggered.values()))
     if model.cap_count == 1:
         triggered_similarity = triggered_matrix @ model.centers[0]

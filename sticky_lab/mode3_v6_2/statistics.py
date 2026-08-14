@@ -19,6 +19,20 @@ from .errors import NumericalNonFinite, ShapeMismatch
 Stratum = Tuple[str, str]
 
 
+def trapezoidal_integral(y: Sequence[float], x: Sequence[float]) -> float:
+    """NumPy-version-stable trapezoidal integration.
+
+    NumPy 2.x exposes ``trapezoid`` while older pinned environments expose
+    only the mathematically identical ``trapz``.  Resolve the implementation
+    explicitly so the registered statistic does not depend on the runtime API
+    spelling.
+    """
+    implementation = getattr(np, "trapezoid", None)
+    if implementation is None:
+        implementation = np.trapz
+    return float(implementation(y, x))
+
+
 @dataclass(frozen=True)
 class BinomialBound:
     successes: int
@@ -272,7 +286,7 @@ def radial_occupancy_summary(
     basin = [row for row in curve if 1.0 <= row["multiplier"] <= 1.5]
     x = np.asarray([row["multiplier"] for row in basin], dtype=float)
     y = np.asarray([row["ucb"] for row in basin], dtype=float)
-    auc = float(np.trapz(y, x) / max(1e-12, x[-1] - x[0])) if len(x) >= 2 else float("nan")
+    auc = trapezoidal_integral(y, x) / max(1e-12, x[-1] - x[0]) if len(x) >= 2 else float("nan")
     eligible = [row["multiplier"] for row in curve if row["ucb"] <= 0.01]
     return {
         "curve": curve,
