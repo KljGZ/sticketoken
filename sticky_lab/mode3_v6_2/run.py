@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 from dataclasses import replace
 import json
+import math
 from pathlib import Path
+import subprocess
 from typing import Any, Mapping
 
 from sticky_lab.mode3_v6.data import (
@@ -33,6 +35,80 @@ def _append_gap(audit: Any, code: str, required: object, observed: object, detai
     return replace(audit, gaps=(*audit.gaps, DataGap(code, required, observed, detail)))
 
 
+def _audit_v62_manifest(audit: Any, data: Mapping[str, Any]) -> Any:
+    """Bind the manifest semantics and every registered derivative file."""
+    manifest_path = Path(str(data["corpus_manifest"]))
+    try:
+        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return _append_gap(audit, "corpus_manifest_unreadable", "valid JSON", repr(error), str(manifest_path))
+    if payload.get("schema_version") != "mode3-v6-2-corpus-v2":
+        audit = _append_gap(audit, "corpus_manifest_schema", "mode3-v6-2-corpus-v2", payload.get("schema_version"), str(manifest_path))
+    for field, expected in (("builder_worktree_clean", True), ("resampling", False), ("sentence_as_document_fallback", False)):
+        if payload.get(field) is not expected:
+            audit = _append_gap(audit, f"corpus_manifest_{field}", expected, payload.get(field), str(manifest_path))
+    local_builder = ROOT / "scripts" / "build_v6_2_corpus.py"
+    observed_builder_sha = sha256_file(local_builder) if local_builder.is_file() else None
+    if payload.get("builder_script_sha256") != observed_builder_sha:
+        audit = _append_gap(audit, "corpus_builder_script_mismatch", payload.get("builder_script_sha256"), observed_builder_sha, str(local_builder))
+    builder_commit = str(payload.get("builder_commit", ""))
+    ancestor = subprocess.run(
+        ["git", "-C", str(ROOT), "merge-base", "--is-ancestor", builder_commit, "HEAD"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False,
+    ).returncode == 0 if builder_commit else False
+    if not ancestor:
+        audit = _append_gap(audit, "corpus_builder_not_ancestor", "builder commit is an ancestor of run HEAD", builder_commit, str(ROOT))
+    sources = payload.get("sources")
+    if not isinstance(sources, list):
+        return _append_gap(audit, "corpus_manifest_sources", "list", type(sources).__name__, str(manifest_path))
+    source_ids = [str(row.get("source_id", "")) for row in sources if isinstance(row, dict)]
+    if len(sources) != 8 or len(set(source_ids)) != 8:
+        audit = _append_gap(audit, "corpus_manifest_source_identity", "8 distinct source IDs", source_ids, str(manifest_path))
+    base = manifest_path.parent.resolve()
+    domain_rows: dict[str, int] = {}
+    domain_sources: dict[str, set[str]] = {}
+    total_rows = 0
+    for source in sources:
+        if not isinstance(source, dict):
+            audit = _append_gap(audit, "corpus_manifest_source_row", "object", type(source).__name__, str(manifest_path))
+            continue
+        relative = Path(str(source.get("output_relative_path", "")))
+        path = (base / relative).resolve()
+        if not path.is_relative_to(base):
+            audit = _append_gap(audit, "corpus_output_path_escape", "path below manifest directory", str(path), str(manifest_path))
+            continue
+        observed_sha = sha256_file(path) if path.is_file() else None
+        if observed_sha != source.get("output_sha256"):
+            audit = _append_gap(audit, "corpus_output_fingerprint_mismatch", source.get("output_sha256"), observed_sha, str(path))
+        observed_bytes = path.stat().st_size if path.is_file() else None
+        if observed_bytes != source.get("output_bytes"):
+            audit = _append_gap(audit, "corpus_output_size_mismatch", source.get("output_bytes"), observed_bytes, str(path))
+        raw_sha = source.get("raw_sha256")
+        if not isinstance(raw_sha, str) or len(raw_sha) != 64:
+            audit = _append_gap(audit, "corpus_raw_fingerprint_missing", "64-char SHA-256", raw_sha, str(path))
+        rows = int(source.get("rows", -1))
+        total_rows += rows
+        domain = str(source.get("domain", ""))
+        domain_rows[domain] = domain_rows.get(domain, 0) + rows
+        domain_sources.setdefault(domain, set()).add(str(source.get("source_id", "")))
+    if total_rows != int(payload.get("row_count", -1)) or total_rows != int(payload.get("normalized_unique_count", -2)):
+        audit = _append_gap(audit, "corpus_manifest_row_accounting", "sum(rows) == row_count == normalized_unique_count", {"sum": total_rows, "rows": payload.get("row_count"), "unique": payload.get("normalized_unique_count")}, str(manifest_path))
+    allowlist = list(map(str, data["ood_domains_allowlist"]))
+    per_ood = int(data["ood_trigger_per_domain"]) + int(data["ood_benign_per_domain"])
+    for domain in allowlist:
+        if domain_rows.get(domain, 0) < per_ood or len(domain_sources.get(domain, set())) != 1:
+            audit = _append_gap(audit, "corpus_ood_domain_capacity", {"rows_at_least": per_ood, "isolated_sources": 1}, {"rows": domain_rows.get(domain, 0), "sources": sorted(domain_sources.get(domain, set()))}, domain)
+    iid_sources = [row for row in sources if isinstance(row, dict) and str(row.get("domain", "")) not in set(allowlist)]
+    iid_required = sum(int(value) for value in data["roles"].values())
+    minimum_per_iid_source = math.ceil(iid_required / int(data["minimum_iid_sources"]))
+    if len(iid_sources) != int(data["minimum_iid_sources"]):
+        audit = _append_gap(audit, "corpus_iid_source_count", data["minimum_iid_sources"], len(iid_sources), str(manifest_path))
+    for source in iid_sources:
+        if int(source.get("rows", -1)) < minimum_per_iid_source:
+            audit = _append_gap(audit, "corpus_iid_balanced_capacity", minimum_per_iid_source, source.get("rows"), str(source.get("source_id")))
+    return audit
+
+
 def command_preflight(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     data = config["data"]
     output = Path(args.output)
@@ -48,6 +124,7 @@ def command_preflight(args: argparse.Namespace, config: Mapping[str, Any]) -> No
             audit, "corpus_manifest_fingerprint_mismatch",
             data["corpus_manifest_sha256"], observed_manifest, manifest_path.as_posix(),
         )
+    audit = _audit_v62_manifest(audit, data)
     resource_rows = []
     for item in config["resources"]["files"]:
         path = Path(str(item["path"]))
