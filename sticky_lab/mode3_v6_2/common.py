@@ -76,6 +76,53 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def path_is_relative_to(path: Path, root: Path) -> bool:
+    """Python-3.8-compatible containment check on resolved paths."""
+    try:
+        Path(path).relative_to(Path(root))
+        return True
+    except ValueError:
+        return False
+
+
+def verified_checksum_tree(root: Path, checksum_manifest: Path) -> dict[str, Any]:
+    """Verify an exact local file tree against a SHA-256 checksum manifest."""
+    root = Path(root).resolve()
+    manifest = Path(checksum_manifest)
+    expected: dict[str, str] = {}
+    for line_number, line in enumerate(manifest.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        fields = line.split(maxsplit=1)
+        if len(fields) != 2 or len(fields[0]) != 64:
+            raise RuntimeError(f"invalid SHA-256 manifest line {line_number}")
+        target = Path(fields[1].lstrip("* ")).resolve()
+        if not path_is_relative_to(target, root):
+            raise RuntimeError(f"model checksum path escapes model root: {target}")
+        relative = target.relative_to(root).as_posix()
+        if relative in expected:
+            raise RuntimeError(f"duplicate model checksum entry: {relative}")
+        expected[relative] = fields[0].lower()
+    actual = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
+    if actual != set(expected):
+        raise RuntimeError(
+            f"model checksum inventory mismatch: missing={sorted(set(expected) - actual)}, "
+            f"unregistered={sorted(actual - set(expected))}"
+        )
+    observed = {relative: sha256_file(root / relative) for relative in sorted(expected)}
+    mismatched = [relative for relative in observed if observed[relative] != expected[relative]]
+    if mismatched:
+        raise RuntimeError(f"model checksum mismatch: {mismatched}")
+    payload = json.dumps(observed, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return {
+        "root": root.as_posix(),
+        "checksum_manifest": manifest.resolve().as_posix(),
+        "files": observed,
+        "file_count": len(observed),
+        "tree_sha256": hashlib.sha256(payload).hexdigest(),
+    }
+
+
 def cap_from_arrays(
     *,
     token_id: int,
@@ -134,6 +181,8 @@ __all__ = [
     "load_manifest",
     "load_legal",
     "sha256_file",
+    "path_is_relative_to",
+    "verified_checksum_tree",
     "cap_from_arrays",
     "model_from_dict",
     "atomic_savez",

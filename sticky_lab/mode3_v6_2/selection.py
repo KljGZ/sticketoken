@@ -117,9 +117,10 @@ def _freeze_one(
     fit_sources = bindings[protocol_roles[0]].source_ids
     weights = {source: 1.0 / len(fit_sources) for source in fit_sources}
     enumeration = json.loads((output / "enumeration" / "COMPLETE.json").read_text(encoding="utf-8"))
+    run_contract = json.loads((output / "registration" / "run_contract.json").read_text(encoding="utf-8"))
     artifact = create_freeze(
         model, tokenizer_hash=str(enumeration["tokenizer_sha256"]),
-        model_hash=canonical_sha256({"id": config["model"]["id"], "revision": config["model"]["revision"]}),
+        model_hash=str(run_contract["model_tree_sha256"]),
         code_commit=git_head(ROOT), data_role_hashes=role_hashes,
         position_manifest_hash=canonical_sha256(config["positions"]),
         random_boundary_manifest_hash=sha256_file(output / "registration" / "random_boundaries_manifest.json"),

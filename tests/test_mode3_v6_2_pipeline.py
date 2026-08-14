@@ -8,6 +8,7 @@ import pytest
 from sticky_lab.mode3_v6_2.freeze import create_freeze, load_freeze, save_freeze
 from sticky_lab.mode3_v6_2.funnel import build_cap_archives, select_stage_models
 from sticky_lab.mode3_v6_2.geometry import FrozenCapModel
+from sticky_lab.mode3_v6_2.common import verified_checksum_tree
 from sticky_lab.mode3_v6_2.errors import CacheCorruption
 from sticky_lab.mode3_v6_2.oracle import load_embedding_cache, records_sha256, write_embedding_cache
 from sticky_lab.mode3_v6_2.statistics import p2_position_certificates
@@ -44,6 +45,23 @@ def test_embedding_cache_rejects_content_tampering(tmp_path: Path) -> None:
         handle.write(bytes([byte[0] ^ 1]))
     with pytest.raises(CacheCorruption, match="SHA-256"):
         load_embedding_cache(path, expected_role="role", expected_records_hash=records_sha256(records), mmap=False)
+
+
+def test_model_checksum_manifest_binds_exact_tree(tmp_path: Path) -> None:
+    import hashlib
+
+    root = tmp_path / "model"; root.mkdir()
+    (root / "a").write_bytes(b"one"); (root / "b").write_bytes(b"two")
+    manifest = tmp_path / "model.sha256"
+    manifest.write_text("\n".join(
+        f"{hashlib.sha256((root / name).read_bytes()).hexdigest()}  {root / name}"
+        for name in ("a", "b")
+    ) + "\n", encoding="utf-8")
+    result = verified_checksum_tree(root, manifest)
+    assert result["file_count"] == 2 and len(result["tree_sha256"]) == 64
+    (root / "unregistered").write_text("x")
+    with pytest.raises(RuntimeError, match="inventory mismatch"):
+        verified_checksum_tree(root, manifest)
 
 
 def test_freeze_is_content_addressed(tmp_path: Path) -> None:

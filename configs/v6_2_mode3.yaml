@@ -23,6 +23,8 @@ model:
   id: sentence-transformers/sentence-t5-base
   revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
   local_path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  checksum_manifest: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
+  checksum_manifest_sha256: 94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98
   cache_folder: null
   trust_remote_code: false
   normalize_final_embeddings: true

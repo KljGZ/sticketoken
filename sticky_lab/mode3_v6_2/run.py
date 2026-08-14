@@ -22,7 +22,7 @@ from sticky_lab.mode3_v6.fingerprint import git_head, git_status, inventory
 from sticky_lab.mode3_v6.insertion import build_manifest
 
 from .budget import estimate_budget
-from .common import load_config, sha256_file, write_json, write_jsonl
+from .common import load_config, path_is_relative_to, sha256_file, verified_checksum_tree, write_json, write_jsonl
 from .data import register_v62_roles, required_unique_capacity
 from .encoding import pretruncate_source
 from .roles import build_role_contract, canonical_sha256
@@ -74,7 +74,7 @@ def _audit_v62_manifest(audit: Any, data: Mapping[str, Any]) -> Any:
             continue
         relative = Path(str(source.get("output_relative_path", "")))
         path = (base / relative).resolve()
-        if not path.is_relative_to(base):
+        if not path_is_relative_to(path, base):
             audit = _append_gap(audit, "corpus_output_path_escape", "path below manifest directory", str(path), str(manifest_path))
             continue
         observed_sha = sha256_file(path) if path.is_file() else None
@@ -137,8 +137,22 @@ def command_preflight(args: argparse.Namespace, config: Mapping[str, Any]) -> No
             audit = _append_gap(
                 audit, "resource_fingerprint_mismatch", item["sha256"], observed, path.as_posix()
             )
+    model_tree: dict[str, Any] | None = None
+    model = config["model"]
+    checksum_manifest = Path(str(model["checksum_manifest"]))
+    observed_checksum_manifest = sha256_file(checksum_manifest) if checksum_manifest.is_file() else None
+    if observed_checksum_manifest != model["checksum_manifest_sha256"]:
+        audit = _append_gap(
+            audit, "model_checksum_manifest_mismatch", model["checksum_manifest_sha256"],
+            observed_checksum_manifest, checksum_manifest.as_posix(),
+        )
+    else:
+        try:
+            model_tree = verified_checksum_tree(Path(str(model["local_path"])), checksum_manifest)
+        except (OSError, RuntimeError) as error:
+            audit = _append_gap(audit, "model_tree_verification_failed", "exact checksum-bound tree", repr(error), str(model["local_path"]))
     write_capacity_audit(audit, output / "registration" / "data_capacity_audit.json")
-    write_json(output / "registration" / "resource_audit.json", {"resources": resource_rows})
+    write_json(output / "registration" / "resource_audit.json", {"resources": resource_rows, "model_tree": model_tree})
     estimate = estimate_budget(config)
     write_json(output / "budget" / "planned.json", estimate)
     if not estimate["matches_registered_estimate"]:
@@ -236,6 +250,9 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
             "run_code_commit": git_head(ROOT),
             "config_sha256": sha256_file(Path(args.config)),
             "corpus_manifest_sha256": sha256_file(Path(str(data["corpus_manifest"]))),
+            "model_tree_sha256": json.loads(
+                (output / "registration" / "resource_audit.json").read_text(encoding="utf-8")
+            )["model_tree"]["tree_sha256"],
             "role_contract_sha256": role_contract["contract_sha256"],
             "random_boundary_manifest_sha256": sha256_file(boundary_manifest_path),
             "role_counts": {role: len(rows) for role, rows in roles.items()},
