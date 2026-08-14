@@ -169,6 +169,90 @@ def _allocate_roles(
     return result, stats
 
 
+def _allocate_balanced_iid_roles(
+    records: Sequence[Mapping[str, str]],
+    role_sizes: Mapping[str, int],
+    *,
+    index: NearDuplicateIndex,
+    allocated_documents: set[str],
+    seed: int,
+) -> tuple[dict[str, list[dict[str, str]]], dict[str, dict[str, Any]]]:
+    """Allocate every IID role equally across the registered sources.
+
+    Source balancing is part of the sampling contract, not a downstream
+    reweighting trick. V6.2 corpora use one complete record per document; the
+    explicit check below prevents a multi-row document from silently breaking
+    the exact per-source quotas.
+    """
+    source_ids = sorted({str(row["source_id"]) for row in records})
+    if not source_ids:
+        raise RuntimeError("no IID sources available")
+    ordered = {
+        source_id: _ordered_documents(
+            [row for row in records if str(row["source_id"]) == source_id],
+            seed=seed,
+            namespace=f"iid:{source_id}",
+        )
+        for source_id in source_ids
+    }
+    cursors = {source_id: 0 for source_id in source_ids}
+    result: dict[str, list[dict[str, str]]] = {str(role): [] for role in role_sizes}
+    stats: dict[str, dict[str, Any]] = {}
+    for role_index, (role_value, required_value) in enumerate(role_sizes.items()):
+        role = str(role_value)
+        required = int(required_value)
+        quotient, remainder = divmod(required, len(source_ids))
+        # Rotate remainder ownership so no lexicographically early source is
+        # systematically overrepresented across the role sequence.
+        rotated = source_ids[role_index % len(source_ids):] + source_ids[:role_index % len(source_ids)]
+        quotas = {source_id: quotient + int(source_id in set(rotated[:remainder])) for source_id in source_ids}
+        counters: dict[str, Any] = {
+            "documents_examined": 0,
+            "documents_accepted": 0,
+            "documents_rejected_exact": 0,
+            "documents_rejected_near": 0,
+            "source_quotas": quotas,
+            "source_counts": {},
+        }
+        for source_id in source_ids:
+            accepted: list[dict[str, str]] = []
+            candidates = ordered[source_id]
+            while len(accepted) < quotas[source_id] and cursors[source_id] < len(candidates):
+                document_key, rows = candidates[cursors[source_id]]
+                cursors[source_id] += 1
+                counters["documents_examined"] += 1
+                if len(rows) != 1:
+                    raise RuntimeError(
+                        "balanced IID allocation requires exactly one complete record per document: "
+                        f"{document_key} has {len(rows)} rows"
+                    )
+                if document_key in allocated_documents:
+                    continue
+                conflict, reason = index.conflicts(rows[0]["text"])
+                if conflict:
+                    key = "documents_rejected_exact" if reason == "exact_or_normalized" else "documents_rejected_near"
+                    counters[key] += 1
+                    continue
+                allocated_documents.add(document_key)
+                index.add(rows[0]["text"])
+                accepted.append(rows[0])
+                counters["documents_accepted"] += 1
+            if len(accepted) != quotas[source_id]:
+                raise RuntimeError(
+                    f"balanced capacity gap for {role}/{source_id}: "
+                    f"{len(accepted)}/{quotas[source_id]}; "
+                    f"examined={cursors[source_id]}/{len(candidates)}"
+                )
+            counters["source_counts"][source_id] = len(accepted)
+            result[role].extend(accepted)
+        if len(result[role]) != required:
+            raise RuntimeError(f"internal balanced allocation mismatch for {role}")
+        counters["target_rows"] = required
+        counters["allocated_rows"] = len(result[role])
+        stats[role] = counters
+    return result, stats
+
+
 def required_unique_capacity(config: Mapping[str, Any]) -> int:
     data = config["data"]
     return sum(int(value) for value in data["roles"].values()) + int(
@@ -195,18 +279,25 @@ def register_v62_roles(
         raise RuntimeError("V6.2 OOD allowlist must exactly match ood_domains")
     ood_set = set(allowlist)
     iid_records = [row for row in records if str(row["domain"]) not in ood_set]
-    roles, allocation_stats = _allocate_roles(
-        _ordered_documents(iid_records, seed=seed, namespace="iid"),
+    observed_iid_sources = {str(row["source_id"]) for row in iid_records}
+    if len(observed_iid_sources) < int(data["minimum_iid_sources"]):
+        raise RuntimeError(
+            f"V6.2 requires {data['minimum_iid_sources']} IID sources, "
+            f"observed {len(observed_iid_sources)}"
+        )
+    roles, allocation_stats = _allocate_balanced_iid_roles(
+        iid_records,
         {str(key): int(value) for key, value in data["roles"].items()},
         index=index,
         allocated_documents=allocated_documents,
+        seed=seed,
     )
     ood_audit: dict[str, Any] = {}
     iid_sources = {row["source_id"] for rows in roles.values() for row in rows}
-    if len(iid_sources) < int(data["minimum_iid_sources"]):
+    if iid_sources != observed_iid_sources:
         raise RuntimeError(
-            f"V6.2 requires {data['minimum_iid_sources']} IID sources, "
-            f"observed {len(iid_sources)}"
+            "balanced IID allocation did not retain every registered source: "
+            f"registered={sorted(observed_iid_sources)}, allocated={sorted(iid_sources)}"
         )
     seen_ood_sources: set[str] = set()
     for ood_index, domain in enumerate(allowlist):

@@ -26,6 +26,10 @@ def test_registration_requires_real_iid_sources_and_disjoint_ood() -> None:
     config = {"data": {"maximum_near_duplicate_jaccard": .80, "allocation_policy": "document_disjoint_online_near_duplicate_rejection", "roles": {"s0_fit": 5, "s0_radius": 5, "s0_score": 5}, "minimum_iid_sources": 2, "ood_domains": 1, "ood_domains_allowlist": ["ood_news"], "ood_trigger_per_domain": 4, "ood_benign_per_domain": 4, "near_duplicate_manual_audit_pairs": 10}}
     roles, audit = register_v62_roles(records, config, seed=5)
     assert set(audit["iid_sources"]) == {"iid_a", "iid_b"}
+    for role in ("s0_fit", "s0_radius", "s0_score"):
+        counts = audit["allocation"][role]["source_counts"]
+        assert set(counts) == {"iid_a", "iid_b"}
+        assert max(counts.values()) - min(counts.values()) <= 1
     assert not audit_role_leakage(roles, .80)
     assert len({row["document_id"] for values in roles.values() for row in values}) == sum(map(len, roles.values()))
 
