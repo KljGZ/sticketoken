@@ -156,9 +156,9 @@ class Orchestrator:
         path = self.output / ".orchestrator.lock"
         self.lock_handle = path.open("a+b")
         try:
-            fcntl.flock(  # type: ignore[attr-defined]
+            fcntl.flock(  # type: ignore[attr-defined,unused-ignore]
                 self.lock_handle.fileno(),
-                fcntl.LOCK_EX | fcntl.LOCK_NB,  # type: ignore[attr-defined]
+                fcntl.LOCK_EX | fcntl.LOCK_NB,  # type: ignore[attr-defined,unused-ignore]
             )
         except BlockingIOError as error:
             raise ProtocolViolation(f"another V6.3 orchestrator owns {self.output}") from error
