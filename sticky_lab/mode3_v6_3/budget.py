@@ -21,20 +21,26 @@ def exclusive_lock(path: Path) -> Iterator[None]:
     with path.open("a+b") as handle:
         if os.name == "nt":  # pragma: no cover - formal execution is Linux
             import msvcrt
+            locking = getattr(msvcrt, "locking")
+            lock = getattr(msvcrt, "LK_LOCK")
+            unlock = getattr(msvcrt, "LK_UNLCK")
             handle.seek(0)
-            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            locking(handle.fileno(), lock, 1)
             try:
                 yield
             finally:
                 handle.seek(0)
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                locking(handle.fileno(), unlock, 1)
         else:
             import fcntl
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)  # type: ignore[attr-defined]
+            flock = getattr(fcntl, "flock")
+            lock = getattr(fcntl, "LOCK_EX")
+            unlock = getattr(fcntl, "LOCK_UN")
+            flock(handle.fileno(), lock)
             try:
                 yield
             finally:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)  # type: ignore[attr-defined]
+                flock(handle.fileno(), unlock)
 
 
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
