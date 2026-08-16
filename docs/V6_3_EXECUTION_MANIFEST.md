@@ -19,12 +19,13 @@ the source config hash, resolved config hash, protocol hash, code commit, model 
 tokenizer hash, data manifests and role/call-space hashes. Dry-run and pilot use separate
 parents with the same required output leaf and are explicitly non-scientific.
 
-Protocol revision 3 uses run ID `mode3_v6_3_light_r3`. It retains the revision 2
-tokenizer identity repair and adds NumPy 2.x-safe trapezoidal integration. The tokenizer hash contract is
+Protocol revision 4 uses run ID `mode3_v6_3_light_r4`. It retains the tokenizer
+identity and NumPy 2.x repairs and binds dry-run/pilot pass markers to the actual GPU
+arguments. The tokenizer hash contract is
 `sorted_token_id_nul_text_lf_v1`; backend-tokenizer JSON hashes are diagnostic only.
-Identity checks run before any corpus scan or role write. The failed revision-1 and
-revision-2 dry-runs are preserved and marked `INVALIDATED_PROTOCOL_CHANGE`; revision-3
-dry-run and pilot use new parent directories and never reuse their partial artifacts.
+Identity checks run before any corpus scan or role write. Superseded dry-runs are
+preserved and marked `INVALIDATED_PROTOCOL_CHANGE`; revision-4 dry-run and pilot use new
+parent directories and never reuse partial artifacts from earlier revisions.
 
 Execution order:
 

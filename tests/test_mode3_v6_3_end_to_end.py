@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 
 from sticky_lab.mode3_v6_3.confirm import confirm_fixed_cap
@@ -111,3 +113,13 @@ def test_real_poison_retrieval_reports_required_rank_metrics():
     assert result["poison_top1_rate"] == 1
     assert result["poison_top10_rate"] == 1
     assert "mean_poison_rank" in result and "q05_rank_margin" in result
+
+
+def test_runtime_gpu_bindings_are_recorded_in_gate_markers():
+    root = Path(__file__).resolve().parents[1]
+    dry = (root / "scripts" / "run_v6_3_dry_run.sh").read_text(encoding="utf-8")
+    pilot = (root / "scripts" / "run_v6_3_pilot.sh").read_text(encoding="utf-8")
+    assert '"one_physical_gpu":gpus[0]' in dry
+    assert '"one_physical_gpu":4' not in dry
+    assert '"authorized_physical_gpus":gpus' in dry
+    assert '"authorized_physical_gpus":gpus' in pilot

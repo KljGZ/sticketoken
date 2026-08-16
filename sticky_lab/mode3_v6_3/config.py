@@ -80,8 +80,8 @@ def _require(condition: bool, message: str) -> None:
 
 def validate_config(config: Mapping[str, Any]) -> None:
     _require(str(config.get("protocol_version")) == "6.3", "not a V6.3 config")
-    _require(int(config.get("protocol_revision", 0)) == 3, "not the repaired V6.3 protocol revision")
-    _require(config.get("run_id") == "mode3_v6_3_light_r3", "V6.3 run identity drift")
+    _require(int(config.get("protocol_revision", 0)) == 4, "not the repaired V6.3 protocol revision")
+    _require(config.get("run_id") == "mode3_v6_3_light_r4", "V6.3 run identity drift")
     _require(config.get("experiment_name") == "mode3_v6_3_light_single_token_frozen_cap", "experiment name drift")
     scope = config.get("scope", {})
     _require(scope.get("only_mode") == 3, "V6.3 is Mode 3 only")

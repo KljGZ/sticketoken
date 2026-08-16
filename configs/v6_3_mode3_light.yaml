@@ -1,6 +1,6 @@
 protocol_version: "6.3"
-protocol_revision: 3
-run_id: mode3_v6_3_light_r3
+protocol_revision: 4
+run_id: mode3_v6_3_light_r4
 experiment_name: mode3_v6_3_light_single_token_frozen_cap
 
 scope:
