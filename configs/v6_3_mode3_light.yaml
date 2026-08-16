@@ -1,5 +1,6 @@
 protocol_version: "6.3"
-protocol_revision: 1
+protocol_revision: 2
+run_id: mode3_v6_3_light_r2
 experiment_name: mode3_v6_3_light_single_token_frozen_cap
 
 scope:
@@ -17,6 +18,7 @@ model:
   local_path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d4628481afbbaaacd7af6bb07cf9d3865f781
   checksum_manifest: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
   checksum_manifest_sha256: 94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98
+  tokenizer_hash_algorithm: sorted_token_id_nul_text_lf_v1
   tokenizer_sha256: a7a9c5f67e8e46f94649f629e4bc4f2d0496a59535d1a2aa69da23c378c6cbf2
   cache_folder: null
   trust_remote_code: false
@@ -34,6 +36,7 @@ resources:
   minimum_free_disk_peak_multiplier: 1.5
   estimated_peak_cache_bytes: 350000000000
   environment_lock: docs/sticky_attractor_v6_environment.lock
+  environment_lock_sha256: e784ab99324f80dee54bf8cea5cabdd97b99e97a017f539fd33b964a4b73fec7
 
 search:
   exhaustive_legal_vocabulary: true

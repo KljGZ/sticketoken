@@ -66,7 +66,9 @@ def build_call_space(
     model = config["model"]
     seed = int(config["positions"]["seed"])
     insertion_hash = canonical_sha256(INSERTION_PROTOCOL)
-    tok_hash = tokenizer_sha256(tokenizer)
+    tok_hash = tokenizer_sha256(
+        tokenizer, algorithm=str(model["tokenizer_hash_algorithm"])
+    )
     expected = config["model"].get("tokenizer_sha256")
     if expected and str(expected) != tok_hash:
         raise TokenizerHashMismatch("tokenizer differs from registered hash")
@@ -134,7 +136,10 @@ class FinalEmbeddingOracle:
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
         self.tokenizer = self.runtime.tokenizer
-        observed = tokenizer_sha256(self.tokenizer)
+        observed = tokenizer_sha256(
+            self.tokenizer,
+            algorithm=str(model["tokenizer_hash_algorithm"]),
+        )
         if observed != str(expected_tokenizer_hash):
             raise TokenizerHashMismatch(
                 f"runtime tokenizer hash {observed} != {expected_tokenizer_hash}"

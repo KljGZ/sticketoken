@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.metadata
 import json
+import platform
 import copy
 from pathlib import Path
 from typing import Any, Mapping
@@ -11,6 +13,7 @@ from typing import Any, Mapping
 import yaml
 
 from .errors import ProtocolViolation
+from .tokenizer_audit import TOKENIZER_HASH_ALGORITHM
 
 
 MODEL_REVISION = "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
@@ -37,6 +40,39 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def verify_environment_lock(path: Path) -> dict[str, str]:
+    """Require the active Python environment to match every frozen distribution."""
+    expected: dict[str, str] = {}
+    for raw_line in Path(path).read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.count("==") != 1:
+            raise ProtocolViolation(f"invalid environment lock entry: {line}")
+        name, version = line.split("==", 1)
+        expected[name] = version
+    if not expected:
+        raise ProtocolViolation("environment lock contains no distributions")
+    observed: dict[str, str] = {}
+    for name, expected_version in expected.items():
+        if name.casefold() == "python":
+            observed_version = platform.python_version()
+        else:
+            try:
+                observed_version = importlib.metadata.version(name)
+            except importlib.metadata.PackageNotFoundError as error:
+                raise ProtocolViolation(
+                    f"environment lock distribution is absent: {name}"
+                ) from error
+        if observed_version != expected_version:
+            raise ProtocolViolation(
+                f"environment version drift for {name}: "
+                f"{observed_version} != {expected_version}"
+            )
+        observed[name] = observed_version
+    return observed
+
+
 def _require(condition: bool, message: str) -> None:
     if not condition:
         raise ProtocolViolation(message)
@@ -44,6 +80,8 @@ def _require(condition: bool, message: str) -> None:
 
 def validate_config(config: Mapping[str, Any]) -> None:
     _require(str(config.get("protocol_version")) == "6.3", "not a V6.3 config")
+    _require(int(config.get("protocol_revision", 0)) == 2, "not the repaired V6.3 protocol revision")
+    _require(config.get("run_id") == "mode3_v6_3_light_r2", "V6.3 run identity drift")
     _require(config.get("experiment_name") == "mode3_v6_3_light_single_token_frozen_cap", "experiment name drift")
     scope = config.get("scope", {})
     _require(scope.get("only_mode") == 3, "V6.3 is Mode 3 only")
@@ -54,6 +92,16 @@ def validate_config(config: Mapping[str, Any]) -> None:
     model = config.get("model", {})
     _require(model.get("revision") == MODEL_REVISION, "model revision drift")
     _require(model.get("formal_precision") == "float32", "first formal run must be float32")
+    _require(
+        model.get("tokenizer_hash_algorithm") == TOKENIZER_HASH_ALGORITHM,
+        "tokenizer hash algorithm drift",
+    )
+    tokenizer_digest = str(model.get("tokenizer_sha256", ""))
+    _require(
+        len(tokenizer_digest) == 64
+        and all(character in "0123456789abcdef" for character in tokenizer_digest),
+        "tokenizer SHA-256 must be lowercase hexadecimal",
+    )
     search = config.get("search", {})
     _require(search.get("exhaustive_legal_vocabulary") is True, "full legal-vocabulary enumeration is required")
     for key in ("blackbox_cem", "genetic_algorithm", "whitebox_hotflip", "continuous_token_search"):
@@ -79,6 +127,12 @@ def validate_config(config: Mapping[str, Any]) -> None:
     _require(bool(allowed) and allowed.issubset(REQUIRED_ALLOWED_GPUS), "only physical GPUs 4-7 may be used")
     _require(REQUIRED_FORBIDDEN_GPUS.issubset(forbidden), "physical GPUs 0-3 must be hard-disabled")
     _require(not allowed.intersection(forbidden), "GPU allow/deny lists overlap")
+    environment_digest = str(resources.get("environment_lock_sha256", ""))
+    _require(
+        len(environment_digest) == 64
+        and all(character in "0123456789abcdef" for character in environment_digest),
+        "environment lock SHA-256 must be frozen",
+    )
     budget = config.get("budget", {})
     _require(float(budget.get("hard_ratio", 0)) == 6.5, "hard budget ratio must be 6.5x V5")
     _require(float(budget.get("forbidden_ratio", 0)) == 15.0, "absolute ceiling must be 15x V5")

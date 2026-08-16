@@ -12,8 +12,16 @@ from sticky_lab.mode3_v6_3.cache import (
     CallSpaceEntry,
     EmbeddingCache,
 )
-from sticky_lab.mode3_v6_3.errors import BudgetHardStop, DuplicateEncoderCallConflict
-from sticky_lab.mode3_v6_3.config import config_for_profile, load_config
+from sticky_lab.mode3_v6_3.errors import (
+    BudgetHardStop,
+    DuplicateEncoderCallConflict,
+    ProtocolViolation,
+)
+from sticky_lab.mode3_v6_3.config import (
+    config_for_profile,
+    load_config,
+    verify_environment_lock,
+)
 from sticky_lab.mode3_v6_3.report import atomic_json, result_inventory
 
 
@@ -99,3 +107,24 @@ def test_result_inventory_has_recoverable_triple_identity(tmp_path):
     assert inventory == again
     assert inventory["files"][0]["relative_path"] == "a.txt"
     assert len(inventory["root_sha256"]) == 64
+
+
+def test_environment_lock_requires_exact_versions(tmp_path, monkeypatch):
+    lock = tmp_path / "environment.lock"
+    lock.write_text("example-package==1.2.3\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "sticky_lab.mode3_v6_3.config.importlib.metadata.version",
+        lambda name: "1.2.3",
+    )
+    assert verify_environment_lock(lock) == {"example-package": "1.2.3"}
+
+
+def test_environment_lock_rejects_version_drift(tmp_path, monkeypatch):
+    lock = tmp_path / "environment.lock"
+    lock.write_text("example-package==1.2.3\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "sticky_lab.mode3_v6_3.config.importlib.metadata.version",
+        lambda name: "9.9.9",
+    )
+    with pytest.raises(ProtocolViolation):
+        verify_environment_lock(lock)

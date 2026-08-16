@@ -4,6 +4,14 @@ Status: preregistered implementation specification. The formal run is valid only
 `run_manifest.json` binds this document, the resolved configuration, code commit, model,
 tokenizer, data-role manifest, position manifest and call-space manifest by SHA-256.
 
+Protocol revision 2 binds tokenizer identity with
+`sorted_token_id_nul_text_lf_v1`: every complete-vocabulary `(token_id, token_text)` pair
+is sorted by integer ID and token text, then hashed as the UTF-8 byte stream
+`token_id + NUL + token_text + LF`. Fast-tokenizer backend JSON is recorded only as an
+environment diagnostic because its serialization can change across library versions
+without changing token identity. Tokenizer, model-manifest, data-manifest and environment
+lock identities are checked before corpus registration or sealed-role writes begin.
+
 ## Primary question
 
 Does there exist a legal, non-special tokenizer item whose realized contextual length is

@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import hashlib
-import json
 from typing import Any, Mapping, Sequence
 
 from .errors import ProtocolViolation
 from .insertion import insert_with_span, pretruncate_source
+
+
+TOKENIZER_HASH_ALGORITHM = "sorted_token_id_nul_text_lf_v1"
 
 
 @dataclass(frozen=True)
@@ -33,12 +35,34 @@ class LegalToken:
         return value
 
 
-def tokenizer_sha256(tokenizer: Any) -> str:
+def tokenizer_sha256(
+    tokenizer: Any, *, algorithm: str = TOKENIZER_HASH_ALGORITHM
+) -> str:
+    """Hash the complete token-ID mapping with an explicit stable contract.
+
+    Fast-tokenizer backend JSON contains serializer and library-version details
+    that are not part of the token identity.  The registered V6.2/V6.3 digest
+    instead binds every token text to its integer ID in a canonical byte stream.
+    """
+    if str(algorithm) != TOKENIZER_HASH_ALGORITHM:
+        raise ProtocolViolation(f"unsupported tokenizer hash algorithm: {algorithm}")
+    digest = hashlib.sha256()
+    vocabulary = tokenizer.get_vocab()
+    if not isinstance(vocabulary, Mapping) or not vocabulary:
+        raise ProtocolViolation("tokenizer vocabulary is empty or not a mapping")
+    for token_text, token_id in sorted(
+        vocabulary.items(), key=lambda item: (int(item[1]), str(item[0]))
+    ):
+        digest.update(f"{int(token_id)}\0{str(token_text)}\n".encode("utf-8"))
+    return digest.hexdigest()
+
+
+def tokenizer_backend_sha256(tokenizer: Any) -> str | None:
+    """Return the environment-sensitive backend digest for diagnostics only."""
     backend = getattr(tokenizer, "backend_tokenizer", None)
-    if backend is not None:
-        payload = backend.to_str().encode("utf-8")
-    else:  # fail-closed callers still compare the complete vocab payload
-        payload = json.dumps(tokenizer.get_vocab(), sort_keys=True, separators=(",", ":")).encode("utf-8")
+    if backend is None:
+        return None
+    payload = backend.to_str().encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
 

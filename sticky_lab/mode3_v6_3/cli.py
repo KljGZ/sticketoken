@@ -23,6 +23,7 @@ from .config import (
     load_config,
     resolved_config,
     sha256_file,
+    verify_environment_lock,
 )
 from .confirm import confirm_fixed_cap, paired_position_audit
 from .data_contract import register_v63_roles, required_unique_capacity
@@ -33,7 +34,7 @@ from .encoding import (
     INSERTION_PROTOCOL,
     build_call_space,
 )
-from .errors import CandidateRejected, ProtocolViolation
+from .errors import CandidateRejected, ProtocolViolation, TokenizerHashMismatch
 from .freeze import (
     load_freeze,
     select_primary_and_secondaries,
@@ -80,6 +81,7 @@ from .tokenizer_audit import (
     prepare_contexts,
     shard_candidates,
     standalone_candidates,
+    tokenizer_backend_sha256,
     tokenizer_sha256,
 )
 
@@ -117,6 +119,67 @@ def _tokenizer(config: Mapping[str, Any]) -> Any:
 def _verify_bound_file(path: Path, expected: str) -> None:
     if not path.is_file() or sha256_file(path) != str(expected):
         raise ProtocolViolation(f"bound resource mismatch: {path}")
+
+
+def _verify_checksum_manifest(path: Path) -> None:
+    rows = []
+    for raw_line in Path(path).read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        fields = line.split(maxsplit=1)
+        if len(fields) != 2 or len(fields[0]) != 64:
+            raise ProtocolViolation(f"invalid checksum manifest row: {line}")
+        expected, filename = fields
+        target = Path(filename.lstrip(" *"))
+        if not target.is_file() or sha256_file(target) != expected:
+            raise ProtocolViolation(f"model resource checksum mismatch: {target}")
+        rows.append(target)
+    if not rows:
+        raise ProtocolViolation("model checksum manifest is empty")
+
+
+def _configured_tokenizer_hash(
+    tokenizer: Any, config: Mapping[str, Any]
+) -> str:
+    return tokenizer_sha256(
+        tokenizer,
+        algorithm=str(config["model"]["tokenizer_hash_algorithm"]),
+    )
+
+
+def _verify_static_identity(
+    config: Mapping[str, Any],
+) -> tuple[Any, str, str | None]:
+    """Verify all cheap frozen identities before registration can write data."""
+    _verify_bound_file(
+        Path(config["data"]["corpus_manifest"]),
+        str(config["data"]["corpus_manifest_sha256"]),
+    )
+    _verify_bound_file(
+        Path(config["data"]["independent_corpus_audit"]),
+        str(config["data"]["independent_corpus_audit_sha256"]),
+    )
+    _verify_bound_file(
+        Path(config["model"]["checksum_manifest"]),
+        str(config["model"]["checksum_manifest_sha256"]),
+    )
+    _verify_checksum_manifest(Path(config["model"]["checksum_manifest"]))
+    _verify_bound_file(
+        Path(config["resources"]["environment_lock"]),
+        str(config["resources"]["environment_lock_sha256"]),
+    )
+    verify_environment_lock(Path(config["resources"]["environment_lock"]))
+    tokenizer = _tokenizer(config)
+    observed = _configured_tokenizer_hash(tokenizer, config)
+    expected = str(config["model"]["tokenizer_sha256"])
+    if observed != expected:
+        raise TokenizerHashMismatch(
+            "stable tokenizer identity differs from frozen config: "
+            f"algorithm={config['model']['tokenizer_hash_algorithm']} "
+            f"observed={observed} expected={expected}"
+        )
+    return tokenizer, observed, tokenizer_backend_sha256(tokenizer)
 
 
 def _write_role(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
@@ -177,16 +240,28 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
 
     output = Path(args.output).resolve()
     assert_output_leaf(output)
+    tokenizer, observed_tokenizer_hash, backend_tokenizer_hash = (
+        _verify_static_identity(config)
+    )
     complete = output / "registration" / "COMPLETE.json"
     if complete.is_file():
         registered = json.loads(complete.read_text(encoding="utf-8"))
-        if registered.get("profile") != config["run_profile"]:
-            raise ProtocolViolation("existing registration belongs to another profile")
+        expected_identity = {
+            "profile": config["run_profile"],
+            "run_id": config["run_id"],
+            "code_commit": _git_commit(),
+            "source_config_file_sha256": sha256_file(Path(args.config)),
+            "tokenizer_hash_algorithm": config["model"]["tokenizer_hash_algorithm"],
+            "tokenizer_sha256": observed_tokenizer_hash,
+        }
+        for key, expected in expected_identity.items():
+            if registered.get(key) != expected:
+                raise ProtocolViolation(
+                    f"existing registration identity mismatch for {key}: "
+                    f"{registered.get(key)!r} != {expected!r}"
+                )
         return
     output.mkdir(parents=True, exist_ok=True)
-    _verify_bound_file(Path(config["data"]["corpus_manifest"]), str(config["data"]["corpus_manifest_sha256"]))
-    _verify_bound_file(Path(config["data"]["independent_corpus_audit"]), str(config["data"]["independent_corpus_audit_sha256"]))
-    _verify_bound_file(Path(config["model"]["checksum_manifest"]), str(config["model"]["checksum_manifest_sha256"]))
     disk = shutil.disk_usage(output.parent)
     required_disk = int(float(config["resources"]["minimum_free_disk_peak_multiplier"]) * int(config["resources"]["estimated_peak_cache_bytes"]))
     if disk.free < required_disk:
@@ -243,10 +318,6 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     inventory = build_sealed_inventory(
         output, sealed_paths, role_manifest_sha256=str(role_manifest["manifest_sha256"])
     )
-    tokenizer = _tokenizer(config)
-    observed_tokenizer_hash = tokenizer_sha256(tokenizer)
-    if observed_tokenizer_hash != str(config["model"]["tokenizer_sha256"]):
-        raise ProtocolViolation("tokenizer hash differs from frozen config")
     call_space = build_call_space(
         tokenizer,
         {role: roles[role] for role in discovery_roles},
@@ -269,7 +340,9 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     resolved = resolved_config(config, source_path=Path(args.config))
     atomic_json(output / "resolved_config.json", resolved)
     run_manifest = {
-        "schema_version": "mode3-v6-3-run-manifest-v1",
+        "schema_version": "mode3-v6-3-run-manifest-v2",
+        "run_id": config["run_id"],
+        "protocol_revision": int(config["protocol_revision"]),
         "experiment_name": config["experiment_name"],
         "profile": config["run_profile"],
         "scientific_claims_allowed": config["run_profile"] == "formal",
@@ -277,7 +350,10 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
         "config_sha256": canonical_sha256(config),
         "source_config_file_sha256": sha256_file(Path(args.config)),
         "model_revision": config["model"]["revision"],
+        "tokenizer_hash_algorithm": config["model"]["tokenizer_hash_algorithm"],
         "tokenizer_sha256": observed_tokenizer_hash,
+        "tokenizer_backend_sha256_diagnostic": backend_tokenizer_hash,
+        "environment_lock_sha256": config["resources"]["environment_lock_sha256"],
         "role_manifest_sha256": role_manifest["manifest_sha256"],
         "call_space_sha256": call_space.manifest_sha256,
         "sealed_inventory_sha256": inventory["inventory_sha256"],
@@ -288,8 +364,14 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     atomic_json(output / "run_manifest.json", run_manifest)
     physically_seal(list(sealed_paths.values()))
     atomic_json(complete, {
-        "schema_version": "mode3-v6-3-registration-complete-v1",
+        "schema_version": "mode3-v6-3-registration-complete-v2",
         "status": "DATA_PREFLIGHT_PASSED", "profile": config["run_profile"],
+        "run_id": config["run_id"],
+        "code_commit": _git_commit(),
+        "source_config_file_sha256": sha256_file(Path(args.config)),
+        "tokenizer_hash_algorithm": config["model"]["tokenizer_hash_algorithm"],
+        "tokenizer_sha256": observed_tokenizer_hash,
+        "tokenizer_backend_sha256_diagnostic": backend_tokenizer_hash,
         "role_manifest_sha256": role_manifest["manifest_sha256"],
         "call_space_sha256": call_space.manifest_sha256,
         "sealed_roles_encoded": False, "confirm_tokenizer_accessed": False,
@@ -310,6 +392,9 @@ def _audit_contexts(output: Path, tokenizer: Any, config: Mapping[str, Any]) -> 
 def command_enumerate(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
     output = Path(args.output).resolve()
     tokenizer = _tokenizer(config)
+    tokenizer_hash = _configured_tokenizer_hash(tokenizer, config)
+    if tokenizer_hash != str(config["model"]["tokenizer_sha256"]):
+        raise TokenizerHashMismatch("enumeration tokenizer identity drift")
     contexts = _audit_contexts(output, tokenizer, config)
     candidates = standalone_candidates(tokenizer)
     if config["run_profile"] != "formal" and int(args.shards) != 1:
@@ -337,7 +422,9 @@ def command_enumerate(args: argparse.Namespace, config: Mapping[str, Any]) -> No
         "shard": int(args.shard), "shards": int(args.shards),
         "standalone_candidates_examined": len(audits), "legal_tokens": len(legal),
         "formal_exhaustive_shard": config["run_profile"] == "formal",
-        "tokenizer_sha256": tokenizer_sha256(tokenizer),
+        "tokenizer_hash_algorithm": config["model"]["tokenizer_hash_algorithm"],
+        "tokenizer_sha256": tokenizer_hash,
+        "tokenizer_backend_sha256_diagnostic": tokenizer_backend_sha256(tokenizer),
     })
 
 
@@ -351,7 +438,13 @@ def command_merge_enumeration(args: argparse.Namespace, config: Mapping[str, Any
         completes.append(json.loads((target / "COMPLETE.json").read_text(encoding="utf-8")))
         legal.extend(read_jsonl(target / "legal_tokens.jsonl"))
         audits.extend(read_jsonl(target / "tokenizer_audit.jsonl"))
-    if any(row["shards"] != int(args.shards) or row["tokenizer_sha256"] != completes[0]["tokenizer_sha256"] for row in completes):
+    if any(
+        row["shards"] != int(args.shards)
+        or row["tokenizer_sha256"] != completes[0]["tokenizer_sha256"]
+        or row["tokenizer_hash_algorithm"]
+        != completes[0]["tokenizer_hash_algorithm"]
+        for row in completes
+    ):
         raise ProtocolViolation("enumeration shard mismatch")
     legal.sort(key=lambda row: int(row["token_id"]))
     if len({int(row["token_id"]) for row in legal}) != len(legal):
@@ -372,6 +465,7 @@ def command_merge_enumeration(args: argparse.Namespace, config: Mapping[str, Any
         "legal_tokens": len(legal), "actual_tokenizer_length": 1,
         "formal_exhaustive": config["run_profile"] == "formal",
         "all_legal_tokens_enter_s0": True,
+        "tokenizer_hash_algorithm": completes[0]["tokenizer_hash_algorithm"],
         "tokenizer_sha256": completes[0]["tokenizer_sha256"],
     })
     atomic_json(output / "budget" / "planned_actual_vocab.json", registered_budget(config, len(legal)))
