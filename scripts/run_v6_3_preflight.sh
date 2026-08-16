@@ -7,6 +7,11 @@ CONFIG="${V6_3_CONFIG:-configs/v6_3_mode3_light.yaml}"
 OUTPUT="${V6_3_OUTPUT:-/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light}"
 PROFILE="${V6_3_PROFILE:-formal}"
 GPUS="${V6_3_GPUS:-4,5,6,7}"
+RUFF="${V6_3_RUFF:-$(command -v ruff || true)}"
+MYPY="${V6_3_MYPY:-$(command -v mypy || true)}"
+
+[[ -n "$RUFF" && -x "$RUFF" ]] || { echo "ruff executable not found" >&2; exit 69; }
+[[ -n "$MYPY" && -x "$MYPY" ]] || { echo "mypy executable not found" >&2; exit 69; }
 
 IFS=',' read -r -a gpu_array <<<"$GPUS"
 [[ "${#gpu_array[@]}" -ge 1 ]] || { echo "no V6.3 GPU selected" >&2; exit 64; }
@@ -27,8 +32,8 @@ fi
 python_log="$OUTPUT/orchestration_logs/code_and_synthetic_tests.log"
 {
   "$PYTHON" -m compileall -q sticky_lab/mode3_v6_3
-  "$PYTHON" -m ruff check sticky_lab/mode3_v6_3 tests/test_mode3_v6_3_*.py scripts/run_v6_3_orchestrator.py scripts/status_v6_3_mode3.py
-  "$PYTHON" -m mypy sticky_lab/mode3_v6_3
+  "$RUFF" check sticky_lab/mode3_v6_3 tests/test_mode3_v6_3_*.py scripts/run_v6_3_orchestrator.py scripts/status_v6_3_mode3.py
+  "$MYPY" sticky_lab/mode3_v6_3
   "$PYTHON" -m pytest -q -p no:cacheprovider tests/test_mode3_v6_3_*.py
 } >"$python_log" 2>&1
 
