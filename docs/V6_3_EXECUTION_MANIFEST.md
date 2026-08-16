@@ -19,12 +19,16 @@ the source config hash, resolved config hash, protocol hash, code commit, model 
 tokenizer hash, data manifests and role/call-space hashes. Dry-run and pilot use separate
 parents with the same required output leaf and are explicitly non-scientific.
 
-Protocol revision 4 uses run ID `mode3_v6_3_light_r4`. It retains the tokenizer
-identity and NumPy 2.x repairs and binds dry-run/pilot pass markers to the actual GPU
-arguments. The tokenizer hash contract is
+Protocol revision 5 uses run ID `mode3_v6_3_light_r5`. It retains the tokenizer
+identity, NumPy 2.x and runtime-GPU marker repairs. Revision 5 adds a dynamic GPU
+safety state machine: a worker launches only with at least 12 GiB free; if its runtime
+reserve falls below 8 GiB, the orchestrator requests a cooperative yield. Encoder
+calls are split into registered 1,024-text chunks, and a worker observes the request
+only after its budget reservation, call-registry bits and cache chunk are durable.
+The tokenizer hash contract is
 `sorted_token_id_nul_text_lf_v1`; backend-tokenizer JSON hashes are diagnostic only.
 Identity checks run before any corpus scan or role write. Superseded dry-runs are
-preserved and marked `INVALIDATED_PROTOCOL_CHANGE`; revision-4 dry-run and pilot use new
+preserved and marked `INVALIDATED_PROTOCOL_CHANGE`; revision-5 dry-run and pilot use new
 parent directories and never reuse partial artifacts from earlier revisions.
 
 Execution order:
@@ -41,9 +45,12 @@ Execution order:
 10. final report, result inventory and release shards;
 11. fresh-clone restore verification.
 
-Workers may use only physical GPUs 4–7. The orchestrator must inspect those devices and
-start at most one V6.3 worker per safe device. It must not kill, pause or modify another
-user's job. If no authorized GPU is safe, status is waiting rather than fallback to 0–3.
+Workers may use only physical GPUs 4–7. The orchestrator inspects those devices every
+second and starts at most one V6.3 worker per safe device. It never signals, kills,
+pauses or modifies another user's process. If no authorized GPU is safe, status is
+`waiting_gpu` rather than fallback to GPUs 0–3. A yield timeout blocks automatic replay;
+the orchestrator may terminate only its exact child process and must preserve all output
+for diagnosis.
 
 Recovery is marker-based and fail closed. A `COMPLETE.json` may be reused only after its
 identity and hashes validate. `FAILED.json`, partial output, hash drift, budget hard stop or

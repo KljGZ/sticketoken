@@ -19,6 +19,7 @@ from .errors import (
     TokenizerHashMismatch,
 )
 from .geometry import normalize_rows
+from .gpu_control import raise_if_gpu_yield_requested
 from .insertion import (
     RealizationAudit,
     build_audited_text,
@@ -200,17 +201,19 @@ class CachedEncoder:
         ordinals = [entry.ordinal for entry in entries]
         if len(ordinals) != len(set(ordinals)):
             raise ProtocolViolation("stage request repeats a candidate-text-position-boundary")
+        raise_if_gpu_yield_requested()
         found, missing_ordinals = self.cache.fetch(int(token_id), ordinals)
+        missing = set(missing_ordinals)
         by_ordinal = {entry.ordinal: request for entry, request in zip(entries, requests)}
         audits: list[RealizationAudit] = []
-        if missing_ordinals:
-            missing_texts: list[str] = []
-            for ordinal in missing_ordinals:
-                request = by_ordinal[ordinal]
-                expected_key = self.call_space.entries[ordinal].realized_key(token_id)
-                if request.position == "clean":
-                    if int(token_id) != -2 or token_text:
-                        raise ProtocolViolation("clean cache must use token_id=-2 and an empty token")
+        missing_text_by_ordinal: dict[int, str] = {}
+        for ordinal in ordinals:
+            request = by_ordinal[ordinal]
+            expected_key = self.call_space.entries[ordinal].realized_key(token_id)
+            if request.position == "clean":
+                if int(token_id) != -2 or token_text:
+                    raise ProtocolViolation("clean cache must use token_id=-2 and an empty token")
+                if ordinal in missing:
                     source, source_ids, _ = pretruncate_source(
                         self.oracle.tokenizer,
                         str(request.record.get("encoding_text", request.record["text"])),
@@ -218,29 +221,45 @@ class CachedEncoder:
                     )
                     if source_token_ids_hash(source_ids) != expected_key.pretruncated_source_ids_hash:
                         raise ProtocolViolation("clean source differs from registered cache key")
-                    missing_texts.append(source)
-                else:
-                    _, triggered, audit = build_audited_text(
-                        self.oracle.tokenizer, request.record,
-                        token_id=int(token_id), token_text=str(token_text),
-                        position=request.position, role=request.role,
-                        seed=int(self.config["positions"]["seed"]),
-                        replicate=int(request.replicate),
-                        maximum_length=int(self.config["model"]["maximum_sequence_length"]),
-                    )
-                    if audit.boundary_id != expected_key.random_boundary_id:
-                        raise ProtocolViolation("runtime boundary differs from registered cache key")
-                    if audit.source_token_ids_sha256 != expected_key.pretruncated_source_ids_hash:
-                        raise ProtocolViolation("runtime source hash differs from registered cache key")
-                    missing_texts.append(triggered)
-                    audits.append(audit)
-            reservation = self.registry.reserve(
-                int(token_id), missing_ordinals, phase=str(phase),
-                metadata={"cache_misses": len(missing_ordinals), "cache_hits": len(found)},
+                    missing_text_by_ordinal[ordinal] = source
+                continue
+            _, triggered, audit = build_audited_text(
+                self.oracle.tokenizer, request.record,
+                token_id=int(token_id), token_text=str(token_text),
+                position=request.position, role=request.role,
+                seed=int(self.config["positions"]["seed"]),
+                replicate=int(request.replicate),
+                maximum_length=int(self.config["model"]["maximum_sequence_length"]),
             )
-            vectors = self.oracle.encode(missing_texts, reservation=reservation)
-            self.cache.store(int(token_id), missing_ordinals, vectors, phase=str(phase))
-            found.update({ordinal: vector for ordinal, vector in zip(missing_ordinals, vectors)})
+            if audit.boundary_id != expected_key.random_boundary_id:
+                raise ProtocolViolation("runtime boundary differs from registered cache key")
+            if audit.source_token_ids_sha256 != expected_key.pretruncated_source_ids_hash:
+                raise ProtocolViolation("runtime source hash differs from registered cache key")
+            if ordinal in missing:
+                missing_text_by_ordinal[ordinal] = triggered
+            # Reconstruct the full realization audit on marker replay, including cache hits.
+            audits.append(audit)
+        chunk_size = int(self.config["resources"]["cooperative_gpu_chunk_texts"])
+        if chunk_size <= 0:
+            raise ProtocolViolation("cooperative GPU chunk size must be positive")
+        for start in range(0, len(missing_ordinals), chunk_size):
+            raise_if_gpu_yield_requested()
+            chunk_ordinals = missing_ordinals[start : start + chunk_size]
+            chunk_texts = [missing_text_by_ordinal[ordinal] for ordinal in chunk_ordinals]
+            reservation = self.registry.reserve(
+                int(token_id), chunk_ordinals, phase=str(phase),
+                metadata={
+                    "cache_misses": len(chunk_ordinals),
+                    "cache_hits": len(found),
+                    "cooperative_chunk": True,
+                },
+            )
+            vectors = self.oracle.encode(chunk_texts, reservation=reservation)
+            self.cache.store(int(token_id), chunk_ordinals, vectors, phase=str(phase))
+            found.update({ordinal: vector for ordinal, vector in zip(chunk_ordinals, vectors)})
+            # The request is observed only after registry, budget and cache are durable.
+            raise_if_gpu_yield_requested()
+        raise_if_gpu_yield_requested()
         matrix = np.stack([found[ordinal] for ordinal in ordinals]).astype(np.float32)
         return matrix, audits, {
             "requests": len(requests), "cache_hits": len(requests) - len(missing_ordinals),

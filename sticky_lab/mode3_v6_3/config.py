@@ -80,8 +80,8 @@ def _require(condition: bool, message: str) -> None:
 
 def validate_config(config: Mapping[str, Any]) -> None:
     _require(str(config.get("protocol_version")) == "6.3", "not a V6.3 config")
-    _require(int(config.get("protocol_revision", 0)) == 4, "not the repaired V6.3 protocol revision")
-    _require(config.get("run_id") == "mode3_v6_3_light_r4", "V6.3 run identity drift")
+    _require(int(config.get("protocol_revision", 0)) == 5, "not the repaired V6.3 protocol revision")
+    _require(config.get("run_id") == "mode3_v6_3_light_r5", "V6.3 run identity drift")
     _require(config.get("experiment_name") == "mode3_v6_3_light_single_token_frozen_cap", "experiment name drift")
     scope = config.get("scope", {})
     _require(scope.get("only_mode") == 3, "V6.3 is Mode 3 only")
@@ -127,6 +127,26 @@ def validate_config(config: Mapping[str, Any]) -> None:
     _require(bool(allowed) and allowed.issubset(REQUIRED_ALLOWED_GPUS), "only physical GPUs 4-7 may be used")
     _require(REQUIRED_FORBIDDEN_GPUS.issubset(forbidden), "physical GPUs 0-3 must be hard-disabled")
     _require(not allowed.intersection(forbidden), "GPU allow/deny lists overlap")
+    _require(
+        int(resources.get("gpu_start_minimum_free_memory_mib", 0)) == 12288,
+        "GPU launch reserve must be 12 GiB",
+    )
+    _require(
+        int(resources.get("gpu_runtime_minimum_free_memory_mib", 0)) == 8192,
+        "GPU runtime reserve must be 8 GiB",
+    )
+    _require(
+        float(resources.get("gpu_poll_interval_seconds", 0.0)) == 1.0,
+        "GPU poll interval must be one second",
+    )
+    _require(
+        int(resources.get("gpu_cooperative_yield_timeout_seconds", 0)) == 120,
+        "GPU cooperative yield timeout must be 120 seconds",
+    )
+    _require(
+        int(resources.get("cooperative_gpu_chunk_texts", 0)) == 1024,
+        "GPU calls must use registered cooperative chunks",
+    )
     environment_digest = str(resources.get("environment_lock_sha256", ""))
     _require(
         len(environment_digest) == 64

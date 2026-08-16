@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import traceback
 from typing import Any, Mapping, Sequence
 
@@ -34,7 +35,12 @@ from .encoding import (
     INSERTION_PROTOCOL,
     build_call_space,
 )
-from .errors import CandidateRejected, ProtocolViolation, TokenizerHashMismatch
+from .errors import (
+    CandidateRejected,
+    GpuYieldRequested,
+    ProtocolViolation,
+    TokenizerHashMismatch,
+)
 from .freeze import (
     load_freeze,
     select_primary_and_secondaries,
@@ -50,6 +56,7 @@ from .funnel import (
     position_manifest,
 )
 from .geometry import FrozenCap
+from .gpu_control import GPU_YIELD_EXIT_CODE, raise_if_gpu_yield_requested
 from .ranking import select_stage
 from .report import (
     atomic_json,
@@ -571,10 +578,11 @@ def command_stage_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> 
                     "stage": stage, "status": "candidate_rejected",
                     "reason": type(error).__name__, "detail": str(error),
                 })
-                continue
-            metrics.append(metric.to_dict())
-            models.append({"token_id": token_id, "stage": stage, "cap": cap.to_dict()})
-            audits.append(_compact_audit(audit))
+            else:
+                metrics.append(metric.to_dict())
+                models.append({"token_id": token_id, "stage": stage, "cap": cap.to_dict()})
+                audits.append(_compact_audit(audit))
+            raise_if_gpu_yield_requested()
         write_jsonl(target / "metrics.jsonl", metrics)
         write_jsonl(target / "models.jsonl", models)
         write_jsonl(target / "audits.jsonl", audits)
@@ -587,6 +595,10 @@ def command_stage_shard(args: argparse.Namespace, config: Mapping[str, Any]) -> 
             "from_scratch_refit": True, "single_cap_only": True,
             "physical_gpu": int(args.physical_gpu),
         })
+    except GpuYieldRequested:
+        # The orchestrator requested a retry only after the last cache chunk
+        # became durable. A retry reconstructs all non-cache shard artifacts.
+        raise
     except Exception as error:
         atomic_json(target / "FAILED.json", {
             "schema_version": "mode3-v6-3-stage-failed-v1",
@@ -1329,7 +1341,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "followups": command_followups,
         "status": command_status,
     }
-    commands[args.command](args, config)
+    try:
+        commands[args.command](args, config)
+    except GpuYieldRequested as error:
+        print(str(error), file=sys.stderr)
+        return GPU_YIELD_EXIT_CODE
     return 0
 
 

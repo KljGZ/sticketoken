@@ -70,3 +70,7 @@ class ModelRevisionMismatch(ProtocolViolation):
 
 class BudgetHardStop(V63Error):
     """Raised before a model call that would cross the registered hard stop."""
+
+
+class GpuYieldRequested(V63Error):
+    """Cooperative, retryable stop requested at an atomic GPU-call boundary."""

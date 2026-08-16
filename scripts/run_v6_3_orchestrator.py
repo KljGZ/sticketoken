@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 import fcntl
 import json
 import os
@@ -25,11 +26,26 @@ from sticky_lab.mode3_v6_3.config import (  # noqa: E402
     sha256_file,
 )
 from sticky_lab.mode3_v6_3.errors import ProtocolViolation  # noqa: E402
+from sticky_lab.mode3_v6_3.gpu_control import (  # noqa: E402
+    GPU_YIELD_EXIT_CODE,
+    GPU_YIELD_REQUEST_ENV,
+    gpu_has_minimum_free_memory,
+)
 from sticky_lab.mode3_v6_3.report import result_inventory  # noqa: E402
 
 
 AUTHORIZED_GPUS = (4, 5, 6, 7)
 FORBIDDEN_GPUS = (0, 1, 2, 3)
+
+
+@dataclass
+class RunningShard:
+    shard: int
+    gpu: int
+    handle: Any
+    marker: Path
+    yield_request: Path
+    yield_requested_at: float | None = None
 
 
 def atomic_json(path: Path, value: dict[str, Any]) -> None:
@@ -87,7 +103,7 @@ def gpu_snapshot() -> dict[int, dict[str, int]]:
     return values
 
 
-def parse_gpus(text: str, *, minimum_free_mib: int) -> tuple[list[int], dict[int, dict[str, int]]]:
+def parse_gpus(text: str) -> tuple[list[int], dict[int, dict[str, int]]]:
     requested = [int(value) for value in str(text).split(",") if value.strip()]
     if not requested or len(requested) != len(set(requested)):
         raise ProtocolViolation("GPU list must be non-empty and unique")
@@ -99,14 +115,6 @@ def parse_gpus(text: str, *, minimum_free_mib: int) -> tuple[list[int], dict[int
     missing = [gpu for gpu in requested if gpu not in snapshot]
     if missing:
         raise ProtocolViolation(f"requested physical GPUs are absent: {missing}")
-    unsafe = [
-        gpu for gpu in requested
-        if snapshot[gpu]["memory_free_mib"] < int(minimum_free_mib)
-    ]
-    if unsafe:
-        raise ProtocolViolation(
-            f"authorized GPUs lack registered free memory; wait/reduce concurrency: {unsafe}"
-        )
     return requested, snapshot
 
 
@@ -120,22 +128,38 @@ class Orchestrator:
         self.config_path = Path(args.config).resolve()
         base = load_config(self.config_path)
         self.config = config_for_profile(base, str(args.profile))
-        self.gpus, self.initial_gpu_snapshot = parse_gpus(
-            args.gpus, minimum_free_mib=int(args.minimum_free_memory_mib)
-        )
+        self.gpus, self.initial_gpu_snapshot = parse_gpus(args.gpus)
         if any(gpu not in self.config["resources"]["allowed_physical_gpus"] for gpu in self.gpus):
             raise ProtocolViolation("orchestrator GPU list differs from the resolved protocol")
+        resources = self.config["resources"]
+        self.gpu_start_minimum_free_memory_mib = int(
+            resources["gpu_start_minimum_free_memory_mib"]
+        )
+        self.gpu_runtime_minimum_free_memory_mib = int(
+            resources["gpu_runtime_minimum_free_memory_mib"]
+        )
+        self.gpu_poll_interval_seconds = float(resources["gpu_poll_interval_seconds"])
+        self.gpu_cooperative_yield_timeout_seconds = int(
+            resources["gpu_cooperative_yield_timeout_seconds"]
+        )
         self.python = str(Path(args.python).resolve())
         self.commit = git("rev-parse", "HEAD")
         self.config_sha256 = sha256_file(self.config_path)
         self.stage = "starting"
         self.lock_handle: Any = None
+        self.last_gpu_snapshot = self.initial_gpu_snapshot
+        self.gpu_interruptions = 0
+        self.gpu_wait_reason: str | None = None
+        self.gpu_attempt_sequence = 0
 
     def acquire_lock(self) -> None:
         path = self.output / ".orchestrator.lock"
         self.lock_handle = path.open("a+b")
         try:
-            fcntl.flock(self.lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(  # type: ignore[attr-defined]
+                self.lock_handle.fileno(),
+                fcntl.LOCK_EX | fcntl.LOCK_NB,  # type: ignore[attr-defined]
+            )
         except BlockingIOError as error:
             raise ProtocolViolation(f"another V6.3 orchestrator owns {self.output}") from error
         (self.output / ".orchestrator.pid").write_text(f"{os.getpid()}\n", encoding="utf-8")
@@ -163,6 +187,17 @@ class Orchestrator:
             "source_config_sha256": self.config_sha256,
             "authorized_physical_gpus": self.gpus,
             "forbidden_physical_gpus": list(FORBIDDEN_GPUS),
+            "gpu_safety": {
+                "launch_minimum_free_memory_mib": self.gpu_start_minimum_free_memory_mib,
+                "runtime_minimum_free_memory_mib": self.gpu_runtime_minimum_free_memory_mib,
+                "poll_interval_seconds": self.gpu_poll_interval_seconds,
+                "cooperative_yield_timeout_seconds": (
+                    self.gpu_cooperative_yield_timeout_seconds
+                ),
+                "cooperative_yields": self.gpu_interruptions,
+                "wait_reason": self.gpu_wait_reason,
+                "snapshot": self.last_gpu_snapshot,
+            },
             "progress": self.progress(),
             "updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
@@ -184,7 +219,9 @@ class Orchestrator:
             *arguments,
         ]
 
-    def environment(self, gpu: int | None = None) -> dict[str, str]:
+    def environment(
+        self, gpu: int | None = None, *, yield_request: Path | None = None
+    ) -> dict[str, str]:
         value = os.environ.copy()
         value.update({
             "HF_HUB_OFFLINE": "1",
@@ -193,22 +230,190 @@ class Orchestrator:
             "TOKENIZERS_PARALLELISM": "false",
         })
         value["CUDA_VISIBLE_DEVICES"] = "" if gpu is None else str(int(gpu))
+        if yield_request is None:
+            value.pop(GPU_YIELD_REQUEST_ENV, None)
+        else:
+            value[GPU_YIELD_REQUEST_ENV] = str(yield_request)
         return value
+
+    def refresh_gpu_snapshot(self) -> dict[int, dict[str, int]]:
+        snapshot = gpu_snapshot()
+        self.last_gpu_snapshot = snapshot
+        return snapshot
+
+    def wait_for_any_gpu(self, *, preferred: int | None = None) -> int:
+        order = list(self.gpus)
+        if preferred in order:
+            order.remove(int(preferred))
+            order.insert(0, int(preferred))
+        while True:
+            snapshot = self.refresh_gpu_snapshot()
+            for gpu in order:
+                if gpu_has_minimum_free_memory(
+                    snapshot, gpu, self.gpu_start_minimum_free_memory_mib
+                ):
+                    self.gpu_wait_reason = None
+                    self.status("running")
+                    return gpu
+            observed = {
+                gpu: snapshot[gpu]["memory_free_mib"] for gpu in order
+            }
+            self.gpu_wait_reason = (
+                "no authorized GPU meets launch reserve "
+                f"{self.gpu_start_minimum_free_memory_mib} MiB; observed {observed}"
+            )
+            self.status("waiting_gpu")
+            time.sleep(self.gpu_poll_interval_seconds)
+
+    @staticmethod
+    def bind_physical_gpu(command: Sequence[str], gpu: int) -> list[str]:
+        values = list(map(str, command))
+        try:
+            index = values.index("--physical-gpu")
+        except ValueError as error:
+            raise ProtocolViolation("GPU command lacks --physical-gpu binding") from error
+        if index + 1 >= len(values):
+            raise ProtocolViolation("GPU command has an empty --physical-gpu binding")
+        values[index + 1] = str(int(gpu))
+        return values
+
+    def new_yield_request(self, name: str) -> Path:
+        self.gpu_attempt_sequence += 1
+        return (
+            self.logs
+            / "gpu_yield_requests"
+            / f"{name}_{self.gpu_attempt_sequence:06d}.json"
+        )
+
+    def request_gpu_yield(
+        self,
+        request: Path,
+        *,
+        name: str,
+        gpu: int,
+        reason: str,
+    ) -> None:
+        if request.is_file():
+            return
+        self.gpu_interruptions += 1
+        self.gpu_wait_reason = str(reason)
+        atomic_json(request, {
+            "schema_version": "mode3-v6-3-gpu-yield-request-v1",
+            "command": str(name),
+            "physical_gpu": int(gpu),
+            "reason": str(reason),
+            "stage": self.stage,
+            "requested_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        })
+        self.status("waiting_gpu")
+
+    @staticmethod
+    def stop_own_process(process: subprocess.Popen[bytes]) -> None:
+        """Stop only the exact V6.3 child supplied by this orchestrator."""
+        if process.poll() is not None:
+            return
+        process.terminate()
+        try:
+            process.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=30)
 
     def run(self, name: str, command: Sequence[str], *, gpu: int | None = None) -> None:
         log = self.logs / f"{name}.log"
-        with log.open("ab") as handle:
-            handle.write(
-                (f"\n[{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}] "
-                 + " ".join(map(str, command)) + "\n").encode("utf-8")
-            )
-            handle.flush()
-            process = subprocess.run(
-                list(command), cwd=ROOT, env=self.environment(gpu),
-                stdout=handle, stderr=subprocess.STDOUT, check=False,
-            )
-        if process.returncode != 0:
-            raise ProtocolViolation(f"command {name} failed with exit {process.returncode}; see {log}")
+        if gpu is None:
+            with log.open("ab") as handle:
+                handle.write(
+                    (f"\n[{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}] "
+                     + " ".join(map(str, command)) + "\n").encode("utf-8")
+                )
+                handle.flush()
+                completed = subprocess.run(
+                    list(command), cwd=ROOT, env=self.environment(),
+                    stdout=handle, stderr=subprocess.STDOUT, check=False,
+                )
+            if completed.returncode != 0:
+                raise ProtocolViolation(
+                    f"command {name} failed with exit {completed.returncode}; see {log}"
+                )
+            return
+
+        preferred: int | None = int(gpu)
+        while True:
+            active_gpu = self.wait_for_any_gpu(preferred=preferred)
+            active_command = self.bind_physical_gpu(command, active_gpu)
+            request = self.new_yield_request(name)
+            requested_at: float | None = None
+            monitor_failure: str | None = None
+            code: int | None = None
+            child: subprocess.Popen[bytes]
+            with log.open("ab") as handle:
+                handle.write(
+                    (f"\n[{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}] "
+                     + " ".join(active_command) + "\n").encode("utf-8")
+                )
+                handle.flush()
+                child = subprocess.Popen(
+                    active_command, cwd=ROOT,
+                    env=self.environment(active_gpu, yield_request=request),
+                    stdout=handle, stderr=subprocess.STDOUT,
+                )
+                while True:
+                    code = child.poll()
+                    if code is not None:
+                        break
+                    if requested_at is None:
+                        try:
+                            snapshot = self.refresh_gpu_snapshot()
+                        except Exception as error:
+                            monitor_failure = str(error)
+                            reason = f"GPU telemetry failed while {name} ran: {error}"
+                            self.request_gpu_yield(
+                                request, name=name, gpu=active_gpu, reason=reason
+                            )
+                            requested_at = time.monotonic()
+                        else:
+                            if not gpu_has_minimum_free_memory(
+                                snapshot,
+                                active_gpu,
+                                self.gpu_runtime_minimum_free_memory_mib,
+                            ):
+                                free_mib = snapshot[active_gpu]["memory_free_mib"]
+                                reason = (
+                                    f"physical GPU {active_gpu} runtime free memory "
+                                    f"{free_mib} MiB fell below registered reserve "
+                                    f"{self.gpu_runtime_minimum_free_memory_mib} MiB"
+                                )
+                                self.request_gpu_yield(
+                                    request, name=name, gpu=active_gpu, reason=reason
+                                )
+                                requested_at = time.monotonic()
+                    elif (
+                        time.monotonic() - requested_at
+                        > self.gpu_cooperative_yield_timeout_seconds
+                    ):
+                        self.stop_own_process(child)
+                        raise ProtocolViolation(
+                            f"command {name} did not reach a cooperative GPU boundary "
+                            "before timeout; automatic replay is forbidden"
+                        )
+                    time.sleep(self.gpu_poll_interval_seconds)
+            if code == 0:
+                self.gpu_wait_reason = None
+                return
+            if (
+                code == GPU_YIELD_EXIT_CODE
+                and request.is_file()
+                and monitor_failure is None
+            ):
+                preferred = None
+                continue
+            if code == GPU_YIELD_EXIT_CODE and monitor_failure is not None:
+                raise ProtocolViolation(
+                    f"command {name} yielded safely, but GPU telemetry failed: "
+                    f"{monitor_failure}"
+                )
+            raise ProtocolViolation(f"command {name} failed with exit {code}; see {log}")
 
     def run_enumeration(self) -> None:
         shards = 1 if self.args.profile != "formal" else int(
@@ -246,51 +451,153 @@ class Orchestrator:
             if not (root / "COMPLETE.json").is_file():
                 jobs.append((shard, root / "COMPLETE.json"))
         pending = list(jobs)
-        running: dict[subprocess.Popen[bytes], tuple[int, int, Any, Path]] = {}
+        running: dict[subprocess.Popen[bytes], RunningShard] = {}
         free = list(self.gpus)
+        retries = {shard: 0 for shard, _ in jobs}
         failure: str | None = None
         while pending or running:
-            while pending and free and failure is None:
-                shard, marker = pending.pop(0)
-                gpu = free.pop(0)
-                name = f"{stage}_{shard:02d}"
-                log_path = self.logs / f"{name}.log"
-                handle = log_path.open("ab")
-                command = self.cli(
-                    "stage-shard", "--stage", stage,
-                    "--shard", str(shard), "--shards", str(shards),
-                    "--physical-gpu", str(gpu),
-                )
-                handle.write(("\n" + " ".join(command) + "\n").encode("utf-8"))
-                handle.flush()
-                process = subprocess.Popen(
-                    command, cwd=ROOT, env=self.environment(gpu),
-                    stdout=handle, stderr=subprocess.STDOUT,
-                )
-                running[process] = (shard, gpu, handle, marker)
-            for process, (shard, gpu, handle, marker) in list(running.items()):
+            for process, job in list(running.items()):
                 code = process.poll()
                 if code is None:
                     continue
-                handle.close()
+                job.handle.close()
                 del running[process]
-                free.append(gpu)
+                free.append(job.gpu)
                 free.sort()
-                if code != 0 or not marker.is_file():
-                    failure = f"{stage} shard {shard} failed on physical GPU {gpu} with exit {code}"
+                if code == 0 and job.marker.is_file():
+                    continue
+                if code == GPU_YIELD_EXIT_CODE and job.yield_request.is_file():
+                    if (job.marker.parent / "FAILED.json").is_file():
+                        failure = (
+                            f"{stage} shard {job.shard} wrote FAILED during a GPU yield"
+                        )
+                        break
+                    retries[job.shard] += 1
+                    pending.append((job.shard, job.marker))
+                    pending.sort(key=lambda value: value[0])
+                    continue
+                failure = (
+                    f"{stage} shard {job.shard} failed on physical GPU {job.gpu} "
+                    f"with exit {code}"
+                )
+                break
+
+            now = time.monotonic()
+            for process, job in list(running.items()):
+                if (
+                    job.yield_requested_at is not None
+                    and now - job.yield_requested_at
+                    > self.gpu_cooperative_yield_timeout_seconds
+                ):
+                    self.stop_own_process(process)
+                    job.handle.close()
+                    del running[process]
+                    failure = (
+                        f"{stage} shard {job.shard} did not reach a cooperative GPU "
+                        "boundary before timeout; automatic replay is forbidden"
+                    )
                     break
+
+            snapshot: dict[int, dict[str, int]] | None = None
+            if failure is None and (pending or running):
+                try:
+                    snapshot = self.refresh_gpu_snapshot()
+                except Exception as error:
+                    reason = f"GPU telemetry failed during {stage}: {type(error).__name__}: {error}"
+                    for job in running.values():
+                        self.request_gpu_yield(
+                            job.yield_request,
+                            name=f"{stage}_{job.shard:02d}",
+                            gpu=job.gpu,
+                            reason=reason,
+                        )
+                        if job.yield_requested_at is None:
+                            job.yield_requested_at = time.monotonic()
+                    if running:
+                        self.status("waiting_gpu")
+                        time.sleep(self.gpu_poll_interval_seconds)
+                        continue
+                    raise ProtocolViolation(reason) from error
+
+            if snapshot is not None:
+                for job in running.values():
+                    if job.yield_requested_at is not None:
+                        continue
+                    if not gpu_has_minimum_free_memory(
+                        snapshot,
+                        job.gpu,
+                        self.gpu_runtime_minimum_free_memory_mib,
+                    ):
+                        free_mib = snapshot[job.gpu]["memory_free_mib"]
+                        reason = (
+                            f"physical GPU {job.gpu} runtime free memory {free_mib} MiB "
+                            f"fell below registered reserve "
+                            f"{self.gpu_runtime_minimum_free_memory_mib} MiB"
+                        )
+                        self.request_gpu_yield(
+                            job.yield_request,
+                            name=f"{stage}_{job.shard:02d}",
+                            gpu=job.gpu,
+                            reason=reason,
+                        )
+                        job.yield_requested_at = time.monotonic()
+
+                safe_free = [
+                    gpu for gpu in free
+                    if gpu_has_minimum_free_memory(
+                        snapshot, gpu, self.gpu_start_minimum_free_memory_mib
+                    )
+                ]
+                if safe_free:
+                    self.gpu_wait_reason = None
+                while pending and safe_free and failure is None:
+                    shard, marker = pending.pop(0)
+                    gpu = safe_free.pop(0)
+                    free.remove(gpu)
+                    name = f"{stage}_{shard:02d}"
+                    log_path = self.logs / f"{name}.log"
+                    handle = log_path.open("ab")
+                    command = self.cli(
+                        "stage-shard", "--stage", stage,
+                        "--shard", str(shard), "--shards", str(shards),
+                        "--physical-gpu", str(gpu),
+                    )
+                    request = self.new_yield_request(
+                        f"{name}_retry_{retries[shard]:03d}"
+                    )
+                    handle.write(
+                        ("\n" + " ".join(command) + "\n").encode("utf-8")
+                    )
+                    handle.flush()
+                    process = subprocess.Popen(
+                        command, cwd=ROOT,
+                        env=self.environment(gpu, yield_request=request),
+                        stdout=handle, stderr=subprocess.STDOUT,
+                    )
+                    running[process] = RunningShard(
+                        shard, gpu, handle, marker, request
+                    )
+
+                if pending and not running and not safe_free:
+                    observed = {
+                        gpu: snapshot[gpu]["memory_free_mib"] for gpu in free
+                    }
+                    self.gpu_wait_reason = (
+                        "no authorized GPU meets launch reserve "
+                        f"{self.gpu_start_minimum_free_memory_mib} MiB; observed "
+                        f"{observed}"
+                    )
+                    self.status("waiting_gpu")
             if failure is not None:
-                for process, (_, _, handle, _) in running.items():
-                    process.terminate()
-                    try:
-                        process.wait(timeout=30)
-                    except subprocess.TimeoutExpired:
-                        process.kill()
-                    handle.close()
+                for process, job in running.items():
+                    self.stop_own_process(process)
+                    job.handle.close()
                 raise ProtocolViolation(failure)
-            self.status("running")
+            if self.gpu_wait_reason is None:
+                self.status("running")
             if pending or running:
-                time.sleep(1)
+                time.sleep(self.gpu_poll_interval_seconds)
+        self.gpu_wait_reason = None
         if not (self.output / "stages" / stage / "COMPLETE.json").is_file():
             self.run(
                 f"merge_{stage}",
@@ -396,7 +703,6 @@ def main() -> int:
     parser.add_argument("--gpus", default="4,5,6,7")
     parser.add_argument("--shards", type=int, default=32)
     parser.add_argument("--cpu-workers", type=int, default=8)
-    parser.add_argument("--minimum-free-memory-mib", type=int, default=4096)
     parser.add_argument("--python", default=sys.executable)
     args = parser.parse_args()
     if args.shards <= 0 or args.cpu_workers <= 0:

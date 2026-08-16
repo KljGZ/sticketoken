@@ -1,6 +1,6 @@
 protocol_version: "6.3"
-protocol_revision: 4
-run_id: mode3_v6_3_light_r4
+protocol_revision: 5
+run_id: mode3_v6_3_light_r5
 experiment_name: mode3_v6_3_light_single_token_frozen_cap
 
 scope:
@@ -33,6 +33,11 @@ resources:
   forbidden_physical_gpus: [0, 1, 2, 3]
   one_model_replica_per_gpu: true
   worker_visible_gpu_count: 1
+  gpu_start_minimum_free_memory_mib: 12288
+  gpu_runtime_minimum_free_memory_mib: 8192
+  gpu_poll_interval_seconds: 1.0
+  gpu_cooperative_yield_timeout_seconds: 120
+  cooperative_gpu_chunk_texts: 1024
   minimum_free_disk_peak_multiplier: 1.5
   estimated_peak_cache_bytes: 350000000000
   environment_lock: docs/sticky_attractor_v6_environment.lock

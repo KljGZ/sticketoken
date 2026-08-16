@@ -89,6 +89,9 @@ def test_config_hard_disables_physical_gpus_zero_through_three():
     assert config["resources"]["allowed_physical_gpus"] == [4, 5, 6, 7]
     assert config["resources"]["forbidden_physical_gpus"] == [0, 1, 2, 3]
     assert config["data"]["ood_domains"] == 4
+    assert config["resources"]["gpu_start_minimum_free_memory_mib"] == 12288
+    assert config["resources"]["gpu_runtime_minimum_free_memory_mib"] == 8192
+    assert config["resources"]["cooperative_gpu_chunk_texts"] == 1024
 
 
 def test_engineering_profiles_reduce_resources_without_changing_formal():
