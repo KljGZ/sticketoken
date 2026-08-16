@@ -163,7 +163,9 @@ def radial_occupancy(depths: Any, multipliers: Sequence[float], *, confidence: f
     if len(basin) >= 2:
         x = np.asarray([row["multiplier"] for row in basin])
         y = np.asarray([row["upper"] for row in basin])
-        integrate = getattr(np, "trapezoid", np.trapz)
+    integrate = getattr(np, "trapezoid", None)
+    if integrate is None:  # pragma: no cover - compatibility with NumPy < 2.0
+        integrate = getattr(np, "trapz")
         auc = float(integrate(y, x) / (x[-1] - x[0]))
     else:
         auc = float("nan")
