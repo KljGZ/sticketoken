@@ -4,7 +4,7 @@ set -Eeuo pipefail
 export V6_3_ROOT="${V6_3_ROOT:-/mnt/data/jkl/StickyToken-v6-3-light-formal}"
 export V6_3_PYTHON="${V6_3_PYTHON:-/home/jkl/anaconda3/envs/StickyToken/bin/python}"
 export V6_3_CONFIG="${V6_3_CONFIG:-configs/v6_3_mode3_light.yaml}"
-export V6_3_OUTPUT="${V6_3_PILOT_OUTPUT:-/mnt/data/jkl/StickyToken-v6-3-pilot-r2/sticky_lab/sentence_t5_base/mode3_v6_3_light}"
+export V6_3_OUTPUT="${V6_3_PILOT_OUTPUT:-/mnt/data/jkl/StickyToken-v6-3-pilot-r3/sticky_lab/sentence_t5_base/mode3_v6_3_light}"
 export V6_3_PROFILE=pilot
 export V6_3_GPUS="${V6_3_PILOT_GPUS:-4,5,6,7}"
 

@@ -60,6 +60,16 @@ def test_embedding_reuse_does_not_mean_cap_reuse():
     assert "encode_requests" in source and "fit_single_cap" in source
 
 
+def test_modern_numpy_trapezoid_does_not_resolve_removed_trapz(monkeypatch):
+    class ModernNumpy:
+        @staticmethod
+        def trapezoid(values, coordinates):
+            return 3.5
+
+    monkeypatch.setattr(funnel, "np", ModernNumpy())
+    assert funnel._trapezoid_integral(object(), object()) == 3.5
+
+
 def test_registered_retention_mix_has_no_history_quota():
     rows = []
     for token_id in range(20):

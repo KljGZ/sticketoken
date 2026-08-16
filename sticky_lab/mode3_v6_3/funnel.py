@@ -110,6 +110,14 @@ def _balanced_mean(values: Mapping[Stratum, np.ndarray]) -> float:
     return float(np.mean([np.mean(sample) for sample in values.values()]))
 
 
+def _trapezoid_integral(values: np.ndarray, coordinates: np.ndarray) -> float:
+    """Integrate without eagerly resolving NumPy's removed ``trapz`` alias."""
+    integrate = getattr(np, "trapezoid", None)
+    if integrate is None:  # pragma: no cover - compatibility with NumPy < 2.0
+        integrate = getattr(np, "trapz")
+    return float(integrate(values, coordinates))
+
+
 def _raw_score(
     cap: FrozenCap,
     *,
@@ -147,8 +155,7 @@ def _raw_score(
     benign_depth = cap.normalized_radius(benign)
     multipliers = np.asarray([1.0, 1.1, 1.25, 1.5])
     occupancy = np.asarray([np.mean(benign_depth <= value + 1e-12) for value in multipliers])
-    integrate = getattr(np, "trapezoid", np.trapz)
-    auc = float(integrate(occupancy, multipliers) / 0.5)
+    auc = _trapezoid_integral(occupancy, multipliers) / 0.5
     return {
         "balanced_coverage": coverage,
         "worst_position_coverage": min(position_coverage.values()),
