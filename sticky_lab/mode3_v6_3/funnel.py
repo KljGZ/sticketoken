@@ -32,19 +32,26 @@ def _position_pair(row: Mapping[str, Any], seed: int) -> tuple[str, str]:
     return first, second
 
 
-def assigned_positions(row: Mapping[str, Any], stage: str, *, seed: int) -> tuple[str, ...]:
-    if stage not in DESIGNS:
+def assigned_positions(
+    row: Mapping[str, Any], stage: str, *, seed: int,
+    designs: Mapping[str, str] | None = None,
+) -> tuple[str, ...]:
+    registered = DESIGNS if designs is None else designs
+    if stage not in registered:
         raise ProtocolViolation(f"unknown position stage {stage}")
     first, second = _position_pair(row, seed)
-    if DESIGNS[stage] == "one_of_three":
+    if registered[stage] == "one_of_three":
         return (first,)
-    if DESIGNS[stage] == "two_of_three":
+    if registered[stage] == "two_of_three":
         return (first, second)
+    if registered[stage] != "all_three":
+        raise ProtocolViolation(f"unknown position design {registered[stage]}")
     return (first, second, next(position for position in POSITIONS if position not in {first, second}))
 
 
 def position_manifest(
-    views: Mapping[str, Mapping[str, Sequence[Mapping[str, Any]]]], *, seed: int
+    views: Mapping[str, Mapping[str, Sequence[Mapping[str, Any]]]], *, seed: int,
+    designs: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     previous: dict[tuple[str, str], tuple[str, ...]] = {}
@@ -52,7 +59,7 @@ def position_manifest(
         for chain in ("fit", "radius", "score"):
             for row in views[stage][chain]:
                 key = (chain, str(row["text_id"]))
-                positions = assigned_positions(row, stage, seed=seed)
+                positions = assigned_positions(row, stage, seed=seed, designs=designs)
                 if key in previous and not set(previous[key]).issubset(positions):
                     raise ProtocolViolation("later position design does not contain earlier assignment")
                 previous[key] = positions
@@ -72,10 +79,13 @@ def position_manifest(
     return payload
 
 
-def assert_source_balanced(records: Sequence[Mapping[str, Any]], stage: str, *, seed: int) -> None:
+def assert_source_balanced(
+    records: Sequence[Mapping[str, Any]], stage: str, *, seed: int,
+    designs: Mapping[str, str] | None = None,
+) -> None:
     counts: dict[tuple[str, str], int] = {}
     for row in records:
-        for position in assigned_positions(row, stage, seed=seed):
+        for position in assigned_positions(row, stage, seed=seed, designs=designs):
             counts[(str(row["source_id"]), position)] = counts.get((str(row["source_id"]), position), 0) + 1
     for source in sorted({str(row["source_id"]) for row in records}):
         values = [counts.get((source, position), 0) for position in POSITIONS]
@@ -84,12 +94,13 @@ def assert_source_balanced(records: Sequence[Mapping[str, Any]], stage: str, *, 
 
 
 def stage_requests(
-    records: Sequence[Mapping[str, Any]], role: str, stage: str, *, seed: int
+    records: Sequence[Mapping[str, Any]], role: str, stage: str, *, seed: int,
+    designs: Mapping[str, str] | None = None,
 ) -> list[EncodingRequest]:
     return [
         EncodingRequest(str(role), row, position, 0)
         for row in records
-        for position in assigned_positions(row, stage, seed=seed)
+        for position in assigned_positions(row, stage, seed=seed, designs=designs)
     ]
 
 
@@ -239,11 +250,18 @@ def fit_and_score_candidate(
     if stage not in EVALUATION_STAGES:
         raise ProtocolViolation(f"invalid funnel stage {stage}")
     seed = int(config["positions"]["seed"])
+    designs = {
+        "s0": str(config["positions"]["s0_design"]),
+        "s1": str(config["positions"]["s1_design"]),
+        "s2": str(config["positions"]["s2_design"]),
+        "full": str(config["positions"]["full_design"]),
+        "top100": "all_three",
+    }
     for records in (fit_records, radius_records, score_records):
-        assert_source_balanced(records, stage, seed=seed)
-    fit_requests = stage_requests(fit_records, "fit", stage, seed=seed)
-    radius_requests = stage_requests(radius_records, "radius", stage, seed=seed)
-    score_requests = stage_requests(score_records, "score", stage, seed=seed)
+        assert_source_balanced(records, stage, seed=seed, designs=designs)
+    fit_requests = stage_requests(fit_records, "fit", stage, seed=seed, designs=designs)
+    radius_requests = stage_requests(radius_records, "radius", stage, seed=seed, designs=designs)
+    score_requests = stage_requests(score_records, "score", stage, seed=seed, designs=designs)
     fit_vectors, fit_audits, fit_cache = encoder.encode_requests(
         token_id=token_id, token_text=token_text, requests=fit_requests, phase=f"{stage}:fit"
     )

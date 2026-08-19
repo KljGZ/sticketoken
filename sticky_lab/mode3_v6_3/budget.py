@@ -165,6 +165,29 @@ class BudgetLedger:
 def registered_budget(config: Mapping[str, Any], legal_vocab: int) -> dict[str, Any]:
     roles = config["data"]["search_chain_sizes"]
     funnel = config["funnel"]
+    if bool(config.get("rapid_track", {}).get("enabled", False)):
+        full_texts = int(sum(roles["full"].values()))
+        breakdown = {
+            "s0_reused_no_new_model_calls": 0,
+            "full_200_all_three_positions": int(funnel["s0_keep"]) * full_texts * 3,
+            "top20_all_three_cache_reuse": 0,
+            "discovery_clean_base": full_texts + int(config["data"]["discovery_benign"]),
+            "confirm_primary_trigger_and_clean": 2 * int(config["data"]["confirm_roles"]["confirm_trigger"]),
+            "confirm_benign_clean": int(config["data"]["confirm_roles"]["confirm_benign"]),
+            "paired_position_audit": 3 * int(config["data"]["confirm_roles"]["paired_position_audit"]),
+        }
+        core = sum(breakdown.values())
+        baseline = int(config["budget"]["v5_baseline_submitted_texts"])
+        return {
+            "schema_version": "mode3-v6-3-rapid-budget-plan-v1",
+            "legal_vocab": int(legal_vocab),
+            "breakdown": breakdown,
+            "core_search_total": core,
+            "core_search_ratio": core / baseline,
+            "registered_complete_estimate": int(config["budget"]["registered_complete_estimate"]),
+            "registered_complete_ratio": int(config["budget"]["registered_complete_estimate"]) / baseline,
+            "negative_claim_supported": False,
+        }
     # Nested role views and nested position designs mean only incremental
     # candidate-text-position pairs are model calls at later stages.
     s0_unit = int(roles["s0"]["fit"] + roles["s0"]["radius"] + roles["s0"]["score"])

@@ -17,7 +17,20 @@ from .tokenizer_audit import TOKENIZER_HASH_ALGORITHM
 
 
 MODEL_REVISION = "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
-OUTPUT_LEAF = "mode3_v6_3_light"
+REGISTERED_RUNS: dict[str, dict[str, Any]] = {
+    "mode3_v6_3_light_r5": {
+        "protocol_revision": 5,
+        "output_leaf": "mode3_v6_3_light",
+        "experiment_name": "mode3_v6_3_light_single_token_frozen_cap",
+        "rapid": False,
+    },
+    "mode3_v6_3_rapid_r6": {
+        "protocol_revision": 6,
+        "output_leaf": "mode3_v6_3_rapid_r6",
+        "experiment_name": "mode3_v6_3_rapid_positive_single_token_frozen_cap",
+        "rapid": True,
+    },
+}
 REQUIRED_ALLOWED_GPUS = frozenset({4, 5, 6, 7})
 REQUIRED_FORBIDDEN_GPUS = frozenset({0, 1, 2, 3})
 
@@ -80,15 +93,24 @@ def _require(condition: bool, message: str) -> None:
 
 def validate_config(config: Mapping[str, Any]) -> None:
     _require(str(config.get("protocol_version")) == "6.3", "not a V6.3 config")
-    _require(int(config.get("protocol_revision", 0)) == 5, "not the repaired V6.3 protocol revision")
-    _require(config.get("run_id") == "mode3_v6_3_light_r5", "V6.3 run identity drift")
-    _require(config.get("experiment_name") == "mode3_v6_3_light_single_token_frozen_cap", "experiment name drift")
+    run_id = str(config.get("run_id", ""))
+    _require(run_id in REGISTERED_RUNS, "unregistered V6.3 run identity")
+    registration = REGISTERED_RUNS[run_id]
+    _require(
+        int(config.get("protocol_revision", 0))
+        == int(registration["protocol_revision"]),
+        "V6.3 protocol revision drift",
+    )
+    _require(
+        config.get("experiment_name") == registration["experiment_name"],
+        "experiment name drift",
+    )
     scope = config.get("scope", {})
     _require(scope.get("only_mode") == 3, "V6.3 is Mode 3 only")
     _require(scope.get("primary_claim") == "P3_ST_FCA_CORE", "primary claim drift")
     _require(scope.get("actual_trigger_token_length") == 1, "trigger must be one actual token")
     _require(scope.get("one_insertion_only") is True, "exactly one insertion is required")
-    _require(scope.get("output_leaf") == OUTPUT_LEAF, "output leaf drift")
+    _require(scope.get("output_leaf") == registration["output_leaf"], "output leaf drift")
     model = config.get("model", {})
     _require(model.get("revision") == MODEL_REVISION, "model revision drift")
     _require(model.get("formal_precision") == "float32", "first formal run must be float32")
@@ -153,9 +175,32 @@ def validate_config(config: Mapping[str, Any]) -> None:
         and all(character in "0123456789abcdef" for character in environment_digest),
         "environment lock SHA-256 must be frozen",
     )
+    rapid = config.get("rapid_track", {})
+    if bool(registration["rapid"]):
+        _require(rapid.get("enabled") is True, "r6 rapid track must be enabled")
+        _require(
+            rapid.get("amendment_id") == "V6_3_RAPID_POSITIVE_TRACK_A1",
+            "r6 amendment identity drift",
+        )
+        _require(int(config["funnel"].get("s0_keep", 0)) == 200, "r6 must retain 200 S0 candidates")
+        _require(int(config["funnel"].get("full_top", 0)) == 20, "r6 must retain 20 FULL candidates")
+        _require(config["positions"].get("full_design") == "all_three", "r6 FULL must use all three positions")
+        _require(config["positions"].get("top100_complete_all_positions") is True, "r6 final discovery stage must use all positions")
+        _require(str(rapid.get("source_run_id")) == "mode3_v6_3_light_r5", "r6 S0 source run drift")
+        source_commit = str(rapid.get("source_commit", ""))
+        source_config = str(rapid.get("source_config_sha256", ""))
+        _require(len(source_commit) == 40, "r6 source commit must be frozen")
+        _require(len(source_config) == 64, "r6 source config SHA-256 must be frozen")
+        _require(resources.get("priority_peer_first") is True, "r6 must yield to r5 workers")
+    else:
+        _require(not rapid or rapid.get("enabled") is not True, "r5 cannot enable the r6 rapid track")
     budget = config.get("budget", {})
-    _require(float(budget.get("hard_ratio", 0)) == 6.5, "hard budget ratio must be 6.5x V5")
-    _require(float(budget.get("forbidden_ratio", 0)) == 15.0, "absolute ceiling must be 15x V5")
+    if bool(registration["rapid"]):
+        _require(float(budget.get("hard_ratio", 0)) == 0.5, "r6 hard budget ratio must be 0.5x V5")
+        _require(float(budget.get("forbidden_ratio", 0)) == 1.0, "r6 absolute ceiling must be 1.0x V5")
+    else:
+        _require(float(budget.get("hard_ratio", 0)) == 6.5, "hard budget ratio must be 6.5x V5")
+        _require(float(budget.get("forbidden_ratio", 0)) == 15.0, "absolute ceiling must be 15x V5")
     _require(int(budget.get("hard_limit", 0)) < int(budget.get("forbidden_limit", 0)), "hard limit must precede absolute ceiling")
 
 
@@ -215,12 +260,17 @@ def config_for_profile(config: Mapping[str, Any], profile: str) -> dict[str, Any
     return value
 
 
-def assert_output_leaf(output: Path) -> None:
+def assert_output_leaf(output: Path, config: Mapping[str, Any]) -> None:
     path = Path(output).resolve()
-    if path.name != OUTPUT_LEAF:
-        raise ProtocolViolation(f"V6.3 output must end in {OUTPUT_LEAF}: {path}")
-    protected = {"mode3_v6", "mode3_v6_compact", "mode3_v6_2", "v6_compact"}
-    if any(part in protected for part in path.parts):
+    run_id = str(config.get("run_id", ""))
+    expected = str(REGISTERED_RUNS[run_id]["output_leaf"])
+    if path.name != expected:
+        raise ProtocolViolation(f"V6.3 output must end in {expected}: {path}")
+    protected = {
+        "mode3_v6", "mode3_v6_compact", "mode3_v6_2",
+        "mode3_v6_3_light", "v6_compact",
+    }
+    if any(part in protected for part in path.parts[:-1]):
         raise ProtocolViolation(f"V6.3 refuses protected output path: {path}")
 
 

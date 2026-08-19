@@ -168,3 +168,109 @@ def select_stage(
         "whitebox_quota": 0,
         "blackbox_quota": 0,
     }
+
+
+def select_rapid_s0(
+    rows: Sequence[Mapping[str, Any]],
+    source_selection_audit: Mapping[str, Any],
+    *,
+    seed: int,
+) -> tuple[list[int], dict[str, Any]]:
+    """Select the preregistered 200-candidate rapid-positive S0 union.
+
+    The expensive Pareto ordering is reused from the completed r5 merge. All
+    specialist orders are recomputed from the immutable merged metrics, and a
+    deterministic audit sample measures early-screen miss risk.
+    """
+    values = list(rows)
+    if len(values) < 200 or any(not _finite(row) for row in values):
+        raise ProtocolViolation("rapid S0 requires at least 200 finite candidates")
+    token_ids = [int(row["token_id"]) for row in values]
+    if len(token_ids) != len(set(token_ids)):
+        raise ProtocolViolation("rapid S0 input repeats token IDs")
+    index_by_token = {token_id: index for index, token_id in enumerate(token_ids)}
+    source_selected = source_selection_audit.get("selected", [])
+    pareto_order = [
+        index_by_token[int(item["token_id"])]
+        for item in source_selected
+        if (
+            str(item.get("reason")) == "pareto_composite"
+            and int(item["token_id"]) in index_by_token
+        )
+    ]
+    if len(pareto_order) < 120:
+        raise ProtocolViolation("r5 selection audit cannot supply the rapid Pareto quota")
+
+    quotas = {
+        "pareto": 120,
+        "worst_position": 20,
+        "lowest_occupancy": 20,
+        "migration": 15,
+        "compact_radius": 10,
+        "bootstrap_stability": 10,
+        "deterministic_audit": 5,
+    }
+    selected: list[int] = []
+    reasons: dict[int, str] = {}
+
+    def add(order: Sequence[int], count: int, reason: str) -> None:
+        added = 0
+        for index in order:
+            token_id = token_ids[index]
+            if token_id in reasons:
+                continue
+            selected.append(index)
+            reasons[token_id] = reason
+            added += 1
+            if added == int(count):
+                return
+
+    add(pareto_order, quotas["pareto"], "pareto")
+    add(sorted(range(len(values)), key=lambda i: (
+        -float(values[i]["worst_position_coverage"]),
+        -float(values[i]["balanced_coverage"]), token_ids[i],
+    )), quotas["worst_position"], "worst_position")
+    add(sorted(range(len(values)), key=lambda i: (
+        float(values[i]["benign_occupancy_core"]),
+        float(values[i]["benign_occupancy_1_1"]), token_ids[i],
+    )), quotas["lowest_occupancy"], "lowest_occupancy")
+    add(sorted(range(len(values)), key=lambda i: (
+        -float(values[i]["outside_to_inside"]),
+        -float(values[i]["conditional_origin_outside"]), token_ids[i],
+    )), quotas["migration"], "migration")
+    add(sorted(range(len(values)), key=lambda i: (
+        float(values[i]["radius_degrees"]),
+        -float(values[i]["balanced_coverage"]), token_ids[i],
+    )), quotas["compact_radius"], "compact_radius")
+    add(sorted(range(len(values)), key=lambda i: (
+        float(values[i]["center_restart_spread"]),
+        -float(values[i]["worst_position_coverage"]), token_ids[i],
+    )), quotas["bootstrap_stability"], "bootstrap_stability")
+    audit_order = sorted(range(len(values)), key=lambda i: (
+        hashlib.sha256(
+            f"v6.3-rapid-r6-audit\0{seed}\0{token_ids[i]}".encode("utf-8")
+        ).hexdigest(),
+        token_ids[i],
+    ))
+    add(audit_order, quotas["deterministic_audit"], "deterministic_audit")
+    for index in pareto_order:
+        if len(selected) >= 200:
+            break
+        if token_ids[index] not in reasons:
+            selected.append(index)
+            reasons[token_ids[index]] = "deterministic_overlap_fill"
+    if len(selected) != 200:
+        raise ProtocolViolation(f"rapid S0 selection produced {len(selected)}/200")
+    return [token_ids[index] for index in selected], {
+        "schema_version": "mode3-v6-3-rapid-s0-selection-v1",
+        "method": "quota_union_reusing_r5_pareto_order",
+        "keep": 200,
+        "seed": int(seed),
+        "quotas": quotas,
+        "selected": [
+            {"token_id": token_ids[index], "reason": reasons[token_ids[index]]}
+            for index in selected
+        ],
+        "historical_candidate_quota": 0,
+        "negative_claim_supported": False,
+    }

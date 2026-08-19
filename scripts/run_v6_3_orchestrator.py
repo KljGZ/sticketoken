@@ -142,6 +142,8 @@ class Orchestrator:
         self.gpu_cooperative_yield_timeout_seconds = int(
             resources["gpu_cooperative_yield_timeout_seconds"]
         )
+        self.priority_peer_first = bool(resources.get("priority_peer_first", False))
+        self.priority_peer_output = str(resources.get("priority_peer_output", ""))
         self.python = str(Path(args.python).resolve())
         self.commit = git("rev-parse", "HEAD")
         self.config_sha256 = sha256_file(self.config_path)
@@ -175,6 +177,7 @@ class Orchestrator:
         }
 
     def status(self, state: str, *, exit_code: int = 0, error: str | None = None) -> None:
+        priority_peer_gpus = sorted(self.priority_peer_gpus())
         value: dict[str, Any] = {
             "schema_version": "mode3-v6-3-orchestrator-status-v1",
             "state": str(state),
@@ -197,6 +200,9 @@ class Orchestrator:
                 "cooperative_yields": self.gpu_interruptions,
                 "wait_reason": self.gpu_wait_reason,
                 "snapshot": self.last_gpu_snapshot,
+                "priority_peer_first": self.priority_peer_first,
+                "priority_peer_output": self.priority_peer_output,
+                "priority_peer_physical_gpus": priority_peer_gpus,
             },
             "progress": self.progress(),
             "updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -241,6 +247,46 @@ class Orchestrator:
         self.last_gpu_snapshot = snapshot
         return snapshot
 
+    def priority_peer_gpus(self) -> set[int]:
+        """Return GPUs occupied by the registered higher-priority peer.
+
+        This is deliberately read-only: it inspects process metadata and never sends a
+        signal to the peer.  Only model CLI children whose command line names the exact
+        registered peer output are considered.
+        """
+        if not self.priority_peer_first or not self.priority_peer_output:
+            return set()
+        occupied: set[int] = set()
+        proc = Path("/proc")
+        try:
+            entries = list(proc.iterdir())
+        except OSError:
+            return occupied
+        for entry in entries:
+            if not entry.name.isdigit():
+                continue
+            try:
+                command = (entry / "cmdline").read_bytes().replace(b"\x00", b" ").decode(
+                    "utf-8", errors="replace"
+                )
+                if (
+                    self.priority_peer_output not in command
+                    or "sticky_lab.mode3_v6_3.cli" not in command
+                ):
+                    continue
+                environment = (entry / "environ").read_bytes().split(b"\x00")
+            except (FileNotFoundError, PermissionError, ProcessLookupError, OSError):
+                continue
+            for item in environment:
+                if not item.startswith(b"CUDA_VISIBLE_DEVICES="):
+                    continue
+                raw = item.partition(b"=")[2].decode("ascii", errors="ignore")
+                for value in raw.split(","):
+                    value = value.strip()
+                    if value.isdigit() and int(value) in self.gpus:
+                        occupied.add(int(value))
+        return occupied
+
     def wait_for_any_gpu(self, *, preferred: int | None = None) -> int:
         order = list(self.gpus)
         if preferred in order:
@@ -248,7 +294,10 @@ class Orchestrator:
             order.insert(0, int(preferred))
         while True:
             snapshot = self.refresh_gpu_snapshot()
+            priority_peer_gpus = self.priority_peer_gpus()
             for gpu in order:
+                if gpu in priority_peer_gpus:
+                    continue
                 if gpu_has_minimum_free_memory(
                     snapshot, gpu, self.gpu_start_minimum_free_memory_mib
                 ):
@@ -259,8 +308,9 @@ class Orchestrator:
                 gpu: snapshot[gpu]["memory_free_mib"] for gpu in order
             }
             self.gpu_wait_reason = (
-                "no authorized GPU meets launch reserve "
-                f"{self.gpu_start_minimum_free_memory_mib} MiB; observed {observed}"
+                "no authorized GPU meets launch reserve or is free of the registered "
+                f"priority peer; reserve {self.gpu_start_minimum_free_memory_mib} MiB; "
+                f"priority_peer_gpus={sorted(priority_peer_gpus)}; observed {observed}"
             )
             self.status("waiting_gpu")
             time.sleep(self.gpu_poll_interval_seconds)
@@ -373,7 +423,16 @@ class Orchestrator:
                             )
                             requested_at = time.monotonic()
                         else:
-                            if not gpu_has_minimum_free_memory(
+                            if active_gpu in self.priority_peer_gpus():
+                                reason = (
+                                    f"registered priority peer appeared on physical GPU "
+                                    f"{active_gpu}; r6 must yield at its next durable boundary"
+                                )
+                                self.request_gpu_yield(
+                                    request, name=name, gpu=active_gpu, reason=reason
+                                )
+                                requested_at = time.monotonic()
+                            elif not gpu_has_minimum_free_memory(
                                 snapshot,
                                 active_gpu,
                                 self.gpu_runtime_minimum_free_memory_mib,
@@ -520,10 +579,23 @@ class Orchestrator:
                     raise ProtocolViolation(reason) from error
 
             if snapshot is not None:
+                priority_peer_gpus = self.priority_peer_gpus()
                 for job in running.values():
                     if job.yield_requested_at is not None:
                         continue
-                    if not gpu_has_minimum_free_memory(
+                    if job.gpu in priority_peer_gpus:
+                        reason = (
+                            f"registered priority peer appeared on physical GPU {job.gpu}; "
+                            "r6 must yield at its next durable boundary"
+                        )
+                        self.request_gpu_yield(
+                            job.yield_request,
+                            name=f"{stage}_{job.shard:02d}",
+                            gpu=job.gpu,
+                            reason=reason,
+                        )
+                        job.yield_requested_at = time.monotonic()
+                    elif not gpu_has_minimum_free_memory(
                         snapshot,
                         job.gpu,
                         self.gpu_runtime_minimum_free_memory_mib,
@@ -544,6 +616,7 @@ class Orchestrator:
 
                 safe_free = [
                     gpu for gpu in free
+                    if gpu not in priority_peer_gpus
                     if gpu_has_minimum_free_memory(
                         snapshot, gpu, self.gpu_start_minimum_free_memory_mib
                     )
@@ -583,9 +656,10 @@ class Orchestrator:
                         gpu: snapshot[gpu]["memory_free_mib"] for gpu in free
                     }
                     self.gpu_wait_reason = (
-                        "no authorized GPU meets launch reserve "
-                        f"{self.gpu_start_minimum_free_memory_mib} MiB; observed "
-                        f"{observed}"
+                        "no authorized GPU meets launch reserve or is free of the "
+                        f"registered priority peer; reserve "
+                        f"{self.gpu_start_minimum_free_memory_mib} MiB; "
+                        f"priority_peer_gpus={sorted(priority_peer_gpus)}; observed {observed}"
                     )
                     self.status("waiting_gpu")
             if failure is not None:
@@ -615,9 +689,16 @@ class Orchestrator:
 
     def search(self) -> None:
         self.prepare()
-        self.stage = "enumeration"
-        self.status("running")
-        self.run_enumeration()
+        rapid = bool(self.config.get("rapid_track", {}).get("enabled", False))
+        if rapid:
+            self.stage = "rapid_s0_import"
+            self.status("running")
+            if not (self.output / "stages" / "s0" / "COMPLETE.json").is_file():
+                self.run("import_rapid_s0", self.cli("import-rapid-s0"))
+        else:
+            self.stage = "enumeration"
+            self.status("running")
+            self.run_enumeration()
         self.stage = "precompute_clean"
         self.status("running")
         if not (self.output / "registration" / "CLEAN_BASE_COMPLETE.json").is_file():
@@ -626,7 +707,8 @@ class Orchestrator:
                 "precompute_clean",
                 self.cli("precompute-clean", "--physical-gpu", str(gpu)), gpu=gpu,
             )
-        for stage in ("s0", "s1", "s2", "full", "top100"):
+        stages = ("full", "top100") if rapid else ("s0", "s1", "s2", "full", "top100")
+        for stage in stages:
             self.stage = stage
             self.status("running")
             self.run_gpu_shards(stage)

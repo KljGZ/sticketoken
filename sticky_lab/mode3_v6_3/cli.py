@@ -57,7 +57,7 @@ from .funnel import (
 )
 from .geometry import FrozenCap
 from .gpu_control import GPU_YIELD_EXIT_CODE, raise_if_gpu_yield_requested
-from .ranking import select_stage
+from .ranking import select_rapid_s0, select_stage
 from .report import (
     atomic_json,
     final_status,
@@ -246,7 +246,7 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
     )
 
     output = Path(args.output).resolve()
-    assert_output_leaf(output)
+    assert_output_leaf(output, config)
     tokenizer, observed_tokenizer_hash, backend_tokenizer_hash = (
         _verify_static_identity(config)
     )
@@ -332,7 +332,16 @@ def command_prepare(args: argparse.Namespace, config: Mapping[str, Any]) -> None
         trigger_roles=("fit", "radius", "score"),
     )
     call_space.write(output / "registration" / "call_space.jsonl")
-    positions = position_manifest(views, seed=int(config["positions"]["seed"]))
+    positions = position_manifest(
+        views,
+        seed=int(config["positions"]["seed"]),
+        designs={
+            "s0": str(config["positions"]["s0_design"]),
+            "s1": str(config["positions"]["s1_design"]),
+            "s2": str(config["positions"]["s2_design"]),
+            "full": str(config["positions"]["full_design"]),
+        },
+    )
     atomic_json(output / "position_manifest.json", positions)
     random_rows = [
         {
@@ -478,6 +487,162 @@ def command_merge_enumeration(args: argparse.Namespace, config: Mapping[str, Any
     atomic_json(output / "budget" / "planned_actual_vocab.json", registered_budget(config, len(legal)))
 
 
+def command_import_rapid_s0(args: argparse.Namespace, config: Mapping[str, Any]) -> None:
+    """Import only immutable discovery artifacts from the completed r5 S0."""
+    output = Path(args.output).resolve()
+    target = output / "stages" / "s0"
+    marker = target / "COMPLETE.json"
+    if marker.is_file():
+        return
+    rapid = config.get("rapid_track", {})
+    if rapid.get("enabled") is not True:
+        raise ProtocolViolation("import-rapid-s0 is only valid for registered r6")
+    source = Path(str(rapid["source_output"])).resolve()
+    if source == output or output in source.parents or source in output.parents:
+        raise ProtocolViolation("r6 output and r5 source must be disjoint")
+    required = [
+        source / "run_manifest.json",
+        source / "registration" / "COMPLETE.json",
+        source / "enumeration" / "COMPLETE.json",
+        source / "legal_tokens.jsonl",
+        source / "tokenizer_audit.jsonl",
+        source / "stages" / "s0" / "COMPLETE.json",
+        source / "stages" / "s0" / "all_metrics.jsonl",
+        source / "stages" / "s0" / "all_rejections.jsonl",
+        source / "stages" / "s0" / "selection_audit.json",
+    ]
+    missing = [str(path) for path in required if not path.is_file()]
+    if missing:
+        raise ProtocolViolation(f"r5 S0 reuse source is incomplete: {missing[:5]}")
+    failed = sorted((source / "stages" / "s0").glob("shard_*/FAILED.json"))
+    shard_markers = sorted((source / "stages" / "s0").glob("shard_*/COMPLETE.json"))
+    if failed or len(shard_markers) != int(config["funnel"]["shards"]):
+        raise ProtocolViolation(
+            f"r5 S0 shard gate failed: complete={len(shard_markers)} failed={len(failed)}"
+        )
+    source_run = json.loads((source / "run_manifest.json").read_text(encoding="utf-8"))
+    current_run = json.loads((output / "run_manifest.json").read_text(encoding="utf-8"))
+    expected_identity = {
+        "run_id": str(rapid["source_run_id"]),
+        "code_commit": str(rapid["source_commit"]),
+        "source_config_file_sha256": str(rapid["source_config_sha256"]),
+        "model_revision": str(config["model"]["revision"]),
+        "tokenizer_sha256": str(config["model"]["tokenizer_sha256"]),
+    }
+    drift = {
+        key: {"expected": expected, "observed": source_run.get(key)}
+        for key, expected in expected_identity.items()
+        if source_run.get(key) != expected
+    }
+    if drift:
+        raise ProtocolViolation(f"r5 S0 identity drift: {drift}")
+    if source_run.get("role_manifest_sha256") != current_run.get("role_manifest_sha256"):
+        raise ProtocolViolation("r5/r6 data-role manifest drift blocks S0 reuse")
+    source_complete = json.loads(
+        (source / "stages" / "s0" / "COMPLETE.json").read_text(encoding="utf-8")
+    )
+    legal = read_jsonl(source / "legal_tokens.jsonl")
+    legal_ids = [int(row["token_id"]) for row in legal]
+    if (
+        len(legal_ids) != 21984
+        or len(set(legal_ids)) != 21984
+        or int(source_complete.get("candidate_tokens", 0)) != 21984
+    ):
+        raise ProtocolViolation("r5 S0 did not cover exactly 21,984 unique legal tokens")
+    metrics = read_jsonl(source / "stages" / "s0" / "all_metrics.jsonl")
+    rejections = read_jsonl(source / "stages" / "s0" / "all_rejections.jsonl")
+    observed = {int(row["token_id"]) for row in metrics}.union(
+        int(row["token_id"]) for row in rejections
+    )
+    if observed != set(legal_ids) or len(metrics) + len(rejections) != 21984:
+        raise ProtocolViolation("r5 S0 merged metrics/rejections do not exactly cover the legal vocabulary")
+    source_audit = json.loads(
+        (source / "stages" / "s0" / "selection_audit.json").read_text(encoding="utf-8")
+    )
+    selected, selection_audit = select_rapid_s0(
+        metrics, source_audit, seed=int(rapid["s0_selection_seed"])
+    )
+    selected_set = set(selected)
+    model_index: dict[int, dict[str, Any]] = {}
+    for shard in range(int(config["funnel"]["shards"])):
+        for row in read_jsonl(source / "stages" / "s0" / f"shard_{shard:02d}" / "models.jsonl"):
+            token_id = int(row["token_id"])
+            if token_id in selected_set:
+                model_index[token_id] = row
+    if set(model_index) != selected_set:
+        raise ProtocolViolation("r5 S0 model artifacts are missing a rapid-selected token")
+    target.mkdir(parents=True, exist_ok=True)
+    write_jsonl(output / "legal_tokens.jsonl", legal)
+    shutil.copyfile(source / "tokenizer_audit.jsonl", output / "tokenizer_audit.jsonl")
+    atomic_json(output / "enumeration" / "COMPLETE.json", {
+        "schema_version": "mode3-v6-3-rapid-enumeration-reuse-v1",
+        "legal_tokens": 21984,
+        "formal_exhaustive": True,
+        "source_run_id": source_run["run_id"],
+        "source_commit": source_run["code_commit"],
+        "all_legal_tokens_entered_source_s0": True,
+    })
+    write_jsonl(target / "all_metrics.jsonl", metrics)
+    write_jsonl(target / "all_rejections.jsonl", rejections)
+    write_jsonl(target / "selected_models.jsonl", [model_index[token_id] for token_id in selected])
+    atomic_json(target / "selection_audit.json", selection_audit)
+    atomic_json(target / "selected.json", {"token_ids": selected})
+    write_parquet(output / "rapid_s0_selected_200.parquet", [
+        row for row in metrics if int(row["token_id"]) in selected_set
+    ])
+    reuse_audit = {
+        "schema_version": "mode3-v6-3-rapid-s0-reuse-audit-v1",
+        "status": "S0_REUSE_AUDIT_PASSED",
+        "source_output": str(source),
+        "source_run_id": source_run["run_id"],
+        "source_commit": source_run["code_commit"],
+        "source_config_sha256": source_run["source_config_file_sha256"],
+        "source_role_manifest_sha256": source_run["role_manifest_sha256"],
+        "legal_token_count": 21984,
+        "unique_s0_token_ids": 21984,
+        "missing_token_ids": 0,
+        "duplicate_token_ids": 0,
+        "all_shards_complete": True,
+        "failed_shards": [],
+        "valid_candidates": len(metrics),
+        "candidate_level_rejections": len(rejections),
+        "protocol_violations": 0,
+        "unexpected_exceptions": 0,
+        "cache_corruptions": 0,
+        "selected_tokens": 200,
+        "s0_centers_usable_for_full_fit": False,
+        "s0_radii_usable_for_full_radius": False,
+        "negative_claim_supported": False,
+    }
+    atomic_json(output / "S0_REUSE_AUDIT.json", reuse_audit)
+    amendment_path = output / "V6_3_RAPID_AMENDMENT_01.json"
+    atomic_json(amendment_path, {
+        "schema_version": "mode3-v6-3-rapid-amendment-v1",
+        "amendment_id": rapid["amendment_id"],
+        "purpose": "rapid_positive_existence_test",
+        "replaces_full_negative_capability": False,
+        "funnel": [21984, 200, 20, 1],
+        "source_s0_reused": True,
+        "full_refit_required": True,
+        "confirm_is_independent": True,
+    })
+    (output / "V6_3_RAPID_AMENDMENT_01.sha256").write_text(
+        f"{sha256_file(amendment_path)}  {amendment_path.name}\n", encoding="utf-8"
+    )
+    atomic_json(marker, {
+        "schema_version": "mode3-v6-3-rapid-s0-complete-v1",
+        "stage": "s0",
+        "candidate_tokens": 21984,
+        "valid": len(metrics),
+        "rejected": len(rejections),
+        "selected_tokens": 200,
+        "source_s0_reused": True,
+        "full_refit_required": True,
+        "single_cap_only": True,
+    })
+    atomic_json(output / "budget" / "planned_actual_vocab.json", registered_budget(config, 21984))
+
+
 def _runtime(
     output: Path, config: Mapping[str, Any], physical_gpu: int,
     *, root: Path | None = None, call_space_path: Path | None = None,
@@ -518,7 +683,13 @@ def _candidate_tokens(output: Path, stage: str) -> list[dict[str, Any]]:
     if stage == "s0":
         ids = sorted(legal)
     else:
-        previous = {"s1": "s0", "s2": "s1", "full": "s2", "top100": "full"}[stage]
+        config = json.loads((output / "resolved_config.json").read_text(encoding="utf-8"))
+        rapid = bool(config.get("rapid_track", {}).get("enabled", False))
+        previous = {
+            "s1": "s0", "s2": "s1",
+            "full": "s0" if rapid else "s2",
+            "top100": "full",
+        }[stage]
         ids = list(map(int, json.loads((output / "stages" / previous / "selected.json").read_text(encoding="utf-8"))["token_ids"]))
     return [legal[token_id] for token_id in ids]
 
@@ -526,7 +697,13 @@ def _candidate_tokens(output: Path, stage: str) -> list[dict[str, Any]]:
 def _previous_caps(output: Path, stage: str) -> dict[int, FrozenCap]:
     if stage == "s0":
         return {}
-    previous = {"s1": "s0", "s2": "s1", "full": "s2", "top100": "full"}[stage]
+    config = json.loads((output / "resolved_config.json").read_text(encoding="utf-8"))
+    rapid = bool(config.get("rapid_track", {}).get("enabled", False))
+    previous = {
+        "s1": "s0", "s2": "s1",
+        "full": "s0" if rapid else "s2",
+        "top100": "full",
+    }[stage]
     path = output / "stages" / previous / "selected_models.jsonl"
     return {int(row["token_id"]): FrozenCap.from_dict(row["cap"]) for row in read_jsonl(path)}
 
@@ -658,12 +835,13 @@ def command_merge_stage(args: argparse.Namespace, config: Mapping[str, Any]) -> 
     write_jsonl(target / "selected_models.jsonl", selected_models)
     atomic_json(target / "selection_audit.json", selection_audit)
     atomic_json(target / "selected.json", {"token_ids": selected})
+    rapid = bool(config.get("rapid_track", {}).get("enabled", False))
     required_name = {
         "s0": "stage_s0_all_metrics.parquet",
         "s1": "stage_s1_all_metrics.parquet",
         "s2": "stage_s2_all_metrics.parquet",
-        "full": "full_5000_all_metrics.parquet",
-        "top100": "top100_complete_metrics.parquet",
+        "full": "rapid_full_200_metrics.parquet" if rapid else "full_5000_all_metrics.parquet",
+        "top100": "rapid_full_top20_freeze_metrics.parquet" if rapid else "top100_complete_metrics.parquet",
     }[stage]
     write_parquet(output / required_name, metrics)
     atomic_json(target / "COMPLETE.json", {
@@ -1305,6 +1483,7 @@ def build_parser() -> argparse.ArgumentParser:
     enum.add_argument("--shards", type=int, required=True)
     merge_enum = sub.add_parser("merge-enumeration")
     merge_enum.add_argument("--shards", type=int, required=True)
+    sub.add_parser("import-rapid-s0")
     for name in ("precompute-clean", "precompute-confirm-clean", "confirm", "followups"):
         command = sub.add_parser(name)
         command.add_argument("--physical-gpu", type=int, required=True)
@@ -1330,6 +1509,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "prepare": command_prepare,
         "enumerate": command_enumerate,
         "merge-enumeration": command_merge_enumeration,
+        "import-rapid-s0": command_import_rapid_s0,
         "precompute-clean": command_precompute_clean,
         "stage-shard": command_stage_shard,
         "merge-stage": command_merge_stage,
