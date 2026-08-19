@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from sticky_lab.mode3_v6_3.budget import registered_budget
-from sticky_lab.mode3_v6_3.config import load_config
+from sticky_lab.mode3_v6_3.config import assert_physical_device, load_config
+from sticky_lab.mode3_v6_3.errors import ProtocolViolation
 from sticky_lab.mode3_v6_3.funnel import assigned_positions
 from sticky_lab.mode3_v6_3.ranking import select_rapid_s0
 
@@ -37,6 +40,31 @@ def test_r6_config_is_a_frozen_positive_only_route():
     assert config["positions"]["full_design"] == "all_three"
     assert config["resources"]["priority_peer_first"] is True
     assert config["resources"]["allowed_physical_gpus"] == [4, 5, 6, 7]
+
+
+def test_r7_config_is_high_priority_and_authorizes_all_eight_gpus():
+    config = load_config(Path("configs/v6_3_mode3_rapid_r7.yaml"))
+    assert config["protocol_revision"] == 7
+    assert config["rapid_track"]["enabled"] is True
+    assert config["rapid_track"]["negative_claim_supported"] is False
+    assert config["rapid_track"]["amendment_id"] == (
+        "V6_3_RAPID_POSITIVE_TRACK_A2_8GPU_HIGH_PRIORITY"
+    )
+    assert config["funnel"]["s0_keep"] == 200
+    assert config["funnel"]["full_top"] == 20
+    assert config["resources"]["scheduling_priority"] == "high"
+    assert config["resources"]["priority_peer_first"] is False
+    assert config["resources"]["signal_lower_priority_peer"] is False
+    assert config["resources"]["allowed_physical_gpus"] == list(range(8))
+    assert config["resources"]["forbidden_physical_gpus"] == []
+    for gpu in range(8):
+        assert assert_physical_device(f"cuda:{gpu}", config) == gpu
+
+
+def test_r6_still_rejects_physical_gpu_zero():
+    config = load_config(Path("configs/v6_3_mode3_rapid_r6.yaml"))
+    with pytest.raises(ProtocolViolation):
+        assert_physical_device("cuda:0", config)
 
 
 def test_rapid_s0_selection_is_exact_and_deterministic():

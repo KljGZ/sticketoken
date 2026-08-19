@@ -15,14 +15,27 @@ MYPY="${V6_3_MYPY:-$(command -v mypy || true)}"
 
 IFS=',' read -r -a gpu_array <<<"$GPUS"
 [[ "${#gpu_array[@]}" -ge 1 ]] || { echo "no V6.3 GPU selected" >&2; exit 64; }
-for gpu in "${gpu_array[@]}"; do
-  [[ "$gpu" =~ ^[4-7]$ ]] || {
-    echo "V6.3 hard-forbids physical GPUs 0-3 and permits only 4-7: $GPUS" >&2
-    exit 64
-  }
-done
 
 cd "$ROOT"
+"$PYTHON" - "$CONFIG" "$GPUS" <<'PY'
+import pathlib
+import sys
+
+from sticky_lab.mode3_v6_3.config import load_config
+
+config = load_config(pathlib.Path(sys.argv[1]))
+requested = [int(value) for value in sys.argv[2].split(",") if value.strip()]
+allowed = set(map(int, config["resources"]["allowed_physical_gpus"]))
+forbidden = set(map(int, config["resources"]["forbidden_physical_gpus"]))
+if not requested or len(requested) != len(set(requested)):
+    raise SystemExit(f"invalid GPU list: {requested}")
+if any(gpu not in allowed or gpu in forbidden for gpu in requested):
+    raise SystemExit(
+        f"GPU policy mismatch: requested={requested} "
+        f"allowed={sorted(allowed)} forbidden={sorted(forbidden)}"
+    )
+PY
+
 mkdir -p "$OUTPUT/orchestration_logs"
 if [[ "$PROFILE" == formal && -n "$(git status --porcelain)" ]]; then
   echo "formal V6.3 worktree is dirty" >&2

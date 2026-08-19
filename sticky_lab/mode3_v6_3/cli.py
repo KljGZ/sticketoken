@@ -496,10 +496,10 @@ def command_import_rapid_s0(args: argparse.Namespace, config: Mapping[str, Any])
         return
     rapid = config.get("rapid_track", {})
     if rapid.get("enabled") is not True:
-        raise ProtocolViolation("import-rapid-s0 is only valid for registered r6")
+        raise ProtocolViolation("import-rapid-s0 is only valid for a registered rapid run")
     source = Path(str(rapid["source_output"])).resolve()
     if source == output or output in source.parents or source in output.parents:
-        raise ProtocolViolation("r6 output and r5 source must be disjoint")
+        raise ProtocolViolation("rapid output and r5 source must be disjoint")
     required = [
         source / "run_manifest.json",
         source / "registration" / "COMPLETE.json",
@@ -537,7 +537,7 @@ def command_import_rapid_s0(args: argparse.Namespace, config: Mapping[str, Any])
     if drift:
         raise ProtocolViolation(f"r5 S0 identity drift: {drift}")
     if source_run.get("role_manifest_sha256") != current_run.get("role_manifest_sha256"):
-        raise ProtocolViolation("r5/r6 data-role manifest drift blocks S0 reuse")
+        raise ProtocolViolation("r5/rapid data-role manifest drift blocks S0 reuse")
     source_complete = json.loads(
         (source / "stages" / "s0" / "COMPLETE.json").read_text(encoding="utf-8")
     )
@@ -615,7 +615,10 @@ def command_import_rapid_s0(args: argparse.Namespace, config: Mapping[str, Any])
         "negative_claim_supported": False,
     }
     atomic_json(output / "S0_REUSE_AUDIT.json", reuse_audit)
-    amendment_path = output / "V6_3_RAPID_AMENDMENT_01.json"
+    amendment_stem = str(
+        rapid.get("amendment_file_stem", "V6_3_RAPID_AMENDMENT_01")
+    )
+    amendment_path = output / f"{amendment_stem}.json"
     atomic_json(amendment_path, {
         "schema_version": "mode3-v6-3-rapid-amendment-v1",
         "amendment_id": rapid["amendment_id"],
@@ -625,8 +628,15 @@ def command_import_rapid_s0(args: argparse.Namespace, config: Mapping[str, Any])
         "source_s0_reused": True,
         "full_refit_required": True,
         "confirm_is_independent": True,
+        "authorized_physical_gpus": list(
+            config["resources"]["allowed_physical_gpus"]
+        ),
+        "scheduling_priority": str(
+            config["resources"].get("scheduling_priority", "normal")
+        ),
+        "signal_other_processes": False,
     })
-    (output / "V6_3_RAPID_AMENDMENT_01.sha256").write_text(
+    (output / f"{amendment_stem}.sha256").write_text(
         f"{sha256_file(amendment_path)}  {amendment_path.name}\n", encoding="utf-8"
     )
     atomic_json(marker, {

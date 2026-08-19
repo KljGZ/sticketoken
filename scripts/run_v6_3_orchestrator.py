@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed, marker-resumable V6.3 orchestration on physical GPUs 4-7 only."""
+"""Fail-closed, marker-resumable V6.3 orchestration on registered GPUs."""
 
 from __future__ import annotations
 
@@ -32,10 +32,6 @@ from sticky_lab.mode3_v6_3.gpu_control import (  # noqa: E402
     gpu_has_minimum_free_memory,
 )
 from sticky_lab.mode3_v6_3.report import result_inventory  # noqa: E402
-
-
-AUTHORIZED_GPUS = (4, 5, 6, 7)
-FORBIDDEN_GPUS = (0, 1, 2, 3)
 
 
 @dataclass
@@ -103,13 +99,19 @@ def gpu_snapshot() -> dict[int, dict[str, int]]:
     return values
 
 
-def parse_gpus(text: str) -> tuple[list[int], dict[int, dict[str, int]]]:
+def parse_gpus(
+    text: str, *, allowed: Sequence[int], forbidden: Sequence[int]
+) -> tuple[list[int], dict[int, dict[str, int]]]:
     requested = [int(value) for value in str(text).split(",") if value.strip()]
     if not requested or len(requested) != len(set(requested)):
         raise ProtocolViolation("GPU list must be non-empty and unique")
-    if any(gpu in FORBIDDEN_GPUS or gpu not in AUTHORIZED_GPUS for gpu in requested):
+    allowed_set = set(map(int, allowed))
+    forbidden_set = set(map(int, forbidden))
+    if any(gpu in forbidden_set or gpu not in allowed_set for gpu in requested):
         raise ProtocolViolation(
-            f"V6.3 hard-forbids physical GPUs 0-3 and permits only 4-7: {requested}"
+            "requested GPUs differ from the registered allow/deny policy: "
+            f"requested={requested} allowed={sorted(allowed_set)} "
+            f"forbidden={sorted(forbidden_set)}"
         )
     snapshot = gpu_snapshot()
     missing = [gpu for gpu in requested if gpu not in snapshot]
@@ -128,10 +130,14 @@ class Orchestrator:
         self.config_path = Path(args.config).resolve()
         base = load_config(self.config_path)
         self.config = config_for_profile(base, str(args.profile))
-        self.gpus, self.initial_gpu_snapshot = parse_gpus(args.gpus)
+        resources = self.config["resources"]
+        self.gpus, self.initial_gpu_snapshot = parse_gpus(
+            args.gpus,
+            allowed=resources["allowed_physical_gpus"],
+            forbidden=resources["forbidden_physical_gpus"],
+        )
         if any(gpu not in self.config["resources"]["allowed_physical_gpus"] for gpu in self.gpus):
             raise ProtocolViolation("orchestrator GPU list differs from the resolved protocol")
-        resources = self.config["resources"]
         self.gpu_start_minimum_free_memory_mib = int(
             resources["gpu_start_minimum_free_memory_mib"]
         )
@@ -144,6 +150,13 @@ class Orchestrator:
         )
         self.priority_peer_first = bool(resources.get("priority_peer_first", False))
         self.priority_peer_output = str(resources.get("priority_peer_output", ""))
+        self.scheduling_priority = str(resources.get("scheduling_priority", "normal"))
+        self.lower_priority_peer_output = str(
+            resources.get("lower_priority_peer_output", "")
+        )
+        self.signal_lower_priority_peer = bool(
+            resources.get("signal_lower_priority_peer", False)
+        )
         self.python = str(Path(args.python).resolve())
         self.commit = git("rev-parse", "HEAD")
         self.config_sha256 = sha256_file(self.config_path)
@@ -189,7 +202,9 @@ class Orchestrator:
             "run_commit": self.commit,
             "source_config_sha256": self.config_sha256,
             "authorized_physical_gpus": self.gpus,
-            "forbidden_physical_gpus": list(FORBIDDEN_GPUS),
+            "forbidden_physical_gpus": list(
+                self.config["resources"]["forbidden_physical_gpus"]
+            ),
             "gpu_safety": {
                 "launch_minimum_free_memory_mib": self.gpu_start_minimum_free_memory_mib,
                 "runtime_minimum_free_memory_mib": self.gpu_runtime_minimum_free_memory_mib,
@@ -203,6 +218,9 @@ class Orchestrator:
                 "priority_peer_first": self.priority_peer_first,
                 "priority_peer_output": self.priority_peer_output,
                 "priority_peer_physical_gpus": priority_peer_gpus,
+                "scheduling_priority": self.scheduling_priority,
+                "lower_priority_peer_output": self.lower_priority_peer_output,
+                "signal_lower_priority_peer": self.signal_lower_priority_peer,
             },
             "progress": self.progress(),
             "updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),

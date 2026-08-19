@@ -1,0 +1,246 @@
+protocol_version: "6.3"
+protocol_revision: 7
+run_id: mode3_v6_3_rapid_r7
+experiment_name: mode3_v6_3_rapid_positive_single_token_frozen_cap_high_priority_8gpu
+
+scope:
+  only_mode: 3
+  primary_claim: P3_ST_FCA_CORE
+  actual_trigger_token_length: 1
+  one_insertion_only: true
+  original_high_dimensional_geometry_only: true
+  output_leaf: mode3_v6_3_rapid_r7
+  protected_output_leaves: [mode3_v6, mode3_v6_compact, mode3_v6_2, mode3_v6_3_light, v6_compact]
+
+model:
+  id: sentence-transformers/sentence-t5-base
+  revision: fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  local_path: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d4628481afbbaaacd7af6bb07cf9d3865f781
+  checksum_manifest: /mnt/data/jkl/StickyToken-v6-resources/models/sentence-t5-base-fc5d462.sha256
+  checksum_manifest_sha256: 94d553a8847a3939b610152eeb3ce7b107ccf765ab0d28dd87d34e1eb6fc8e98
+  tokenizer_hash_algorithm: sorted_token_id_nul_text_lf_v1
+  tokenizer_sha256: a7a9c5f67e8e46f94649f629e4bc4f2d0496a59535d1a2aa69da23c378c6cbf2
+  cache_folder: null
+  trust_remote_code: false
+  normalize_final_embeddings: true
+  formal_precision: float32
+  attention_backend: eager
+  batch_size: 128
+  maximum_sequence_length: 512
+
+resources:
+  allowed_physical_gpus: [0, 1, 2, 3, 4, 5, 6, 7]
+  forbidden_physical_gpus: []
+  one_model_replica_per_gpu: true
+  worker_visible_gpu_count: 1
+  gpu_start_minimum_free_memory_mib: 12288
+  gpu_runtime_minimum_free_memory_mib: 8192
+  gpu_poll_interval_seconds: 1.0
+  gpu_cooperative_yield_timeout_seconds: 120
+  cooperative_gpu_chunk_texts: 1024
+  scheduling_priority: high
+  priority_peer_first: false
+  lower_priority_peer_unit: sticky-v6-3-light
+  lower_priority_peer_output: /mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light
+  signal_lower_priority_peer: false
+  minimum_free_disk_peak_multiplier: 1.5
+  estimated_peak_cache_bytes: 80000000000
+  environment_lock: docs/sticky_attractor_v6_environment.lock
+  environment_lock_sha256: e784ab99324f80dee54bf8cea5cabdd97b99e97a017f539fd33b964a4b73fec7
+
+rapid_track:
+  enabled: true
+  amendment_id: V6_3_RAPID_POSITIVE_TRACK_A2_8GPU_HIGH_PRIORITY
+  amendment_file_stem: V6_3_RAPID_AMENDMENT_02
+  source_output: /mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light
+  source_run_id: mode3_v6_3_light_r5
+  source_commit: 6f9195aa747434fc595468dd7d8dddd727c56967
+  source_config_sha256: aa5294c3852fbf134ed30a73f7f16e738acb612cfbaeeab491904f27982194c1
+  source_s0_shards: 32
+  source_legal_tokens: 21984
+  s0_selection_seed: 20260819
+  negative_claim_supported: false
+
+search:
+  exhaustive_legal_vocabulary: true
+  blackbox_cem: false
+  genetic_algorithm: false
+  whitebox_hotflip: false
+  continuous_token_search: false
+  whitebox_seeded_search: false
+  historical_candidate_quota: 0
+
+tokenizer:
+  exact_actual_length: 1
+  exclude_special_tokens: true
+  standalone_roundtrip: true
+  contextual_audit_samples: 2048
+  runtime_realization_assertion: true
+  trigger_must_be_attended: true
+  offset_span_exactly_one_token: true
+  pretruncate_source_before_insert: true
+  expected_legal_vocab_for_budget: 21984
+  enumeration_shards: 32
+
+geometry:
+  metric: angular_distance_radians
+  primary_cap_count: 1
+  multicap_enabled: false
+  center_trim_fraction: 0.10
+  radius_design_quantile: 0.92
+  maximum_radius_degrees: 35.0
+  source_equal_weight: true
+  position_equal_weight: true
+  maximum_iterations: 100
+  tolerance: 1.0e-6
+  stage_restarts:
+    s0: 2
+    s1: 2
+    s2: 5
+    full: 10
+    top100: 20
+
+positions:
+  names: [prefix, suffix, random]
+  seed: 20260816
+  s0_design: one_of_three
+  s1_design: one_of_three
+  s2_design: two_of_three
+  full_design: all_three
+  top100_complete_all_positions: true
+  confirm_one_position_per_text: true
+  paired_position_audit_all_three: true
+  random_embedding_average_forbidden: true
+  random_boundary_candidate_independent: true
+  random_replicates_for_primary: 1
+
+data:
+  input_glob: /mnt/data/jkl/StickyToken-v6-2-data/registered-formal/**/sampled_sentence_pairs.csv
+  corpus_manifest: /mnt/data/jkl/StickyToken-v6-2-data/registered-formal/corpus_manifest.json
+  corpus_manifest_sha256: c4a85cd509638fdd7dd75a703a3eacd203340c21f59b102a164911e06065088c
+  independent_corpus_audit: /mnt/data/jkl/StickyToken-v6-2-data/corpus_independent_audit.json
+  independent_corpus_audit_sha256: e30e6548331c47d23bbf853d48a39ac160f43cd8303966168eda1479d70affc8
+  required_columns: [text, document_id, source_id, domain, language, text_type, license]
+  allow_resampling: false
+  allow_sentence_as_document_fallback: false
+  maximum_near_duplicate_jaccard: 0.80
+  minimum_iid_sources: 4
+  minimum_ood_sources: 4
+  ood_domains: 4
+  near_duplicate_manual_audit_pairs: 1000
+  search_chain_sizes:
+    s0: {fit: 1024, radius: 512, score: 512}
+    s1: {fit: 1536, radius: 768, score: 1024}
+    s2: {fit: 3072, radius: 1536, score: 2048}
+    full: {fit: 8000, radius: 4000, score: 6000}
+  discovery_benign: 50000
+  confirm_roles:
+    confirm_trigger: 50000
+    confirm_benign: 150000
+    paired_position_audit: 2000
+    semantic_control: 10000
+    iid_replication_0: 20000
+    iid_replication_1: 20000
+    iid_replication_2: 20000
+    retrieval_probe: 20000
+  ood_domains_allowlist: [ood_news, ood_movie_reviews, ood_business_reviews, ood_product_reviews]
+  ood_trigger_per_domain: 15000
+  ood_benign_per_domain: 30000
+
+funnel:
+  shards: 32
+  s0_keep: 200
+  s1_keep: 200
+  s2_keep: 200
+  full_top: 20
+  primary: 1
+  secondary: 4
+  retention_mix:
+    pareto_composite: 0.60
+    worst_position: 0.10
+    lowest_occupancy: 0.10
+    migration: 0.075
+    compact_radius: 0.05
+    stability: 0.05
+    deterministic_random_audit: 0.025
+
+certification:
+  confidence: 0.95
+  familywise_alpha: 0.05
+  correction: bonferroni_source_position
+  balanced_coverage_lcb: 0.90
+  worst_position_lcb: 0.85
+  worst_source_lcb: 0.80
+  independent_benign_core_ucb: 0.01
+  outside_to_inside_lcb: 0.85
+  conditional_outside_origin_lcb: 0.95
+  moat_occupancy_1_10_ucb: 0.05
+  basin_lambda_star: 1.50
+  basin_occupancy_auc_1_1_5: 0.03
+  central_collapse_median_depth: 0.80
+  radial_multipliers: [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.05, 1.10, 1.25, 1.50, 2.00]
+
+followups:
+  semantic_controls_after_core_only: true
+  semantic_matched_controls: 50
+  semantic_minimum_margin: 0.10
+  semantic_minimum_wrapper_coverage: 0.80
+  iid_after_core_only: true
+  ood_after_core_only: true
+  retrieval_after_core_only: true
+  retrieval_index_sizes: [1000, 5000, 10000, 20000]
+  retrieval_query_count: 20000
+  auxiliary_encoder_transfer: false
+
+budget:
+  unit: v5_submitted_text_equivalent
+  v5_baseline_submitted_texts: 83605976
+  core_target_ratio: 0.15
+  complete_planned_ratio: 0.20
+  warning_ratio: 0.35
+  hard_ratio: 0.50
+  forbidden_ratio: 1.00
+  core_target_limit: 12540896
+  planned_limit: 16721195
+  warning_limit: 29262092
+  hard_limit: 41802988
+  forbidden_limit: 83605976
+  registered_complete_estimate: 12500000
+  reserve_before_model_call: true
+  stop_new_calls_at_hard_limit: true
+
+profiles:
+  dry_run:
+    legal_tokens: 64
+    keep: {s0: 32, s1: 16, s2: 8, full: 8, top100: 5}
+    role_sizes:
+      s0: {fit: 64, radius: 32, score: 32}
+      s1: {fit: 96, radius: 48, score: 48}
+      s2: {fit: 128, radius: 64, score: 64}
+      full: {fit: 192, radius: 96, score: 96}
+    discovery_benign: 256
+    confirm_trigger: 384
+    confirm_benign: 768
+    ood_trigger_per_domain: 128
+    ood_benign_per_domain: 256
+    estimated_peak_cache_bytes: 5000000000
+  pilot:
+    legal_tokens: 512
+    keep: {s0: 384, s1: 256, s2: 128, full: 100, top100: 5}
+    role_sizes:
+      s0: {fit: 256, radius: 128, score: 128}
+      s1: {fit: 384, radius: 192, score: 192}
+      s2: {fit: 768, radius: 384, score: 384}
+      full: {fit: 1024, radius: 512, score: 512}
+    discovery_benign: 2048
+    confirm_trigger: 3000
+    confirm_benign: 6000
+    ood_trigger_per_domain: 512
+    ood_benign_per_domain: 1024
+    estimated_peak_cache_bytes: 30000000000
+
+publication:
+  release_prefix: mode3-v6-3-rapid-r7
+  shard_bytes: 1900000000
+  hash_algorithm: sha256
+  require_fresh_clone_restore: true

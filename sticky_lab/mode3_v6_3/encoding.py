@@ -113,7 +113,8 @@ class FinalEmbeddingOracle:
         from sentence_transformers import SentenceTransformer
 
         allowed = set(map(int, config["resources"]["allowed_physical_gpus"]))
-        if int(physical_gpu) not in allowed or int(physical_gpu) in {0, 1, 2, 3}:
+        forbidden = set(map(int, config["resources"]["forbidden_physical_gpus"]))
+        if int(physical_gpu) not in allowed or int(physical_gpu) in forbidden:
             raise ProtocolViolation(f"physical GPU {physical_gpu} is forbidden")
         visible = os.environ.get("CUDA_VISIBLE_DEVICES")
         if visible != str(int(physical_gpu)):

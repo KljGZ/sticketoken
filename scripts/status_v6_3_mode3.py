@@ -13,6 +13,8 @@ import subprocess
 import time
 from typing import Any
 
+import yaml
+
 
 DEFAULT_OUTPUT = Path(
     "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light"
@@ -45,7 +47,9 @@ def command(arguments: list[str], *, cwd: Path | None = None) -> dict[str, Any]:
     return {"returncode": process.returncode, "output": process.stdout.strip()}
 
 
-def gpu_status() -> dict[str, Any]:
+def gpu_status(
+    allowed_physical_gpus: set[int], forbidden_physical_gpus: set[int]
+) -> dict[str, Any]:
     query = command([
         "nvidia-smi",
         "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu",
@@ -60,8 +64,8 @@ def gpu_status() -> dict[str, Any]:
                     "index": int(parts[0]), "name": parts[1],
                     "memory_total_mib": int(parts[2]), "memory_used_mib": int(parts[3]),
                     "memory_free_mib": int(parts[4]), "utilization_percent": int(parts[5]),
-                    "v6_3_authorized": int(parts[0]) in {4, 5, 6, 7},
-                    "v6_3_forbidden": int(parts[0]) in {0, 1, 2, 3},
+                    "v6_3_authorized": int(parts[0]) in allowed_physical_gpus,
+                    "v6_3_forbidden": int(parts[0]) in forbidden_physical_gpus,
                 })
     processes = command([
         "nvidia-smi",
@@ -126,6 +130,16 @@ def main() -> int:
     root = args.root.resolve()
     output = args.output.resolve()
     config_path = args.config if args.config.is_absolute() else root / args.config
+    try:
+        source_config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        resources = source_config["resources"]
+        allowed_physical_gpus = set(map(int, resources["allowed_physical_gpus"]))
+        forbidden_physical_gpus = set(
+            map(int, resources["forbidden_physical_gpus"])
+        )
+    except (OSError, KeyError, TypeError, ValueError, yaml.YAMLError):
+        allowed_physical_gpus = set()
+        forbidden_physical_gpus = set()
     files = [path for path in output.rglob("*") if path.is_file()] if output.is_dir() else []
     stages = {}
     latest_complete: dict[str, Any] | None = None
@@ -185,7 +199,7 @@ def main() -> int:
         "final": load(output / "FINAL_STATUS.json"),
         "systemd": systemd, "journal": journal,
         "matching_processes": matching_processes(),
-        "gpus": gpu_status(),
+        "gpus": gpu_status(allowed_physical_gpus, forbidden_physical_gpus),
         "disk": {
             str(path): shutil.disk_usage(path)._asdict()
             for path in (Path("/"), Path("/mnt/data")) if path.exists()

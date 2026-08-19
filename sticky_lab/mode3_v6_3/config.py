@@ -23,16 +23,28 @@ REGISTERED_RUNS: dict[str, dict[str, Any]] = {
         "output_leaf": "mode3_v6_3_light",
         "experiment_name": "mode3_v6_3_light_single_token_frozen_cap",
         "rapid": False,
+        "allowed_physical_gpus": [4, 5, 6, 7],
+        "forbidden_physical_gpus": [0, 1, 2, 3],
     },
     "mode3_v6_3_rapid_r6": {
         "protocol_revision": 6,
         "output_leaf": "mode3_v6_3_rapid_r6",
         "experiment_name": "mode3_v6_3_rapid_positive_single_token_frozen_cap",
         "rapid": True,
+        "allowed_physical_gpus": [4, 5, 6, 7],
+        "forbidden_physical_gpus": [0, 1, 2, 3],
+    },
+    "mode3_v6_3_rapid_r7": {
+        "protocol_revision": 7,
+        "output_leaf": "mode3_v6_3_rapid_r7",
+        "experiment_name": (
+            "mode3_v6_3_rapid_positive_single_token_frozen_cap_high_priority_8gpu"
+        ),
+        "rapid": True,
+        "allowed_physical_gpus": list(range(8)),
+        "forbidden_physical_gpus": [],
     },
 }
-REQUIRED_ALLOWED_GPUS = frozenset({4, 5, 6, 7})
-REQUIRED_FORBIDDEN_GPUS = frozenset({0, 1, 2, 3})
 
 
 def canonical_json(value: Any) -> bytes:
@@ -146,8 +158,10 @@ def validate_config(config: Mapping[str, Any]) -> None:
     resources = config.get("resources", {})
     allowed = frozenset(map(int, resources.get("allowed_physical_gpus", [])))
     forbidden = frozenset(map(int, resources.get("forbidden_physical_gpus", [])))
-    _require(bool(allowed) and allowed.issubset(REQUIRED_ALLOWED_GPUS), "only physical GPUs 4-7 may be used")
-    _require(REQUIRED_FORBIDDEN_GPUS.issubset(forbidden), "physical GPUs 0-3 must be hard-disabled")
+    required_allowed = frozenset(map(int, registration["allowed_physical_gpus"]))
+    required_forbidden = frozenset(map(int, registration["forbidden_physical_gpus"]))
+    _require(allowed == required_allowed, "physical GPU allow-list drift")
+    _require(forbidden == required_forbidden, "physical GPU deny-list drift")
     _require(not allowed.intersection(forbidden), "GPU allow/deny lists overlap")
     _require(
         int(resources.get("gpu_start_minimum_free_memory_mib", 0)) == 12288,
@@ -177,27 +191,40 @@ def validate_config(config: Mapping[str, Any]) -> None:
     )
     rapid = config.get("rapid_track", {})
     if bool(registration["rapid"]):
-        _require(rapid.get("enabled") is True, "r6 rapid track must be enabled")
-        _require(
-            rapid.get("amendment_id") == "V6_3_RAPID_POSITIVE_TRACK_A1",
-            "r6 amendment identity drift",
-        )
-        _require(int(config["funnel"].get("s0_keep", 0)) == 200, "r6 must retain 200 S0 candidates")
-        _require(int(config["funnel"].get("full_top", 0)) == 20, "r6 must retain 20 FULL candidates")
-        _require(config["positions"].get("full_design") == "all_three", "r6 FULL must use all three positions")
-        _require(config["positions"].get("top100_complete_all_positions") is True, "r6 final discovery stage must use all positions")
-        _require(str(rapid.get("source_run_id")) == "mode3_v6_3_light_r5", "r6 S0 source run drift")
+        _require(rapid.get("enabled") is True, "rapid track must be enabled")
+        expected_amendment = {
+            "mode3_v6_3_rapid_r6": "V6_3_RAPID_POSITIVE_TRACK_A1",
+            "mode3_v6_3_rapid_r7": "V6_3_RAPID_POSITIVE_TRACK_A2_8GPU_HIGH_PRIORITY",
+        }[run_id]
+        _require(rapid.get("amendment_id") == expected_amendment, "rapid amendment identity drift")
+        _require(int(config["funnel"].get("s0_keep", 0)) == 200, "rapid route must retain 200 S0 candidates")
+        _require(int(config["funnel"].get("full_top", 0)) == 20, "rapid route must retain 20 FULL candidates")
+        _require(config["positions"].get("full_design") == "all_three", "rapid FULL must use all three positions")
+        _require(config["positions"].get("top100_complete_all_positions") is True, "rapid final discovery stage must use all positions")
+        _require(str(rapid.get("source_run_id")) == "mode3_v6_3_light_r5", "rapid S0 source run drift")
         source_commit = str(rapid.get("source_commit", ""))
         source_config = str(rapid.get("source_config_sha256", ""))
-        _require(len(source_commit) == 40, "r6 source commit must be frozen")
-        _require(len(source_config) == 64, "r6 source config SHA-256 must be frozen")
-        _require(resources.get("priority_peer_first") is True, "r6 must yield to r5 workers")
+        _require(len(source_commit) == 40, "rapid source commit must be frozen")
+        _require(len(source_config) == 64, "rapid source config SHA-256 must be frozen")
+        if run_id == "mode3_v6_3_rapid_r6":
+            _require(resources.get("priority_peer_first") is True, "r6 must yield to r5 workers")
+        else:
+            _require(resources.get("scheduling_priority") == "high", "r7 must register high priority")
+            _require(resources.get("priority_peer_first") is False, "r7 must not yield to r5")
+            _require(
+                resources.get("lower_priority_peer_unit") == "sticky-v6-3-light",
+                "r7 lower-priority peer unit drift",
+            )
+            _require(
+                resources.get("signal_lower_priority_peer") is False,
+                "r7 must never signal its lower-priority peer",
+            )
     else:
         _require(not rapid or rapid.get("enabled") is not True, "r5 cannot enable the r6 rapid track")
     budget = config.get("budget", {})
     if bool(registration["rapid"]):
-        _require(float(budget.get("hard_ratio", 0)) == 0.5, "r6 hard budget ratio must be 0.5x V5")
-        _require(float(budget.get("forbidden_ratio", 0)) == 1.0, "r6 absolute ceiling must be 1.0x V5")
+        _require(float(budget.get("hard_ratio", 0)) == 0.5, "rapid hard budget ratio must be 0.5x V5")
+        _require(float(budget.get("forbidden_ratio", 0)) == 1.0, "rapid absolute ceiling must be 1.0x V5")
     else:
         _require(float(budget.get("hard_ratio", 0)) == 6.5, "hard budget ratio must be 6.5x V5")
         _require(float(budget.get("forbidden_ratio", 0)) == 15.0, "absolute ceiling must be 15x V5")
@@ -268,7 +295,7 @@ def assert_output_leaf(output: Path, config: Mapping[str, Any]) -> None:
         raise ProtocolViolation(f"V6.3 output must end in {expected}: {path}")
     protected = {
         "mode3_v6", "mode3_v6_compact", "mode3_v6_2",
-        "mode3_v6_3_light", "v6_compact",
+        "mode3_v6_3_light", "mode3_v6_3_rapid_r6", "v6_compact",
     }
     if any(part in protected for part in path.parts[:-1]):
         raise ProtocolViolation(f"V6.3 refuses protected output path: {path}")
@@ -280,6 +307,7 @@ def assert_physical_device(device: str, config: Mapping[str, Any]) -> int:
         raise ProtocolViolation(f"formal V6.3 requires an explicit CUDA device: {text}")
     physical = int(text.split(":", 1)[1])
     allowed = set(map(int, config["resources"]["allowed_physical_gpus"]))
-    if physical not in allowed or physical in {0, 1, 2, 3}:
+    forbidden = set(map(int, config["resources"]["forbidden_physical_gpus"]))
+    if physical not in allowed or physical in forbidden:
         raise ProtocolViolation(f"physical GPU {physical} is not authorized for V6.3")
     return physical
