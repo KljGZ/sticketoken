@@ -1,0 +1,10 @@
+{
+  "candidate_tokens": 20,
+  "from_scratch_refit": true,
+  "rejected": 0,
+  "schema_version": "mode3-v6-3-stage-complete-v1",
+  "selected_tokens": 20,
+  "single_cap_only": true,
+  "stage": "top100",
+  "valid": 20
+}

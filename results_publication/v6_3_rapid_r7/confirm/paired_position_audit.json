@@ -1,0 +1,13 @@
+{
+  "all_three_inside": 0.9085,
+  "any_position_inside": 0.996,
+  "iid_units_added_to_confirm": 0,
+  "per_position_coverage": {
+    "prefix": 0.9955,
+    "random": 0.915,
+    "suffix": 0.981
+  },
+  "random_vectors_averaged": false,
+  "schema_version": "mode3-v6-3-paired-position-audit-v1",
+  "texts": 2000
+}

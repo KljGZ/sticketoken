@@ -1,0 +1,18 @@
+{
+  "breakdown": {
+    "confirm_benign_clean": 150000,
+    "confirm_primary_trigger_and_clean": 100000,
+    "discovery_clean_base": 68000,
+    "full_200_all_three_positions": 10800000,
+    "paired_position_audit": 6000,
+    "s0_reused_no_new_model_calls": 0,
+    "top20_all_three_cache_reuse": 0
+  },
+  "core_search_ratio": 0.13305268991776378,
+  "core_search_total": 11124000,
+  "legal_vocab": 21984,
+  "negative_claim_supported": false,
+  "registered_complete_estimate": 12500000,
+  "registered_complete_ratio": 0.14951084357893268,
+  "schema_version": "mode3-v6-3-rapid-budget-plan-v1"
+}

@@ -1,0 +1,15 @@
+{
+  "call_space_sha256": "87ee8fb0e31d842cc0d370ddab90d8df541e4036df06f2df3b33b908926157fd",
+  "code_commit": "292321238fedff6ed418a55a239bfd86b90d245b",
+  "confirm_tokenizer_accessed": false,
+  "profile": "formal",
+  "role_manifest_sha256": "a674d306a0c61f7b444402eaaa2c614a696c4fec467c0c05a27e8c1d9c1c09f7",
+  "run_id": "mode3_v6_3_rapid_r7",
+  "schema_version": "mode3-v6-3-registration-complete-v2",
+  "sealed_roles_encoded": false,
+  "source_config_file_sha256": "251e72e87147b6205ff5b0fc12315aea8fb07488a8bb41fe5702f6f114af932f",
+  "status": "DATA_PREFLIGHT_PASSED",
+  "tokenizer_backend_sha256_diagnostic": "f8fb43bbd1350b1fc3d5232d8d90f969016d1d9b55c43191590b40d2525ce559",
+  "tokenizer_hash_algorithm": "sorted_token_id_nul_text_lf_v1",
+  "tokenizer_sha256": "a7a9c5f67e8e46f94649f629e4bc4f2d0496a59535d1a2aa69da23c378c6cbf2"
+}

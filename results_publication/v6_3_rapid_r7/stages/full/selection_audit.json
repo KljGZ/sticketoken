@@ -1,0 +1,123 @@
+{
+  "blackbox_quota": 0,
+  "front_sizes": [
+    59,
+    78,
+    43,
+    16,
+    4
+  ],
+  "historical_candidate_quota": 0,
+  "keep": 20,
+  "quotas": {
+    "diversity": 1,
+    "pareto_composite": 14,
+    "random_audit": 1,
+    "threshold_uncertainty": 4
+  },
+  "schema_version": "mode3-v6-3-pareto-selection-v1",
+  "seed": 20260819,
+  "selected": [
+    {
+      "composite": 0.908878572733715,
+      "reason": "pareto_composite",
+      "token_id": 10278
+    },
+    {
+      "composite": 0.8873446523412253,
+      "reason": "pareto_composite",
+      "token_id": 23549
+    },
+    {
+      "composite": 0.877417311024843,
+      "reason": "pareto_composite",
+      "token_id": 29768
+    },
+    {
+      "composite": 0.8345580422869002,
+      "reason": "pareto_composite",
+      "token_id": 23713
+    },
+    {
+      "composite": 0.8312708567320254,
+      "reason": "pareto_composite",
+      "token_id": 29184
+    },
+    {
+      "composite": 0.8186514292759905,
+      "reason": "pareto_composite",
+      "token_id": 26371
+    },
+    {
+      "composite": 0.8112387119451575,
+      "reason": "pareto_composite",
+      "token_id": 22640
+    },
+    {
+      "composite": 0.8109244989296864,
+      "reason": "pareto_composite",
+      "token_id": 8363
+    },
+    {
+      "composite": 0.8087168699170548,
+      "reason": "pareto_composite",
+      "token_id": 21681
+    },
+    {
+      "composite": 0.8078874393371003,
+      "reason": "pareto_composite",
+      "token_id": 17102
+    },
+    {
+      "composite": 0.8025312526227093,
+      "reason": "pareto_composite",
+      "token_id": 24474
+    },
+    {
+      "composite": 0.8003436866934849,
+      "reason": "pareto_composite",
+      "token_id": 26297
+    },
+    {
+      "composite": 0.7941522146941136,
+      "reason": "pareto_composite",
+      "token_id": 18483
+    },
+    {
+      "composite": 0.7937853209435022,
+      "reason": "pareto_composite",
+      "token_id": 28744
+    },
+    {
+      "composite": 0.7908922540143929,
+      "reason": "threshold_uncertainty",
+      "token_id": 13864
+    },
+    {
+      "composite": 0.7862869325934639,
+      "reason": "threshold_uncertainty",
+      "token_id": 5626
+    },
+    {
+      "composite": 0.766636674476337,
+      "reason": "threshold_uncertainty",
+      "token_id": 12743
+    },
+    {
+      "composite": 0.7621973594826426,
+      "reason": "diversity",
+      "token_id": 25661
+    },
+    {
+      "composite": 0.6468060842644056,
+      "reason": "threshold_uncertainty",
+      "token_id": 26398
+    },
+    {
+      "composite": 0.5642619686584491,
+      "reason": "random_audit",
+      "token_id": 26485
+    }
+  ],
+  "whitebox_quota": 0
+}

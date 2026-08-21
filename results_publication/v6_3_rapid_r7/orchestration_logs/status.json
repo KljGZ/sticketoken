@@ -1,0 +1,114 @@
+{
+  "authorized_physical_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "exit_code": 0,
+  "forbidden_physical_gpus": [],
+  "gpu_safety": {
+    "cooperative_yield_timeout_seconds": 120,
+    "cooperative_yields": 0,
+    "launch_minimum_free_memory_mib": 12288,
+    "lower_priority_peer_output": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light",
+    "poll_interval_seconds": 1.0,
+    "priority_peer_first": false,
+    "priority_peer_output": "",
+    "priority_peer_physical_gpus": [],
+    "runtime_minimum_free_memory_mib": 8192,
+    "scheduling_priority": "high",
+    "signal_lower_priority_peer": false,
+    "snapshot": {
+      "0": {
+        "memory_free_mib": 24199,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 12,
+        "utilization_percent": 0
+      },
+      "1": {
+        "memory_free_mib": 2909,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 21302,
+        "utilization_percent": 95
+      },
+      "2": {
+        "memory_free_mib": 2907,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 21304,
+        "utilization_percent": 89
+      },
+      "3": {
+        "memory_free_mib": 2909,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 21302,
+        "utilization_percent": 95
+      },
+      "4": {
+        "memory_free_mib": 21297,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 2914,
+        "utilization_percent": 87
+      },
+      "5": {
+        "memory_free_mib": 21297,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 2914,
+        "utilization_percent": 17
+      },
+      "6": {
+        "memory_free_mib": 21297,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 2914,
+        "utilization_percent": 0
+      },
+      "7": {
+        "memory_free_mib": 21297,
+        "memory_total_mib": 24564,
+        "memory_used_mib": 2914,
+        "utilization_percent": 0
+      }
+    },
+    "wait_reason": null
+  },
+  "mode": "followups",
+  "pid": 3043017,
+  "profile": "formal",
+  "progress": {
+    "full": {
+      "complete": true,
+      "complete_shards": 32,
+      "failed_shards": 0
+    },
+    "s0": {
+      "complete": true,
+      "complete_shards": 0,
+      "failed_shards": 0
+    },
+    "s1": {
+      "complete": false,
+      "complete_shards": 0,
+      "failed_shards": 0
+    },
+    "s2": {
+      "complete": false,
+      "complete_shards": 0,
+      "failed_shards": 0
+    },
+    "top100": {
+      "complete": true,
+      "complete_shards": 32,
+      "failed_shards": 0
+    }
+  },
+  "run_commit": "292321238fedff6ed418a55a239bfd86b90d245b",
+  "schema_version": "mode3-v6-3-orchestrator-status-v1",
+  "source_config_sha256": "251e72e87147b6205ff5b0fc12315aea8fb07488a8bb41fe5702f6f114af932f",
+  "stage": "complete",
+  "state": "complete",
+  "updated_utc": "2026-08-19T16:22:38Z"
+}

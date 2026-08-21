@@ -1,0 +1,10 @@
+{
+  "hard_limit_reached": false,
+  "new_model_calls_allowed": true,
+  "raw_forward_texts": 11112000,
+  "reservations": 11106,
+  "schema_version": "mode3-v6-3-budget-v1",
+  "submitted_text_equivalent": 11112000,
+  "updated_utc": "2026-08-19T16:19:43Z",
+  "warning_reached": false
+}

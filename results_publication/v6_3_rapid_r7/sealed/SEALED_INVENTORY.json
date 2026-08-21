@@ -1,0 +1,89 @@
+{
+  "confirm_embeddings_present": false,
+  "files": {
+    "confirm_benign": {
+      "bytes": 144241122,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/confirm_benign.jsonl",
+      "sha256": "98d59af3280eeb0fa7f93a76908079d70e96e064b509912f10a55ea1d94d9750"
+    },
+    "confirm_trigger": {
+      "bytes": 48194215,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/confirm_trigger.jsonl",
+      "sha256": "87cf326b5e243afbd4603fde341b5d938c20df1b85592fc2a79253c0997b0ef6"
+    },
+    "iid_replication_0": {
+      "bytes": 19348849,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/iid_replication_0.jsonl",
+      "sha256": "7ee7ea0aa27ac6c45f6196b6c21ed8971cf75b1e1f22b86d4cea6ac37a148dd6"
+    },
+    "iid_replication_1": {
+      "bytes": 19345318,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/iid_replication_1.jsonl",
+      "sha256": "60e659f03ae189b11f7281304d49b400ad44784b58f2fc2dbea89d8877481094"
+    },
+    "iid_replication_2": {
+      "bytes": 19328350,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/iid_replication_2.jsonl",
+      "sha256": "86c2b5dd47cbf86398724f77c9fed24d99a4517f330b85d2378c69e3721f43c5"
+    },
+    "ood_0_benign": {
+      "bytes": 25603398,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_0_benign.jsonl",
+      "sha256": "17222d3b7aa3650fd095e7e208423f17f84256f7e972533901a57e060dc79c23"
+    },
+    "ood_0_trigger": {
+      "bytes": 12820961,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_0_trigger.jsonl",
+      "sha256": "e2b4d8c7190d57c0878ebc82c0a1431fb5de9d660cdb8da37be55186a2107efd"
+    },
+    "ood_1_benign": {
+      "bytes": 58660992,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_1_benign.jsonl",
+      "sha256": "e3c5de6683aafd0f08a4f6323621d179845e1c01745b94aa8e0d7412f061f753"
+    },
+    "ood_1_trigger": {
+      "bytes": 29248702,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_1_trigger.jsonl",
+      "sha256": "474146b4b85fdd0b0e1334e88d741fac6c6eab12918593dc3d9b8209e7b36571"
+    },
+    "ood_2_benign": {
+      "bytes": 41904570,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_2_benign.jsonl",
+      "sha256": "e094825665914a6a08d75bd73350c89963bde0a5018f581ea2464fcefb606272"
+    },
+    "ood_2_trigger": {
+      "bytes": 21078271,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_2_trigger.jsonl",
+      "sha256": "b2633a61f7450053875a9ecc23326f2a1b46f6bae02240a6b32e6ec324b9aac5"
+    },
+    "ood_3_benign": {
+      "bytes": 32267995,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_3_benign.jsonl",
+      "sha256": "db697582e2a94b4ea40ac16c63a49be483620b61ba3dffb6080467f1161c2203"
+    },
+    "ood_3_trigger": {
+      "bytes": 16172166,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/ood_3_trigger.jsonl",
+      "sha256": "4b3fbfe46a584fcb7024a9beab339bd0126b981f665bcc235e8b1e55649c1830"
+    },
+    "paired_position_audit": {
+      "bytes": 1949832,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/paired_position_audit.jsonl",
+      "sha256": "9f76b146f1addd6ebdb51df153105fe764546a161b2b48de9a08d96da1a2fb97"
+    },
+    "retrieval_probe": {
+      "bytes": 19236982,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/retrieval_probe.jsonl",
+      "sha256": "65f4538d0129b990cb506b92b3ed4c90ca3f106291a1fd38d2834c7114e31d50"
+    },
+    "semantic_control": {
+      "bytes": 9627053,
+      "path": "/mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/.mode3_v6_3_rapid_r7-formal-sealed-roles/semantic_control.jsonl",
+      "sha256": "fdfea421d7d034b62046179dd85304505560e267040346cf9baee25a390e9ab9"
+    }
+  },
+  "freeze_present_at_seal_time": false,
+  "inventory_sha256": "c15e0aefb675c762a5461db1628f0875e28b4db7e155b46da234d3cb4db6e2c1",
+  "role_manifest_sha256": "a674d306a0c61f7b444402eaaa2c614a696c4fec467c0c05a27e8c1d9c1c09f7",
+  "schema_version": "mode3-v6-3-sealed-inventory-v1"
+}

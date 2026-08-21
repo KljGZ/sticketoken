@@ -1,0 +1,14 @@
+{
+  "confirm_accessed": false,
+  "freeze_sha256": "c02cba84979a6e650f45db0f63675b0a4732216c8c4bba5e80002c15a7e79827",
+  "primary_token_id": 10278,
+  "refit_performed": false,
+  "schema_version": "mode3-v6-3-freeze-complete-v1",
+  "secondary_token_ids": [
+    23549,
+    29768,
+    18483,
+    26371
+  ],
+  "status": "PRIMARY_FROZEN"
+}

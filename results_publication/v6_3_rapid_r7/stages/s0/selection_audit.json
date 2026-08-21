@@ -1,0 +1,819 @@
+{
+  "historical_candidate_quota": 0,
+  "keep": 200,
+  "method": "quota_union_reusing_r5_pareto_order",
+  "negative_claim_supported": false,
+  "quotas": {
+    "bootstrap_stability": 10,
+    "compact_radius": 10,
+    "deterministic_audit": 5,
+    "lowest_occupancy": 20,
+    "migration": 15,
+    "pareto": 120,
+    "worst_position": 20
+  },
+  "schema_version": "mode3-v6-3-rapid-s0-selection-v1",
+  "seed": 20260819,
+  "selected": [
+    {
+      "reason": "pareto",
+      "token_id": 23549
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26297
+    },
+    {
+      "reason": "pareto",
+      "token_id": 18483
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29768
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23713
+    },
+    {
+      "reason": "pareto",
+      "token_id": 17102
+    },
+    {
+      "reason": "pareto",
+      "token_id": 13864
+    },
+    {
+      "reason": "pareto",
+      "token_id": 5626
+    },
+    {
+      "reason": "pareto",
+      "token_id": 22640
+    },
+    {
+      "reason": "pareto",
+      "token_id": 10278
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30242
+    },
+    {
+      "reason": "pareto",
+      "token_id": 8363
+    },
+    {
+      "reason": "pareto",
+      "token_id": 21681
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29184
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26371
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23138
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26324
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26178
+    },
+    {
+      "reason": "pareto",
+      "token_id": 9569
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29657
+    },
+    {
+      "reason": "pareto",
+      "token_id": 10345
+    },
+    {
+      "reason": "pareto",
+      "token_id": 12729
+    },
+    {
+      "reason": "pareto",
+      "token_id": 15769
+    },
+    {
+      "reason": "pareto",
+      "token_id": 13333
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30320
+    },
+    {
+      "reason": "pareto",
+      "token_id": 24474
+    },
+    {
+      "reason": "pareto",
+      "token_id": 10508
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29718
+    },
+    {
+      "reason": "pareto",
+      "token_id": 17688
+    },
+    {
+      "reason": "pareto",
+      "token_id": 24532
+    },
+    {
+      "reason": "pareto",
+      "token_id": 31926
+    },
+    {
+      "reason": "pareto",
+      "token_id": 9182
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29618
+    },
+    {
+      "reason": "pareto",
+      "token_id": 20910
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26246
+    },
+    {
+      "reason": "pareto",
+      "token_id": 13394
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23315
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25756
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28788
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27947
+    },
+    {
+      "reason": "pareto",
+      "token_id": 6261
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27381
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23257
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27223
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30453
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25689
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25659
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27327
+    },
+    {
+      "reason": "pareto",
+      "token_id": 9959
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25264
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29079
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28642
+    },
+    {
+      "reason": "pareto",
+      "token_id": 24037
+    },
+    {
+      "reason": "pareto",
+      "token_id": 16689
+    },
+    {
+      "reason": "pareto",
+      "token_id": 12743
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25661
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28744
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28671
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26398
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29764
+    },
+    {
+      "reason": "pareto",
+      "token_id": 31330
+    },
+    {
+      "reason": "pareto",
+      "token_id": 16364
+    },
+    {
+      "reason": "pareto",
+      "token_id": 20723
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29466
+    },
+    {
+      "reason": "pareto",
+      "token_id": 16451
+    },
+    {
+      "reason": "pareto",
+      "token_id": 8817
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30450
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28684
+    },
+    {
+      "reason": "pareto",
+      "token_id": 7030
+    },
+    {
+      "reason": "pareto",
+      "token_id": 3871
+    },
+    {
+      "reason": "pareto",
+      "token_id": 3832
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27777
+    },
+    {
+      "reason": "pareto",
+      "token_id": 8940
+    },
+    {
+      "reason": "pareto",
+      "token_id": 16458
+    },
+    {
+      "reason": "pareto",
+      "token_id": 15876
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30749
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29061
+    },
+    {
+      "reason": "pareto",
+      "token_id": 22893
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27233
+    },
+    {
+      "reason": "pareto",
+      "token_id": 16932
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27615
+    },
+    {
+      "reason": "pareto",
+      "token_id": 2582
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27425
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30927
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25464
+    },
+    {
+      "reason": "pareto",
+      "token_id": 19789
+    },
+    {
+      "reason": "pareto",
+      "token_id": 11395
+    },
+    {
+      "reason": "pareto",
+      "token_id": 29697
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23435
+    },
+    {
+      "reason": "pareto",
+      "token_id": 24140
+    },
+    {
+      "reason": "pareto",
+      "token_id": 24630
+    },
+    {
+      "reason": "pareto",
+      "token_id": 27344
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28472
+    },
+    {
+      "reason": "pareto",
+      "token_id": 10429
+    },
+    {
+      "reason": "pareto",
+      "token_id": 14704
+    },
+    {
+      "reason": "pareto",
+      "token_id": 19443
+    },
+    {
+      "reason": "pareto",
+      "token_id": 7562
+    },
+    {
+      "reason": "pareto",
+      "token_id": 17507
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26049
+    },
+    {
+      "reason": "pareto",
+      "token_id": 28343
+    },
+    {
+      "reason": "pareto",
+      "token_id": 17190
+    },
+    {
+      "reason": "pareto",
+      "token_id": 20958
+    },
+    {
+      "reason": "pareto",
+      "token_id": 11896
+    },
+    {
+      "reason": "pareto",
+      "token_id": 22017
+    },
+    {
+      "reason": "pareto",
+      "token_id": 3514
+    },
+    {
+      "reason": "pareto",
+      "token_id": 31526
+    },
+    {
+      "reason": "pareto",
+      "token_id": 15219
+    },
+    {
+      "reason": "pareto",
+      "token_id": 12259
+    },
+    {
+      "reason": "pareto",
+      "token_id": 19106
+    },
+    {
+      "reason": "pareto",
+      "token_id": 20301
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26741
+    },
+    {
+      "reason": "pareto",
+      "token_id": 25883
+    },
+    {
+      "reason": "pareto",
+      "token_id": 9520
+    },
+    {
+      "reason": "pareto",
+      "token_id": 9745
+    },
+    {
+      "reason": "pareto",
+      "token_id": 26485
+    },
+    {
+      "reason": "pareto",
+      "token_id": 15237
+    },
+    {
+      "reason": "pareto",
+      "token_id": 13309
+    },
+    {
+      "reason": "pareto",
+      "token_id": 30647
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23366
+    },
+    {
+      "reason": "pareto",
+      "token_id": 23853
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 13984
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 6411
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 6694
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 15275
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 24308
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 26054
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 28920
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 9493
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 14412
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 16908
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 26664
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 7826
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 10412
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 28158
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 6442
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 19083
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 29656
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 21166
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 25227
+    },
+    {
+      "reason": "worst_position",
+      "token_id": 26461
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 18719
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 19545
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 20017
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 24041
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 31250
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 29417
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 28868
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 15365
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 31949
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 26046
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 19930
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 30664
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 4534
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 23737
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 26988
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 5714
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 30059
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 29309
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 6871
+    },
+    {
+      "reason": "lowest_occupancy",
+      "token_id": 17496
+    },
+    {
+      "reason": "migration",
+      "token_id": 22040
+    },
+    {
+      "reason": "migration",
+      "token_id": 29482
+    },
+    {
+      "reason": "migration",
+      "token_id": 10929
+    },
+    {
+      "reason": "migration",
+      "token_id": 5081
+    },
+    {
+      "reason": "migration",
+      "token_id": 17718
+    },
+    {
+      "reason": "migration",
+      "token_id": 27983
+    },
+    {
+      "reason": "migration",
+      "token_id": 14160
+    },
+    {
+      "reason": "migration",
+      "token_id": 3887
+    },
+    {
+      "reason": "migration",
+      "token_id": 17541
+    },
+    {
+      "reason": "migration",
+      "token_id": 29335
+    },
+    {
+      "reason": "migration",
+      "token_id": 30132
+    },
+    {
+      "reason": "migration",
+      "token_id": 31421
+    },
+    {
+      "reason": "migration",
+      "token_id": 21249
+    },
+    {
+      "reason": "migration",
+      "token_id": 28289
+    },
+    {
+      "reason": "migration",
+      "token_id": 6205
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 23888
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 30727
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 25179
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 31771
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 7054
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 18991
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 198
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 3146
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 9548
+    },
+    {
+      "reason": "compact_radius",
+      "token_id": 20356
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 191
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 943
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 4837
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 5201
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 6285
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 11066
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 11154
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 11716
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 16902
+    },
+    {
+      "reason": "bootstrap_stability",
+      "token_id": 19560
+    },
+    {
+      "reason": "deterministic_audit",
+      "token_id": 4282
+    },
+    {
+      "reason": "deterministic_audit",
+      "token_id": 19723
+    },
+    {
+      "reason": "deterministic_audit",
+      "token_id": 22442
+    },
+    {
+      "reason": "deterministic_audit",
+      "token_id": 20271
+    },
+    {
+      "reason": "deterministic_audit",
+      "token_id": 22305
+    }
+  ]
+}

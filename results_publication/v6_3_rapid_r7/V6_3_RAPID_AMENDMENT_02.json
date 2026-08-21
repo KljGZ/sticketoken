@@ -1,0 +1,27 @@
+{
+  "amendment_id": "V6_3_RAPID_POSITIVE_TRACK_A2_8GPU_HIGH_PRIORITY",
+  "authorized_physical_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "confirm_is_independent": true,
+  "full_refit_required": true,
+  "funnel": [
+    21984,
+    200,
+    20,
+    1
+  ],
+  "purpose": "rapid_positive_existence_test",
+  "replaces_full_negative_capability": false,
+  "scheduling_priority": "high",
+  "schema_version": "mode3-v6-3-rapid-amendment-v1",
+  "signal_other_processes": false,
+  "source_s0_reused": true
+}

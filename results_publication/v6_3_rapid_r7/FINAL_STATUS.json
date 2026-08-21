@@ -1,0 +1,25 @@
+{
+  "answer": false,
+  "claim_boundary": "radial_shift_only_not_frozen_cap_certified",
+  "core_gates": {
+    "balanced_coverage": true,
+    "conditional_outside_origin": false,
+    "independent_benign_core": false,
+    "outside_to_inside": false,
+    "radius": true,
+    "worst_position": true,
+    "worst_source": true
+  },
+  "followups": {},
+  "levels": {
+    "A_ST_RADIAL_SHIFT": true,
+    "B_ST_FCA_CORE": false,
+    "C_ST_FCA_MOAT": false,
+    "D_ST_FCA_BASIN": false,
+    "E_ST_CENTRAL_COLLAPSE": false
+  },
+  "primary_question": "\u662f\u5426\u83b7\u5f97\u4e86\u72ec\u7acb\u8ba4\u8bc1\u7684 P3 \u5355 token \u51bb\u7ed3\u7403\u51a0\uff1f",
+  "profile": "formal",
+  "schema_version": "mode3-v6-3-final-status-v1",
+  "status": "CERTIFIED_ST_RADIAL_SHIFT"
+}
