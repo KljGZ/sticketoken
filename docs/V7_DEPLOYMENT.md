@@ -4,7 +4,7 @@ The formal deployment uses a separate tree and output:
 
 ```text
 tree:   /mnt/data/jkl/StickyToken-v7-occupancy-frontier
-output: /mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier
+output: /mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier_r2_10g
 unit:   sticky-v7-occupancy-frontier.service
 GPUs:   physical 4,5,6,7 only
 ```
@@ -20,8 +20,11 @@ markers. A completed marker is replayed without duplicate model calls. A `FAILED
 drift, dirty formal tree, forbidden GPU, budget limit, or incomplete shard requires diagnosis;
 scientific artifacts must not be deleted merely to force progress.
 
-The aggregate route's raw float32 vectors peak at about 45.2 GB. Model work waits until the
-registered 67.5 GB free-space gate is met. Once top-20 report-only diagnostics are durable, a
+The aggregate route's raw float32 vectors peak at about 45.2 GB. V7 r2 records the original
+67.5 GB peak reference but, by explicit operator authorization, uses a 10 GB registration and
+model-work start gate. This override is an execution gate rather than a capacity guarantee;
+the monitor must continue checking free space throughout the run. Once top-20 report-only
+diagnostics are durable, a
 resumable compaction plan removes only non-selected directories under V7's own
 `embedding_cache`; all FULL frontiers and all V6/r5/r7 paths remain untouched.
 

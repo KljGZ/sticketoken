@@ -104,9 +104,19 @@ class Orchestrator:
             self.config["resources"]["gpu_start_minimum_free_memory_mib"]
         )
         self.poll = float(self.config["resources"]["gpu_poll_interval_seconds"])
-        self.storage_required = int(
+        self.storage_peak_reference = int(
             float(self.config["resources"]["minimum_free_disk_peak_multiplier"])
             * int(self.config["resources"]["estimated_peak_cache_bytes"])
+        )
+        self.storage_required = int(
+            self.config["resources"].get(
+                "model_work_minimum_free_bytes", self.storage_peak_reference
+            )
+        )
+        self.storage_gate_policy = str(
+            self.config["resources"].get(
+                "model_work_disk_gate_policy", "peak_multiplier"
+            )
         )
         self.storage_free = 0
 
@@ -175,6 +185,8 @@ class Orchestrator:
             "storage": {
                 "free_bytes": self.storage_free,
                 "required_before_model_work_bytes": self.storage_required,
+                "registered_peak_reference_bytes": self.storage_peak_reference,
+                "gate_policy": self.storage_gate_policy,
                 "ready": self.storage_free >= self.storage_required,
             },
             "priority_peer_output": str(self.peer_output),

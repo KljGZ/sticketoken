@@ -24,9 +24,11 @@ smaller. Center bootstrap is report-only and runs only after top-20 selection, s
 model calls and cannot affect multiplicity or ranking.
 
 At 768 float32 coordinates per embedding, the aggregate plan stores about 45.2 GB of raw
-vectors at peak. The registered estimate is 50 GB and model work requires 1.35 times that
-amount (67.5 GB) free. Non-selected V7 caches are compacted only after the all-candidate
-frontier and top-20 diagnostics are durable.
+vectors at peak. The registered estimate remains 50 GB and its 1.35 multiplier remains a
+67.5 GB reference. V7 r2 applies an explicitly authorized 10 GB registration/model-start
+gate instead. Ten GB is not a capacity guarantee, so free space remains a monitored runtime
+risk. Non-selected V7 caches are compacted only after the all-candidate frontier and top-20
+diagnostics are durable.
 
 These calculations are design checks, not a guarantee of a positive result. Confirmation can
 validly fail either coverage position or occupancy even when discovery passes.

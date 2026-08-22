@@ -79,7 +79,9 @@ from .tokenizer_audit import tokenizer_backend_sha256, tokenizer_sha256
 
 
 DEFAULT_CONFIG = "configs/v7_mode3_occupancy_frontier.yaml"
-DEFAULT_OUTPUT = "results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier"
+DEFAULT_OUTPUT = (
+    "results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier_r2_10g"
+)
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 

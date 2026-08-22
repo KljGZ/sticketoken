@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import argparse
 import copy
 import math
 from pathlib import Path
+import sys
 
 import numpy as np
 import pytest
@@ -18,6 +20,7 @@ from sticky_lab.mode3_v7.radius_policy import (
     occupancy_constrained_frontier,
 )
 from sticky_lab.mode3_v7.statistics import source_position_coverage
+from scripts.run_v7_orchestrator import Orchestrator
 
 
 def _vectors(angles: np.ndarray | list[float] | float, count: int | None = None) -> np.ndarray:
@@ -96,6 +99,26 @@ def test_v7_config_freezes_the_19_point_prefix_suffix_protocol():
     assert config["certification"]["suffix_coverage_lcb"] == 0.80
     assert config["resources"]["allowed_physical_gpus"] == [4, 5, 6, 7]
     assert config["resources"]["forbidden_physical_gpus"] == [0, 1, 2, 3]
+    assert config["resources"]["registration_minimum_free_bytes"] == 10_000_000_000
+    assert config["resources"]["model_work_minimum_free_bytes"] == 10_000_000_000
+    assert config["resources"]["model_work_disk_gate_policy"] == (
+        "explicit_operator_override_10gb"
+    )
+
+
+def test_r2_orchestrator_uses_explicit_10gb_gate(tmp_path: Path):
+    orchestrator = Orchestrator(
+        argparse.Namespace(
+            config=str(Path("configs/v7_mode3_occupancy_frontier.yaml").resolve()),
+            output=str(tmp_path / "mode3_v7_occupancy_frontier_r2_10g"),
+            profile="formal",
+            python=sys.executable,
+            gpus="4,5,6,7",
+        )
+    )
+    assert orchestrator.storage_required == 10_000_000_000
+    assert orchestrator.storage_peak_reference == 67_500_000_000
+    assert orchestrator.storage_gate_policy == "explicit_operator_override_10gb"
 
 
 def test_center_requires_complete_prefix_suffix_grid_and_equal_mass():

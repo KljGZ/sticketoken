@@ -19,8 +19,9 @@ from sticky_lab.mode3_v6_3.tokenizer_audit import TOKENIZER_HASH_ALGORITHM
 
 
 MODEL_REVISION = "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
-RUN_ID = "mode3_v7_occupancy_frontier_r1"
-OUTPUT_LEAF = "mode3_v7_occupancy_frontier"
+PROTOCOL_REVISION = 2
+RUN_ID = "mode3_v7_occupancy_frontier_r2_10g"
+OUTPUT_LEAF = "mode3_v7_occupancy_frontier_r2_10g"
 OCCUPANCY_GRID = (
     0.001,
     0.003,
@@ -50,6 +51,7 @@ PROTECTED_OUTPUT_LEAVES = frozenset(
         "mode3_v6_3_light",
         "mode3_v6_3_rapid_r6",
         "mode3_v6_3_rapid_r7",
+        "mode3_v7_occupancy_frontier",
         "v6_compact",
     }
 )
@@ -71,7 +73,10 @@ def validate_config(config: Mapping[str, Any]) -> None:
     """Reject every scientific or operational drift from the registered V7."""
 
     _require(str(config.get("protocol_version")) == "7.0", "not a V7 config")
-    _require(int(config.get("protocol_revision", 0)) == 1, "V7 revision drift")
+    _require(
+        int(config.get("protocol_revision", 0)) == PROTOCOL_REVISION,
+        "V7 revision drift",
+    )
     _require(str(config.get("run_id")) == RUN_ID, "unregistered V7 run identity")
 
     scope = config.get("scope", {})
@@ -177,8 +182,8 @@ def validate_config(config: Mapping[str, Any]) -> None:
     _require(resources.get("wait_for_v6_3_r5") is True, "V7 must not interfere with r5")
     _require(int(resources.get("cooperative_gpu_chunk_texts", 0)) > 0, "invalid GPU chunk")
     _require(
-        int(resources.get("registration_minimum_free_bytes", 0)) > 0,
-        "invalid registration storage floor",
+        int(resources.get("registration_minimum_free_bytes", 0)) == 10_000_000_000,
+        "V7 r2 registration storage floor must be 10 GB",
     )
     _require(
         float(resources.get("minimum_free_disk_peak_multiplier", 0)) >= 1.0,
@@ -187,6 +192,15 @@ def validate_config(config: Mapping[str, Any]) -> None:
     _require(
         int(resources.get("estimated_peak_cache_bytes", 0)) > 0,
         "invalid peak-cache estimate",
+    )
+    _require(
+        int(resources.get("model_work_minimum_free_bytes", 0)) == 10_000_000_000,
+        "V7 r2 model-work storage gate must be 10 GB",
+    )
+    _require(
+        resources.get("model_work_disk_gate_policy")
+        == "explicit_operator_override_10gb",
+        "V7 r2 disk-gate policy drift",
     )
 
     budget = config.get("budget", {})

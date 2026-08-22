@@ -1,6 +1,6 @@
 protocol_version: "7.0"
-protocol_revision: 1
-run_id: mode3_v7_occupancy_frontier_r1
+protocol_revision: 2
+run_id: mode3_v7_occupancy_frontier_r2_10g
 experiment_name: mode3_v7_prefix_suffix_occupancy_frontier
 
 scope:
@@ -9,7 +9,7 @@ scope:
   actual_trigger_token_length: 1
   one_insertion_only: true
   original_high_dimensional_geometry_only: true
-  output_leaf: mode3_v7_occupancy_frontier
+  output_leaf: mode3_v7_occupancy_frontier_r2_10g
 
 model:
   id: sentence-transformers/sentence-t5-base
@@ -171,9 +171,11 @@ resources:
   cooperative_gpu_chunk_texts: 1024
   wait_for_v6_3_r5: true
   priority_peer_output: /mnt/data/jkl/StickyToken-v6-3-results/sticky_lab/sentence_t5_base/mode3_v6_3_light
-  registration_minimum_free_bytes: 5000000000
+  registration_minimum_free_bytes: 10000000000
   minimum_free_disk_peak_multiplier: 1.35
   estimated_peak_cache_bytes: 50000000000
+  model_work_minimum_free_bytes: 10000000000
+  model_work_disk_gate_policy: explicit_operator_override_10gb
   environment_lock: docs/sticky_attractor_v6_environment.lock
   environment_lock_sha256: e784ab99324f80dee54bf8cea5cabdd97b99e97a017f539fd33b964a4b73fec7
 
@@ -219,6 +221,6 @@ profiles:
     estimated_peak_cache_bytes: 30000000000
 
 publication:
-  release_prefix: mode3-v7-occupancy-frontier-r1
+  release_prefix: mode3-v7-occupancy-frontier-r2-10g
   hash_algorithm: sha256
   require_fresh_clone_restore: true

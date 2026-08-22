@@ -64,6 +64,9 @@ net gain. The independent benign direction `e*`, center-to-axis angle, exclusion
    rescored from scratch under V7.
 4. Wait for the priority V6.3 r5 run to reach a terminal state. V7 may then use only physical
    GPUs 4, 5, 6, and 7; GPUs 0 through 3 remain forbidden.
+   V7 r2 uses an explicitly operator-authorized 10 GB free-space gate before registration and
+   model work. The original 67.5 GB peak reference remains recorded as a diagnostic; lowering
+   the gate does not change any scientific rule or make a capacity guarantee.
 5. Precompute shared clean calibration/select vectors and fit independent `e*`.
 6. Evaluate every retained token on FULL roles: fit 8,000, benign calibration 50,000, and
    paired select 6,000. Merge all 32 shards or fail closed.

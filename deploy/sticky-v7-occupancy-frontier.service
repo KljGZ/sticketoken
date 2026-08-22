@@ -10,7 +10,7 @@ WorkingDirectory=/mnt/data/jkl/StickyToken-v7-occupancy-frontier
 Environment=V7_ROOT=/mnt/data/jkl/StickyToken-v7-occupancy-frontier
 Environment=V7_PYTHON=/home/jkl/anaconda3/envs/StickyToken/bin/python
 Environment=V7_CONFIG=configs/v7_mode3_occupancy_frontier.yaml
-Environment=V7_OUTPUT=/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier
+Environment=V7_OUTPUT=/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier_r2_10g
 Environment=V7_PROFILE=formal
 Environment=V7_GPUS=4,5,6,7
 Environment=PYTHONUNBUFFERED=1

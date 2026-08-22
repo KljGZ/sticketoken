@@ -18,7 +18,7 @@ import yaml
 DEFAULT_ROOT = Path("/mnt/data/jkl/StickyToken-v7-occupancy-frontier")
 DEFAULT_OUTPUT = Path(
     "/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/"
-    "mode3_v7_occupancy_frontier"
+    "mode3_v7_occupancy_frontier_r2_10g"
 )
 DEFAULT_CONFIG = Path("configs/v7_mode3_occupancy_frontier.yaml")
 DEFAULT_UNIT = "sticky-v7-occupancy-frontier.service"
