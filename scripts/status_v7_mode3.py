@@ -18,7 +18,7 @@ import yaml
 DEFAULT_ROOT = Path("/mnt/data/jkl/StickyToken-v7-occupancy-frontier")
 DEFAULT_OUTPUT = Path(
     "/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/"
-    "mode3_v7_occupancy_frontier_r2_10g"
+    "mode3_v7_occupancy_frontier_r3_priority"
 )
 DEFAULT_CONFIG = Path("configs/v7_mode3_occupancy_frontier.yaml")
 DEFAULT_UNIT = "sticky-v7-occupancy-frontier.service"
@@ -260,6 +260,9 @@ def main() -> int:
         output / "freeze" / "COMPLETE.json",
         output / "confirm" / "COMPLETE.json",
         output / "V7_FINAL_STATUS.json",
+        output / "orchestration_logs" / "R5_PRIORITY_STATE.json",
+        output / "orchestration_logs" / "R5_PRIORITY_RESUMED.json",
+        output / "orchestration_logs" / "R5_PRIORITY_PREFLIGHT_AUDIT.json",
     ]
     latest = latest_file(activity_candidates)
     failed_artifacts = [
@@ -268,6 +271,17 @@ def main() -> int:
         if output in path.parents
     ]
     terminal = bool(isinstance(final, dict) and final.get("terminal"))
+    priority_state = load_json(
+        output / "orchestration_logs" / "R5_PRIORITY_STATE.json"
+    )
+    priority_resume = load_json(
+        output / "orchestration_logs" / "R5_PRIORITY_RESUMED.json"
+    )
+    priority_resume_ok = bool(
+        isinstance(priority_resume, dict)
+        and priority_resume.get("status")
+        in {"R5_RESUMED_AFTER_V7_TERMINAL", "R5_WAS_ALREADY_TERMINAL"}
+    )
     identity_ok = all(
         identity[key]
         for key in (
@@ -278,7 +292,10 @@ def main() -> int:
         )
     )
     orchestrator_state = str((orchestrator or {}).get("state", "unknown"))
-    if terminal:
+    if terminal and not priority_resume_ok:
+        health = "terminal_r5_resume_required"
+        recommendation = "reconcile_exact_r5_priority_owner_before_pausing_monitor"
+    elif terminal:
         health = "terminal"
         recommendation = "stop_service_and_pause_monitor"
     elif failed_artifacts or orchestrator_state == "failed":
@@ -287,7 +304,12 @@ def main() -> int:
     elif not identity_ok:
         health = "blocked_identity_drift"
         recommendation = "do_not_restart_until_identity_is_reconciled"
-    elif orchestrator_state in {"waiting_priority_peer", "waiting_gpu"}:
+    elif orchestrator_state in {
+        "acquiring_gpu_priority",
+        "waiting_priority_peer",
+        "waiting_gpu",
+        "waiting_storage",
+    }:
         health = "healthy_waiting"
         recommendation = "continue_monitoring"
     elif "ActiveState=active" in systemd["output"]:
@@ -316,6 +338,16 @@ def main() -> int:
         "confirm": load_json(output / "confirm" / "COMPLETE.json"),
         "final": final,
         "priority_peer": peer,
+        "priority_control": {
+            "preflight_audit": load_json(
+                output
+                / "orchestration_logs"
+                / "R5_PRIORITY_PREFLIGHT_AUDIT.json"
+            ),
+            "state": priority_state,
+            "resume": priority_resume,
+            "resume_verified": priority_resume_ok,
+        },
         "latest_activity": latest,
         "current_log": str(current_log) if current_log else None,
         "current_log_tail": current_tail,

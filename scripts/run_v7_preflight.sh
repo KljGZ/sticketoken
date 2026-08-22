@@ -4,7 +4,7 @@ set -Eeuo pipefail
 V7_ROOT="${V7_ROOT:-/mnt/data/jkl/StickyToken-v7-occupancy-frontier}"
 V7_PYTHON="${V7_PYTHON:-/home/jkl/anaconda3/envs/StickyToken/bin/python}"
 V7_CONFIG="${V7_CONFIG:-configs/v7_mode3_occupancy_frontier.yaml}"
-V7_OUTPUT="${V7_OUTPUT:-/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier_r2_10g}"
+V7_OUTPUT="${V7_OUTPUT:-/mnt/data/jkl/StickyToken-v7-results/sticky_lab/sentence_t5_base/mode3_v7_occupancy_frontier_r3_priority}"
 V7_PROFILE="${V7_PROFILE:-formal}"
 V7_GPUS="${V7_GPUS:-4,5,6,7}"
 V7_RUFF="${V7_RUFF:-$(command -v ruff || true)}"
@@ -57,6 +57,9 @@ test_log="$V7_OUTPUT/orchestration_logs/code_and_synthetic_tests.log"
   "$V7_MYPY" sticky_lab/mode3_v7
   "$V7_PYTHON" -m pytest -q -p no:cacheprovider tests/test_mode3_v7_*.py
 } >"$test_log" 2>&1
+
+"$V7_PYTHON" -m sticky_lab.mode3_v7.priority audit \
+  --config "$V7_CONFIG" --output "$V7_OUTPUT"
 
 CUDA_VISIBLE_DEVICES="" "$V7_PYTHON" -m sticky_lab.mode3_v7.cli \
   --config "$V7_CONFIG" --output "$V7_OUTPUT" --profile "$V7_PROFILE" prepare

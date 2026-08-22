@@ -221,12 +221,12 @@ def test_dry_role_registry_is_document_disjoint_and_nested():
 
 def test_output_and_sealed_access_fail_closed(tmp_path: Path):
     config = _config()
-    assert_output_leaf(tmp_path / "mode3_v7_occupancy_frontier_r2_10g", config)
+    assert_output_leaf(tmp_path / "mode3_v7_occupancy_frontier_r3_priority", config)
     with pytest.raises(ProtocolViolation):
         assert_output_leaf(tmp_path / "mode3_v6_3_light", config)
     with pytest.raises(ProtocolViolation):
         assert_output_leaf(
-            tmp_path / "mode3_v6_3_light" / "mode3_v7_occupancy_frontier_r2_10g",
+            tmp_path / "mode3_v6_3_light" / "mode3_v7_occupancy_frontier_r3_priority",
             config,
         )
     with pytest.raises(RoleLeakage):
@@ -328,7 +328,7 @@ def test_freeze_roundtrip_and_independent_confirmation(tmp_path: Path):
 def test_cache_compaction_removes_only_nonselected_v7_directories(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    output = tmp_path / "mode3_v7_occupancy_frontier_r2_10g"
+    output = tmp_path / "mode3_v7_occupancy_frontier_r3_priority"
     atomic_json(output / "stages" / "full" / "COMPLETE.json", {"status": "complete"})
     atomic_json(
         output / "diagnostics" / "post_selection" / "COMPLETE.json",

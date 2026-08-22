@@ -106,11 +106,11 @@ def test_v7_config_freezes_the_19_point_prefix_suffix_protocol():
     )
 
 
-def test_r2_orchestrator_uses_explicit_10gb_gate(tmp_path: Path):
+def test_r3_orchestrator_registers_priority_and_explicit_10gb_gate(tmp_path: Path):
     orchestrator = Orchestrator(
         argparse.Namespace(
             config=str(Path("configs/v7_mode3_occupancy_frontier.yaml").resolve()),
-            output=str(tmp_path / "mode3_v7_occupancy_frontier_r2_10g"),
+            output=str(tmp_path / "mode3_v7_occupancy_frontier_r3_priority"),
             profile="formal",
             python=sys.executable,
             gpus="4,5,6,7",
@@ -119,6 +119,8 @@ def test_r2_orchestrator_uses_explicit_10gb_gate(tmp_path: Path):
     assert orchestrator.storage_required == 10_000_000_000
     assert orchestrator.storage_peak_reference == 67_500_000_000
     assert orchestrator.storage_gate_policy == "explicit_operator_override_10gb"
+    assert orchestrator.scheduling_priority == "v7_over_v6_3_r5"
+    assert orchestrator.priority_controller is not None
 
 
 def test_center_requires_complete_prefix_suffix_grid_and_equal_mass():

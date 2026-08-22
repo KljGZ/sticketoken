@@ -11,8 +11,11 @@
 | Migration | could enter prior claims | report-only |
 | `e*` geometry | follow-up geometry | report-only axis threshold and exclusion margin |
 | Confirm | old frozen cap | newly frozen token + beta + center + radius |
+| GPU scheduling | normal registered owner | r3 cooperatively takes priority, then resumes r5 |
 
-V7 reads V6.3 r5 only through a fail-closed audit. It may reuse the exact legal vocabulary,
+V7 reads V6.3 r5 scientific artifacts only through a fail-closed audit. The sole r5 writes
+authorized for r3 are its existing per-worker operational GPU-yield request files; r5 workers
+consume them only at durable cache boundaries. V7 may reuse the exact legal vocabulary,
 tokenizer audit, document/source manifests, aggregate S0 metrics, and complete raw
 prefix/suffix caches when present. It cannot reuse V6.3 q92 radii, random-influenced centers,
 selection order, frozen primary/secondaries, or confirmation. The V6.3 r7 certificate remains

@@ -13,8 +13,6 @@ import sys
 import time
 from typing import Any, Mapping, Sequence
 
-import yaml
-
 try:  # Linux formal runtime; guarded so local Windows tests can import the module.
     import fcntl
 except ImportError:  # pragma: no cover - exercised only by Windows orchestration
@@ -22,6 +20,10 @@ except ImportError:  # pragma: no cover - exercised only by Windows orchestratio
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from sticky_lab.mode3_v7.config import config_for_profile, load_config  # noqa: E402
+from sticky_lab.mode3_v7.priority import R5PriorityController  # noqa: E402
 
 
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
@@ -78,7 +80,9 @@ class Orchestrator:
         self.logs = self.output / "orchestration_logs"
         self.logs.mkdir(parents=True, exist_ok=True)
         self.config_path = Path(args.config).resolve()
-        self.config = yaml.safe_load(self.config_path.read_text(encoding="utf-8"))
+        self.config = config_for_profile(
+            load_config(self.config_path), str(args.profile)
+        )
         self.gpus = [int(value) for value in str(args.gpus).split(",") if value.strip()]
         allowed = list(map(int, self.config["resources"]["allowed_physical_gpus"]))
         forbidden = set(map(int, self.config["resources"]["forbidden_physical_gpus"]))
@@ -119,6 +123,15 @@ class Orchestrator:
             )
         )
         self.storage_free = 0
+        self.scheduling_priority = str(
+            self.config["resources"].get("scheduling_priority", "wait_for_v6_3_r5")
+        )
+        self.priority_controller = (
+            R5PriorityController(self.output, self.config)
+            if self.args.profile == "formal"
+            and self.scheduling_priority == "v7_over_v6_3_r5"
+            else None
+        )
 
     def acquire_lock(self) -> None:
         path = self.output / ".orchestrator.lock"
@@ -191,6 +204,12 @@ class Orchestrator:
             },
             "priority_peer_output": str(self.peer_output),
             "priority_peer_terminal": self.peer_terminal(),
+            "scheduling_priority": self.scheduling_priority,
+            "priority_control": (
+                self.priority_controller.snapshot()
+                if self.priority_controller is not None
+                else None
+            ),
             "progress": self.progress(),
             "updated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
@@ -199,8 +218,6 @@ class Orchestrator:
         atomic_json(self.logs / "status.json", value)
 
     def peer_terminal(self) -> bool:
-        if not bool(self.config["resources"].get("wait_for_v6_3_r5", True)):
-            return True
         final = load_json(self.peer_output / "FINAL_STATUS.json")
         if final is None or not final.get("status"):
             return False
@@ -216,6 +233,24 @@ class Orchestrator:
             self.status("waiting_priority_peer")
             time.sleep(self.poll)
         self.status("running")
+
+    def acquire_gpu_priority(self) -> None:
+        if self.priority_controller is None:
+            if bool(self.config["resources"].get("wait_for_v6_3_r5", False)):
+                self.wait_for_peer()
+            else:
+                self.status("running")
+            return
+        self.stage = "acquire_v7_gpu_priority"
+        self.status("acquiring_gpu_priority")
+        self.priority_controller.acquire()
+        self.status("running")
+
+    def release_gpu_priority(self) -> None:
+        if self.priority_controller is None:
+            return
+        self.stage = "resume_v6_3_r5"
+        self.priority_controller.release_after_terminal()
 
     def cli(self, *arguments: str) -> list[str]:
         return [
@@ -269,6 +304,8 @@ class Orchestrator:
     def wait_for_gpu(self, excluded: set[int] | None = None) -> int:
         excluded = excluded or set()
         while True:
+            if self.priority_controller is not None:
+                self.priority_controller.assert_owned()
             self.last_snapshot = gpu_snapshot()
             for gpu in self.gpus:
                 if gpu in excluded:
@@ -280,11 +317,16 @@ class Orchestrator:
             self.status("waiting_gpu")
             time.sleep(self.poll)
 
+    def storage_ready(self) -> bool:
+        self.storage_free = shutil.disk_usage(self.output.parent).free
+        return self.storage_free >= self.storage_required
+
     def wait_for_storage(self) -> None:
+        resume_stage = self.stage
         self.stage = "waiting_for_storage"
         while True:
-            self.storage_free = shutil.disk_usage(self.output.parent).free
-            if self.storage_free >= self.storage_required:
+            if self.storage_ready():
+                self.stage = resume_stage
                 self.status("running")
                 return
             self.status("waiting_storage")
@@ -315,6 +357,11 @@ class Orchestrator:
             for gpu in finished:
                 del running[gpu]
             while pending and len(running) < len(self.gpus):
+                if not self.storage_ready():
+                    self.stage = "waiting_for_storage"
+                    self.status("waiting_storage")
+                    break
+                self.stage = "full"
                 gpu = self.wait_for_gpu(set(running))
                 shard = pending.pop(0)
                 log = self.logs / f"full_shard_{shard:02d}.log"
@@ -344,12 +391,19 @@ class Orchestrator:
 
     def execute(self) -> None:
         self.acquire_lock()
+        existing_final = load_json(self.output / "V7_FINAL_STATUS.json")
+        if existing_final and existing_final.get("terminal"):
+            self.stage = "reconcile_terminal"
+            self.release_gpu_priority()
+            self.stage = "complete"
+            self.status("completed")
+            return
         self.stage = "prepare"
         self.status("running")
         self.run("prepare", self.cli("prepare"))
         self.stage = "reuse_s0"
         self.run("reuse_s0", self.cli("reuse-s0"))
-        self.wait_for_peer()
+        self.acquire_gpu_priority()
         self.wait_for_storage()
         self.stage = "precompute_clean"
         gpu = self.wait_for_gpu()
@@ -374,6 +428,8 @@ class Orchestrator:
         final = load_json(self.output / "V7_FINAL_STATUS.json")
         if final and final.get("terminal"):
             self.stage = "terminal_valid_negative"
+            self.release_gpu_priority()
+            self.stage = "terminal_valid_negative"
             self.status("completed")
             return
         self.stage = "post_selection_diagnostics"
@@ -394,6 +450,7 @@ class Orchestrator:
         final = load_json(self.output / "V7_FINAL_STATUS.json")
         if not final or not final.get("terminal"):
             raise RuntimeError("V7 confirm returned without an explicit terminal status")
+        self.release_gpu_priority()
         self.stage = "complete"
         self.status("completed")
 

@@ -19,9 +19,9 @@ from sticky_lab.mode3_v6_3.tokenizer_audit import TOKENIZER_HASH_ALGORITHM
 
 
 MODEL_REVISION = "fc5d4628481afbbaaacd7af6bb07cf9d3865f781"
-PROTOCOL_REVISION = 2
-RUN_ID = "mode3_v7_occupancy_frontier_r2_10g"
-OUTPUT_LEAF = "mode3_v7_occupancy_frontier_r2_10g"
+PROTOCOL_REVISION = 3
+RUN_ID = "mode3_v7_occupancy_frontier_r3_priority"
+OUTPUT_LEAF = "mode3_v7_occupancy_frontier_r3_priority"
 OCCUPANCY_GRID = (
     0.001,
     0.003,
@@ -52,6 +52,7 @@ PROTECTED_OUTPUT_LEAVES = frozenset(
         "mode3_v6_3_rapid_r6",
         "mode3_v6_3_rapid_r7",
         "mode3_v7_occupancy_frontier",
+        "mode3_v7_occupancy_frontier_r2_10g",
         "v6_compact",
     }
 )
@@ -179,11 +180,40 @@ def validate_config(config: Mapping[str, Any]) -> None:
     _require(allowed == frozenset({4, 5, 6, 7}), "V7 only authorizes physical GPUs 4-7")
     _require(forbidden == frozenset({0, 1, 2, 3}), "V7 must exclude physical GPUs 0-3")
     _require(not allowed.intersection(forbidden), "GPU lists overlap")
-    _require(resources.get("wait_for_v6_3_r5") is True, "V7 must not interfere with r5")
+    _require(resources.get("wait_for_v6_3_r5") is False, "V7 r3 must not wait for r5")
+    _require(
+        resources.get("scheduling_priority") == "v7_over_v6_3_r5",
+        "V7 r3 scheduling priority drift",
+    )
+    _require(
+        resources.get("preemption_mode") == "cooperative_cache_boundary",
+        "V7 r3 may preempt r5 only at cooperative cache boundaries",
+    )
+    _require(
+        resources.get("preempted_peer_unit") == "sticky-v6-3-light.service",
+        "V7 r3 lower-priority peer unit drift",
+    )
+    _require(
+        resources.get("preempted_peer_root")
+        == "/mnt/data/jkl/StickyToken-v6-3-light-formal",
+        "V7 r3 lower-priority peer root drift",
+    )
+    _require(
+        resources.get("resume_preempted_peer_after_terminal") is True,
+        "V7 r3 must resume r5 after a valid terminal endpoint",
+    )
+    _require(
+        int(resources.get("priority_yield_timeout_seconds", 0)) == 300,
+        "V7 r3 cooperative yield timeout drift",
+    )
+    _require(
+        float(resources.get("priority_poll_interval_seconds", 0.0)) == 1.0,
+        "V7 r3 priority poll interval drift",
+    )
     _require(int(resources.get("cooperative_gpu_chunk_texts", 0)) > 0, "invalid GPU chunk")
     _require(
         int(resources.get("registration_minimum_free_bytes", 0)) == 10_000_000_000,
-        "V7 r2 registration storage floor must be 10 GB",
+        "V7 r3 registration storage floor must be 10 GB",
     )
     _require(
         float(resources.get("minimum_free_disk_peak_multiplier", 0)) >= 1.0,
@@ -195,12 +225,12 @@ def validate_config(config: Mapping[str, Any]) -> None:
     )
     _require(
         int(resources.get("model_work_minimum_free_bytes", 0)) == 10_000_000_000,
-        "V7 r2 model-work storage gate must be 10 GB",
+        "V7 r3 model-work storage gate must be 10 GB",
     )
     _require(
         resources.get("model_work_disk_gate_policy")
         == "explicit_operator_override_10gb",
-        "V7 r2 disk-gate policy drift",
+        "V7 r3 disk-gate policy drift",
     )
 
     budget = config.get("budget", {})

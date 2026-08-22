@@ -62,11 +62,17 @@ net gain. The independent benign direction `e*`, center-to-axis angle, exclusion
 3. If exact raw reuse is complete, retain 256 FULL proposals; otherwise use a deliberately
    wide 512-token aggregate fallback. In either route every retained token is refitted and
    rescored from scratch under V7.
-4. Wait for the priority V6.3 r5 run to reach a terminal state. V7 may then use only physical
-   GPUs 4, 5, 6, and 7; GPUs 0 through 3 remain forbidden.
-   V7 r2 uses an explicitly operator-authorized 10 GB free-space gate before registration and
-   model work. The original 67.5 GB peak reference remains recorded as a diagnostic; lowering
-   the gate does not change any scientific rule or make a capacity guarantee.
+4. V7 r3 has registered scheduling priority over V6.3 r5. After V7 registration and the
+   read-only S0 reuse audit, V7 freezes only the exact identity-checked r5 orchestrator and
+   writes r5's registered cooperative-yield requests for its current workers. Each r5 worker
+   must leave at its next durable cache boundary; hard termination is forbidden. If every
+   worker does not yield within 300 seconds, V7 resumes r5 and fails closed. Once acquired,
+   V7 uses only physical GPUs 4, 5, 6, and 7; GPUs 0 through 3 remain forbidden. V7 resumes
+   the exact r5 orchestrator only after `V7_FINAL_STATUS.json` records a terminal endpoint.
+   V7 r3 keeps the explicitly operator-authorized 10 GB free-space gate before registration,
+   before every new model-work launch, and during FULL scheduling. The original 67.5 GB peak
+   reference remains a diagnostic; lowering the gate changes no scientific rule and is not a
+   capacity guarantee.
 5. Precompute shared clean calibration/select vectors and fit independent `e*`.
 6. Evaluate every retained token on FULL roles: fit 8,000, benign calibration 50,000, and
    paired select 6,000. Merge all 32 shards or fail closed.
